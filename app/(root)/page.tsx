@@ -5,9 +5,6 @@ import { Product } from "@/types";
 
 import React from "react";
 
-// Force dynamic rendering to avoid build-time database calls
-export const dynamic = 'force-dynamic';
-
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Page = async () => {
