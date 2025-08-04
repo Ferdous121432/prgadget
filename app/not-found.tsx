@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const NotFoundPage = () => {
   return (
-    <div className="flex flex-col min-w-[300px] max-w-[600px] items-center justify-center min-h-screen">
+    <div className="flex flex-col min-w-[300px] max-w-[600px] items-center justify-center min-h-screen mx-auto">
       <Image
         src={APP_LOGO}
         width={128}
@@ -16,7 +16,9 @@ const NotFoundPage = () => {
       />
       <div className="p-6 w-full rounded-lg shadow-md text-center">
         <h1 className="text-3xl font-bold mb-4">Not Found</h1>
-        <p className="text-destructive">Could not find requested page</p>
+        <p className="text-shadow-destructive text-red-800">
+          Could not find requested page
+        </p>
         <Button variant="outline" className="mt-4 ml-2" asChild>
           <Link href="/">Back To Home</Link>
         </Button>

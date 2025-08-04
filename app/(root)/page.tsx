@@ -1,18 +1,21 @@
 import ProductList from "@/components/shared/product/product-list";
-import sampleData from "@/db/sample-data";
+import { getLatestProducts } from "@/lib/actions/product.actions";
+import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
+
 import Image from "next/image";
 import React from "react";
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const Page = async () => {
-  // await delay(2000);
+  const latestProducts = await getLatestProducts();
+
   return (
     <>
       <ProductList
-        data={sampleData.products}
+        data={latestProducts}
         title="Newest Arrival"
-        limit={4}
+        limit={LATEST_PRODUCTS_LIMIT}
       />
     </>
   );
