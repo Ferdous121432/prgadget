@@ -25,7 +25,7 @@ const Menu = () => {
         </Button>
         <Button asChild variant="ghost">
           <Link
-            href="/user"
+            href="/sign-in"
             className="bg-slate-900 text-slate-50 font-semibold  ">
             <User /> Sign in
           </Link>
@@ -47,7 +47,7 @@ const Menu = () => {
             </Button>
             <Button asChild variant="ghost">
               <Link
-                href="/user"
+                href="/sign-in"
                 className="bg-slate-900 text-slate-50 font-semibold  ">
                 <User /> Sign in
               </Link>
