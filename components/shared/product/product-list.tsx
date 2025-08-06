@@ -11,7 +11,6 @@ const ProductList = ({
   limit?: number;
 }) => {
   const limitedData = limit ? data.slice(0, limit) : data;
-  console.log(data.length);
 
   return (
     <div className="my-10">

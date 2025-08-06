@@ -10,6 +10,7 @@ import ProductImages from "@/components/shared/product/product-images";
 // import { auth } from "@/auth";
 import Rating from "@/components/shared/product/rating";
 import Link from "next/link";
+import AddToCart from "@/components/shared/product/add-to-cart";
 
 const ProductDetailsPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -73,8 +74,8 @@ const ProductDetailsPage = async (props: {
                 </div>
                 {product.stock > 0 && (
                   <div className="flex-center">
-                    {/* <AddToCart
-                      cart={cart}
+                    <AddToCart
+                      // cart={cart}
                       item={{
                         productId: product.id,
                         name: product.name,
@@ -83,10 +84,7 @@ const ProductDetailsPage = async (props: {
                         qty: 1,
                         image: product.images![0],
                       }}
-                    /> */}
-                    <Badge variant="outline" className="mt-4 ml-2" asChild>
-                      <Link href="/">Back To Home</Link>
-                    </Badge>
+                    />
                   </div>
                 )}
               </CardContent>

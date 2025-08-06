@@ -101,6 +101,10 @@ body {
   .h3-bold {
     @apply font-bold text-xl lg:text-2xl;
   }
+
+  .button-primary {
+    @apply dark:bg-slate-50 dark:text-slate-900 bg-slate-900 text-slate-50 font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-200;
+  }
 }
 
 @layer base {
@@ -261,5 +265,32 @@ html.dark .upload-field .text-white {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom Toaster Styles */
+@layer components {
+  .custom-toast {
+    @apply shadow-lg backdrop-blur-sm;
+  }
+
+  /* Success toasts */
+  .custom-toast[data-type="success"] {
+    @apply bg-green-50 border-green-200 text-green-800;
+  }
+
+  /* Error toasts */
+  .custom-toast[data-type="error"] {
+    @apply bg-red-50 border-red-200 text-red-800;
+  }
+
+  /* Info toasts */
+  .custom-toast[data-type="info"] {
+    @apply bg-blue-50 border-blue-200 text-blue-800;
+  }
+
+  /* Warning toasts */
+  .custom-toast[data-type="warning"] {
+    @apply bg-yellow-50 border-yellow-200 text-yellow-800;
   }
 }

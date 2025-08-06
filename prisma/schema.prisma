@@ -52,6 +52,7 @@ model User {
   Account       Account[]
   Session       Session[]
   Authenticator Authenticator[]
+  Cart          Cart[]
 }
 
 model Account {
@@ -107,4 +108,19 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+model Cart {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId        String?  @db.Uuid
+  sessionCartId String?  @db.Uuid // Optional for session-based carts
+  items         Json[]   @default([]) @db.Json // Array of items with product ID and quantity
+  itemsPrice    Decimal  @default(0) @db.Decimal(10, 2)
+  totalPrice    Decimal  @default(0) @db.Decimal(10, 2)
+  shippingPrice Decimal  @default(0) @db.Decimal(10, 2)
+  taxPrice      Decimal  @default(0) @db.Decimal(10, 2)
+  createdAt     DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime @updatedAt @db.Timestamptz(6)
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
