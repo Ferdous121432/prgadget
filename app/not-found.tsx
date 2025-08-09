@@ -19,7 +19,7 @@ const NotFoundPage = () => {
         <p className="text-shadow-destructive text-red-800">
           Could not find requested page
         </p>
-        <Button variant="outline" className="mt-4 ml-2" asChild>
+        <Button variant="outline" className="mt-4 ml-2 button-primary" asChild>
           <Link href="/">Back To Home</Link>
         </Button>
       </div>

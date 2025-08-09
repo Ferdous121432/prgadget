@@ -1,6 +1,8 @@
 import { toast } from "sonner";
 import React from "react";
 import { CheckCircle, XCircle, AlertTriangle, Info, Bell } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 // Custom toast functions with JSX content
 export const jsxToasts = {
@@ -8,11 +10,16 @@ export const jsxToasts = {
   successWithIcon: (title: string, message?: string) => {
     toast(
       <div className="flex items-center gap-3">
-        <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
+        <CheckCircle className="h-5 w-5 text-green-500 dark:text-slate-50 flex-shrink-0" />
         <div>
-          <p className="font-medium text-green-900">{title}</p>
+          <p className="font-medium dark:text-slate-50 text-green-900">
+            {title}
+          </p>
           {message && <p className="text-sm text-green-700">{message}</p>}
         </div>
+        <Link href="/cart">
+          <Button className="button-primary">Go to Cart</Button>
+        </Link>
       </div>
     );
   },

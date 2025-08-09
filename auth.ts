@@ -9,10 +9,7 @@ import { authConfig } from "./auth.config";
 import { compare } from "bcrypt-ts-edge";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  pages: {
-    signIn: "/sign-in",
-    error: "/sign-in",
-  },
+  ...authConfig,
   session: {
     strategy: "jwt" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -75,7 +72,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    ...authConfig.callbacks,
     async session({ session, user, trigger, token }) {
       // Set the user ID from the token
       session.user.id = token.sub;
@@ -108,29 +104,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           });
         }
 
-        // if (trigger === "signIn" || trigger === "signUp") {
-        //   const cookiesObject = await cookies();
-        //   const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+        if (trigger === "signIn" || trigger === "signUp") {
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
 
-        //   if (sessionCartId) {
-        //     const sessionCart = await prisma.cart.findFirst({
-        //       where: { sessionCartId },
-        //     });
+            if (sessionCart) {
+              // Delete current user cart
+              await prisma.cart.deleteMany({
+                where: { userId: user.id },
+              });
 
-        //     if (sessionCart) {
-        //       // Delete current user cart
-        //       await prisma.cart.deleteMany({
-        //         where: { userId: user.id },
-        //       });
-
-        //       // Assign new cart
-        //       await prisma.cart.update({
-        //         where: { id: sessionCart.id },
-        //         data: { userId: user.id },
-        //       });
-        //     }
-        //   }
-        // }
+              // Assign new cart
+              await prisma.cart.update({
+                where: { id: sessionCart.id },
+                data: { userId: user.id },
+              });
+            }
+          }
+        }
       }
 
       // Handle session updates
@@ -139,19 +134,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
 
       return token;
-    },
-    authorized({ request, auth }: any) {
-      // Check if session cart cookie exists
-      if (!request.cookies.get("sessionCartId")) {
-        //Generate a new session cart ID
-        const sessionCartId = crypto.randomUUID();
-        const response = NextResponse.next();
-        response.cookies.set("sessionCartId", sessionCartId);
-        console.log("Generated new session cart ID:", sessionCartId);
-        return response;
-      } else {
-        return true;
-      }
     },
   },
 });

@@ -4,13 +4,13 @@ import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 import ProductPrice from "@/components/shared/product/product-price";
 import ProductImages from "@/components/shared/product/product-images";
-// import AddToCart from "@/components/shared/product/add-to-cart";
-// import { getMyCart } from "@/lib/actions/cart.actions";
+import { getMyCart } from "@/lib/actions/cart.actions";
 // import ReviewList from "./review-list";
-// import { auth } from "@/auth";
+import { auth } from "@/auth";
 import Rating from "@/components/shared/product/rating";
 import Link from "next/link";
 import AddToCart from "@/components/shared/product/add-to-cart";
+import { Cart } from "@/types";
 
 const ProductDetailsPage = async (props: {
   params: Promise<{ slug: string }>;
@@ -20,10 +20,11 @@ const ProductDetailsPage = async (props: {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  //   const session = await auth();
-  //   const userId = session?.user?.id;
+  const session = await auth();
+  const userId = session?.user?.id;
 
-  //   const cart = await getMyCart();
+  //TODO: solve any issues with cart
+  const cart = (await getMyCart()) as Cart;
 
   return (
     <>
@@ -75,7 +76,7 @@ const ProductDetailsPage = async (props: {
                 {product.stock > 0 && (
                   <div className="flex-center">
                     <AddToCart
-                      // cart={cart}
+                      cart={cart}
                       item={{
                         productId: product.id,
                         name: product.name,
