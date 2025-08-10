@@ -12,6 +12,9 @@ import Link from "next/link";
 import AddToCart from "@/components/shared/product/add-to-cart";
 import { Cart } from "@/types";
 
+// Force dynamic rendering since we use cookies and session data
+export const dynamic = "force-dynamic";
+
 const ProductDetailsPage = async (props: {
   params: Promise<{ slug: string }>;
 }) => {

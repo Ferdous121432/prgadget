@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Sign Up",
 };
 
+// Force dynamic rendering since we use auth/session data
+export const dynamic = "force-dynamic";
+
 const SignUpPage = async (props: {
   searchParams: Promise<{
     callbackUrl: string;

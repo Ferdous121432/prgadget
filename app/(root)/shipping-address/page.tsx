@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Shipping Address",
 };
 
+// Force dynamic rendering since we use cookies and session data
+export const dynamic = "force-dynamic";
+
 const ShippingAddressPage = async () => {
   const cart = await getMyCart();
 

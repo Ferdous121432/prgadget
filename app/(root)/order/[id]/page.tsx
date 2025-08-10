@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Order Details",
 };
 
+// Force dynamic rendering since we use auth/session data
+export const dynamic = "force-dynamic";
+
 const OrderDetailsPage = async (props: {
   params: Promise<{
     id: string;

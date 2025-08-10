@@ -1,6 +1,6 @@
-import { auth } from "@/auth";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getUserById } from "@/lib/actions/user.actions";
+import { requireAuth } from "@/lib/auth-guard";
 import { ShippingAddress } from "@/types";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -24,9 +24,12 @@ export const metadata: Metadata = {
   title: "Place Order",
 };
 
+// Force dynamic rendering since we use cookies and session data
+export const dynamic = "force-dynamic";
+
 const PlaceOrderPage = async () => {
+  const session = await requireAuth();
   const cart = await getMyCart();
-  const session = await auth();
   const userId = session?.user?.id;
 
   if (!userId) throw new Error("User not found");
