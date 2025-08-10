@@ -65,7 +65,7 @@ const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
           <Minus className="w-4 h-4" />
         )}
       </Button>
-      <span className="px-2">{existItem.qty}</span>
+      <span className="px-2">{existItem.quantity}</span>
       <Button
         type="button"
         className="button-primary"

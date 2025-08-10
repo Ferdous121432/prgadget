@@ -128,7 +128,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                     </TableCell>
                     <TableCell className="flex-center gap-2">
                       <RemoveButton item={item} />
-                      <span>{item.qty}</span>
+                      <span>{item.quantity}</span>
                       <AddButton item={item} />
                     </TableCell>
                     <TableCell className="text-right">${item.price}</TableCell>
@@ -141,7 +141,7 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
           <Card>
             <CardContent className="p-4 gap-4">
               <div className="pb-3 text-xl">
-                Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):
+                Subtotal ({cart.items.reduce((a, c) => a + c.quantity, 0)}):
                 <span className="font-bold">
                   {formatCurrency(cart.itemsPrice)}
                 </span>

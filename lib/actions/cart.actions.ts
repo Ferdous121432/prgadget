@@ -12,7 +12,10 @@ import { Prisma } from "../generated/prisma";
 // calculate total price of cart items
 export const calculateCartTotal = async (items: CartItem[]) => {
   const itemsPrice = round2(
-    items.reduce((acc, item) => acc + Number(item.price) * Number(item.qty), 0)
+    items.reduce(
+      (acc, item) => acc + Number(item.price) * Number(item.quantity),
+      0
+    )
   );
   const shippingPrice = round2(itemsPrice > 100 ? 0 : 10);
   const taxPrice = round2(itemsPrice * 0.15);
@@ -83,14 +86,14 @@ export const addItemToCart = async (data: CartItem) => {
 
       if (existingItem) {
         // check item stock
-        if (product.stock < existingItem.qty + 1) {
+        if (product.stock < existingItem.quantity + 1) {
           throw new Error(`Only ${product.stock} items available in stock`);
         }
         // Update existing item quantity
-        existingItem.qty += item.qty;
+        existingItem.quantity += item.quantity;
       } else {
         // check item stock
-        if (product.stock < item.qty) {
+        if (product.stock < item.quantity) {
           throw new Error(`Only ${product.stock} items available in stock`);
         }
         // Add new item to cart
@@ -182,7 +185,7 @@ export const removeItemFromCart = async (productId: string) => {
     if (!exist) throw new Error("Item not found in cart");
 
     //Check if only one item in cart
-    if (exist.qty === 1) {
+    if (exist.quantity === 1) {
       // Remove item from cart
       cart.items = cart.items.filter(
         (item: CartItem) => item.productId !== productId
@@ -191,7 +194,7 @@ export const removeItemFromCart = async (productId: string) => {
       // Decrease item quantity
       cart.items.find(
         (item: CartItem) => item.productId === productId
-      )!.qty -= 1;
+      )!.quantity -= 1;
     }
 
     //update cart in database
@@ -209,7 +212,7 @@ export const removeItemFromCart = async (productId: string) => {
     return {
       success: true,
       message: `${
-        exist.qty > 1 ? "Item quantity decreased" : "Item removed"
+        exist.quantity > 1 ? "Item quantity decreased" : "Item removed"
       } from cart successfully`,
     };
   } catch (error) {

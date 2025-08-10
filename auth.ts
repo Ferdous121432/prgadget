@@ -1,9 +1,9 @@
+// "use server";
 import NextAuth from "next-auth";
 // import { authConfig } from "./auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { authConfig } from "./auth.config";
 import { compare } from "bcrypt-ts-edge";

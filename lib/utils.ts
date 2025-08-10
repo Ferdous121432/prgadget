@@ -11,6 +11,42 @@ export function convertPrismaObjectToJSObject<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
+// Serialize order data for client components, handling Decimal objects and removing symbol properties
+export function serializeOrderForClient(order: any) {
+  return {
+    id: order.id,
+    userId: order.userId,
+    shippingAddress: order.shippingAddress,
+    paymentMethod: order.paymentMethod,
+    itemsPrice: order.itemsPrice?.toString(),
+    totalPrice: order.totalPrice?.toString(),
+    shippingPrice: order.shippingPrice?.toString(),
+    taxPrice: order.taxPrice?.toString(),
+    isPaid: order.isPaid,
+    paidAt: order.paidAt,
+    isDelivered: order.isDelivered,
+    deliveredAt: order.deliveredAt,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+    orderItems:
+      order.orderItems?.map((item: any) => ({
+        orderId: item.orderId,
+        productId: item.productId,
+        name: item.name,
+        slug: item.slug,
+        image: item.image,
+        price: item.price?.toString(),
+        quantity: item.quantity,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      })) || [],
+    user: {
+      name: order.user?.name || "",
+      email: order.user?.email || "",
+    },
+  };
+}
+
 // Format number with decimal places
 export function formatNumberWithDecimal(num: number): string {
   const [int, decimal] = num.toString().split(".");
