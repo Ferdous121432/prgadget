@@ -270,7 +270,14 @@ const ProductForm = ({
                         <UploadButton
                           endpoint="imageUploader"
                           onClientUploadComplete={(res: { url: string }[]) => {
-                            form.setValue("images", [...images, res[0].url]);
+                            if (res && res.length > 0 && res[0].url) {
+                              form.setValue("images", [...images, res[0].url]);
+                            } else {
+                              jsxToasts.errorWithIcon(
+                                "Image upload failed",
+                                "No image URL received from upload"
+                              );
+                            }
                           }}
                           onUploadError={(error: Error) => {
                             jsxToasts.errorWithIcon(
