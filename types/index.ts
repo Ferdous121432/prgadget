@@ -1,6 +1,5 @@
 import {
   cartItemSchema,
-  dashboardStatsSchema,
   insertCartSchema,
   insertOrderItemSchema,
   insertOrderSchema,
