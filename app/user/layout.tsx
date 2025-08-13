@@ -1,8 +1,5 @@
-import { APP_LOGO, APP_NAME } from "@/lib/constants";
-import Image from "next/image";
-import Link from "next/link";
 import Menu from "@/components/shared/header/Menu";
-import MainNav from "./main-nav";
+import MainNav from "./MainNav";
 import AppLogo from "@/components/shared/header/AppLogo";
 
 export default function UserLayout({
