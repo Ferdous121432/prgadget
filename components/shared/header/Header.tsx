@@ -1,6 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
-import { APP_LOGO, APP_Name } from "@/lib/constants";
 import Menu from "./Menu";
 import AppLogo from "./AppLogo";
 

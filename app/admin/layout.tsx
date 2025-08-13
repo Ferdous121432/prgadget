@@ -1,7 +1,4 @@
-import { APP_NAME } from "@/lib/constants";
-import Image from "next/image";
-import Link from "next/link";
-import Menu from "@/components/shared/header/Menu";
+import Menu from "./../../components/shared/header/Menu";
 
 import AppLogo from "@/components/shared/header/AppLogo";
 import MainNav from "./MainNav";
