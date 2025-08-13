@@ -69,7 +69,7 @@ const AdminProductsPage = async (props: {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {products.data.map((product) => (
+          {products.data?.map((product) => (
             <TableRow key={product.id}>
               <TableCell>{formatId(product.id)}</TableCell>
               <TableCell>{product.name}</TableCell>
@@ -89,8 +89,8 @@ const AdminProductsPage = async (props: {
           ))}
         </TableBody>
       </Table>
-      {products.totalPages > 1 && (
-        <Pagination page={page} totalPages={products.totalPages} />
+      {(products.totalPages ?? 0) > 1 && (
+        <Pagination page={page} totalPages={products.totalPages ?? 1} />
       )}
     </div>
   );
