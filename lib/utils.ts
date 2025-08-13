@@ -11,48 +11,6 @@ export function convertPrismaObjectToJSObject<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
-// Serialize order data for client components, handling Decimal objects and removing symbol properties
-export function serializeOrderForClient(order: any) {
-  return {
-    id: order.id,
-    userId: order.userId,
-    shippingAddress: order.shippingAddress,
-    paymentMethod: order.paymentMethod,
-    itemsPrice: order.itemsPrice?.toString(),
-    totalPrice: order.totalPrice?.toString(),
-    shippingPrice: order.shippingPrice?.toString(),
-    taxPrice: order.taxPrice?.toString(),
-    isPaid: order.isPaid,
-    paidAt: order.paidAt,
-    isDelivered: order.isDelivered,
-    deliveredAt: order.deliveredAt,
-    createdAt: order.createdAt,
-    updatedAt: order.updatedAt,
-    orderItems:
-      order.orderItems?.map((item: any) => ({
-        orderId: item.orderId,
-        productId: item.productId,
-        name: item.name,
-        slug: item.slug,
-        image: item.image,
-        price: item.price?.toString(),
-        quantity: item.quantity,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-      })) || [],
-    user: {
-      name: order.user?.name || "",
-      email: order.user?.email || "",
-    },
-  };
-}
-
-// Format number with decimal places
-export function formatNumberWithDecimal(num: number): string {
-  const [int, decimal] = num.toString().split(".");
-  return decimal ? `${int}.${decimal.padEnd(2, "0")}` : `${int}.00`;
-}
-
 // Format errors
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function formatError(error: any) {
@@ -179,4 +137,147 @@ export function formUrlQuery({
       skipNull: true,
     }
   );
+}
+
+// Form the pagination links with multiple updates
+// Form the pagination links
+//updates: {
+//   [urlParamName || "page"]: pageValue.toString(),
+//   ["test"]: "testfff",
+// },
+export function formUrlQueryMultiple({
+  params,
+  updates,
+}: {
+  params: string;
+  updates: Record<string, string | null>;
+}) {
+  const query = qs.parse(params);
+
+  Object.entries(updates).forEach(([key, value]) => {
+    query[key] = value;
+  });
+
+  return qs.stringifyUrl(
+    {
+      url: window.location.pathname,
+      query,
+    },
+    {
+      skipNull: true,
+    }
+  );
+}
+
+// Serialize order data for client components, handling Decimal objects and removing symbol properties
+export function serializeOrderForClient(order: any) {
+  return {
+    id: order.id,
+    userId: order.userId,
+    shippingAddress: order.shippingAddress,
+    paymentMethod: order.paymentMethod,
+    itemsPrice: order.itemsPrice?.toString(),
+    totalPrice: order.totalPrice?.toString(),
+    shippingPrice: order.shippingPrice?.toString(),
+    taxPrice: order.taxPrice?.toString(),
+    isPaid: order.isPaid,
+    paidAt: order.paidAt,
+    isDelivered: order.isDelivered,
+    deliveredAt: order.deliveredAt,
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt,
+    orderItems:
+      order.orderItems?.map((item: any) => ({
+        orderId: item.orderId,
+        productId: item.productId,
+        name: item.name,
+        slug: item.slug,
+        image: item.image,
+        price: item.price?.toString(),
+        quantity: item.quantity,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      })) || [],
+    user: {
+      name: order.user?.name || "",
+      email: order.user?.email || "",
+    },
+  };
+}
+
+// Solve Decimal serialization issue in Next.js
+export function SerializeGetMyOrder(response: any) {
+  return {
+    data: Array.isArray(response.data)
+      ? response.data.map((order: any) => ({
+          id: order.id,
+          userId: order.userId,
+          shippingAddress: order.shippingAddress,
+          paymentMethod: order.paymentMethod,
+          paymentResult: order.paymentResult,
+          itemsPrice: order.itemsPrice?.toString(),
+          totalPrice: order.totalPrice?.toString(),
+          shippingPrice: order.shippingPrice?.toString(),
+          taxPrice: order.taxPrice?.toString(),
+          isPaid: order.isPaid,
+          paidAt: order.paidAt,
+          isDelivered: order.isDelivered,
+          deliveredAt: order.deliveredAt,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+        }))
+      : [],
+    totalPages: response.totalPages,
+  };
+}
+// Serialize dashboard stats for client components, handling Decimal objects and nested structures
+export function serializeDashboardStats(response: any) {
+  return {
+    ordersCount: response.ordersCount,
+    productCounts: response.productCounts,
+    usersCount: response.usersCount,
+    totalSales: {
+      _sum: {
+        totalPrice: response.totalSales?._sum?.totalPrice?.toString() ?? "0",
+      },
+    },
+    salesData: Array.isArray(response.salesData)
+      ? response.salesData.map((item: any) => ({
+          month: item.month,
+          totalSales:
+            typeof item.totalSales === "object" && item.totalSales !== null
+              ? Number(item.totalSales)
+              : item.totalSales,
+        }))
+      : [],
+    latestSales: Array.isArray(response.latestSales)
+      ? response.latestSales.map((order: any) => ({
+          id: order.id,
+          userId: order.userId,
+          shippingAddress: order.shippingAddress,
+          paymentMethod: order.paymentMethod,
+          paymentResult: order.paymentResult,
+          itemsPrice: order.itemsPrice?.toString(),
+          totalPrice: order.totalPrice?.toString(),
+          shippingPrice: order.shippingPrice?.toString(),
+          taxPrice: order.taxPrice?.toString(),
+          isPaid: order.isPaid,
+          paidAt: order.paidAt,
+          isDelivered: order.isDelivered,
+          deliveredAt: order.deliveredAt,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          user: {
+            name: order.user?.name || "",
+            email: order.user?.email || "",
+          },
+        }))
+      : [],
+  };
+}
+
+// Format number with decimal places
+export function formatNumberWithDecimal(num: number): string {
+  const [int, decimal] = num.toString().split(".");
+  return decimal ? `${int}.${decimal.padEnd(2, "0")}` : `${int}.00`;
 }

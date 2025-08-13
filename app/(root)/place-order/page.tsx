@@ -4,7 +4,7 @@ import { requireAuth } from "@/lib/auth-guard";
 import { ShippingAddress } from "@/types";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import CheckoutSteps from "@/components/shared/checkout-steps";
+import CheckoutSteps from "@/components/shared/CheckoutSteps";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 const PlaceOrderPage = async () => {
-  const session = await requireAuth();
+  const session = await requireAuth("/place-order");
   const cart = await getMyCart();
   const userId = session?.user?.id;
 

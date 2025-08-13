@@ -12,7 +12,7 @@ import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import CredentialsSignInForm from "./credentials-signin-form";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import AppLogo from "@/components/shared/header/app-logo";
+import AppLogo from "@/components/shared/header/AppLogo";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -28,8 +28,6 @@ const SignInPage = async (props: {
 }) => {
   const { callbackUrl } = await props.searchParams;
 
-  // alert(callbackUrl); // alert is not available in server components
-
   const session = await auth();
   console.log("Session in SignInPage:", session);
 
@@ -42,7 +40,7 @@ const SignInPage = async (props: {
       <Card>
         <CardHeader className="space-y-4">
           <AppLogo />
-          <CardTitle className="text-center">Sign In</CardTitle>
+          {/* <CardTitle className="text-center">Sign In</CardTitle> */}
           <CardDescription className="text-center">
             Sign in to your account
           </CardDescription>

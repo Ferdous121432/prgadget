@@ -15,13 +15,10 @@ import { Order } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { useTransition } from "react";
-
-// import {
-//   createPayPalOrder,
-//   approvePayPalOrder,
-//   updateOrderToPaidCOD,
-//   deliverOrder,
-// } from "@/lib/actions/order.actions";
+import {
+  updateOrderToPaidCOD,
+  updateOrderToDelivered,
+} from "@/lib/actions/order.actions";
 import StripePayment from "./stripe-payment";
 import { jsxToasts } from "@/lib/customToaster";
 import { jsx } from "react/jsx-runtime";
@@ -51,7 +48,7 @@ const OrderDetailsTable = ({
     paidAt,
     deliveredAt,
   } = order;
-
+  console.log("Order Details:", orderItems);
   const PrintLoadingState = () => {
     // const [{ isPending, isRejected }] = usePayPalScriptReducer();
     let status = "";
@@ -94,11 +91,11 @@ const OrderDetailsTable = ({
         className="button-primary"
         onClick={() =>
           startTransition(async () => {
-            // const res = await updateOrderToPaidCOD(order.id);
-            // jsxToasts.successWithIcon(
-            //   "Order Paid",
-            //   res.message || "Order paid successfully"
-            // );
+            const res = await updateOrderToPaidCOD(order.id);
+            jsxToasts.successWithIcon(
+              "Order Paid",
+              res.message || "Order paid successfully"
+            );
           })
         }>
         {isPending ? "processing..." : "Mark As Paid"}
@@ -114,13 +111,14 @@ const OrderDetailsTable = ({
       <Button
         type="button"
         disabled={isPending}
+        className="button-primary"
         onClick={() =>
           startTransition(async () => {
-            // const res = await deliverOrder(order.id);
-            // jsxToasts.successWithIcon(
-            //   "Order Delivered",
-            //   res.message || "Order delivered successfully"
-            // );
+            const res = await updateOrderToDelivered(order.id);
+            jsxToasts.successWithIcon(
+              "Order Delivered",
+              res.message || "Order delivered successfully"
+            );
           })
         }>
         {isPending ? "processing..." : "Mark As Delivered"}
@@ -181,7 +179,7 @@ const OrderDetailsTable = ({
                     <TableRow key={item.slug}>
                       <TableCell>
                         <Link
-                          href={`/product/{item.slug}`}
+                          href={`/product/${item.slug}`}
                           className="flex items-center">
                           <Image
                             src={item.image}
@@ -247,11 +245,14 @@ const OrderDetailsTable = ({
                 />
               )}
 
-              {/* Cash On Delivery */}
-              {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
-                <MarkAsPaidButton />
-              )}
-              {/* {isAdmin && isPaid && !isDelivered && <MarkAsDeliveredButton />} */}
+              <div className="flex space-x-2 justify-around ">
+                {" "}
+                {/* Cash On Delivery */}
+                {isAdmin && !isPaid && paymentMethod === "CashOnDelivery" && (
+                  <MarkAsPaidButton />
+                )}
+                {isAdmin && isPaid && !isDelivered && <MarkAsDeliveredButton />}
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -8,7 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import UserButton from "./user-button";
+import UserButton from "./UserButton";
 import ModeToggle from "./ModeToggle";
 
 const Menu = () => {

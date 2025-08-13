@@ -12,7 +12,7 @@ import { APP_LOGO, APP_NAME } from "@/lib/constants";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import SignUpForm from "./sign-up-form";
-import AppLogo from "@/components/shared/header/app-logo";
+import AppLogo from "@/components/shared/header/AppLogo";
 
 export const metadata: Metadata = {
   title: "Sign Up",

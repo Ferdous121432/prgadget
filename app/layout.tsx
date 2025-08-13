@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { APP_DESCRIPTION, APP_Name, SERVER_URL } from "@/lib/constants";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "@/components/ui/sonner";
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "./api/uploadthing/core";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +36,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

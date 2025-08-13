@@ -3,7 +3,7 @@ import { getOrderById } from "@/lib/actions/order.actions";
 import { notFound, redirect } from "next/navigation";
 import OrderDetailsTable from "./order-details-table";
 import { auth } from "@/auth";
-import { serializeOrderForClient } from "@/lib/utils";
+import { convertPrismaObjectToJSObject } from "@/lib/utils";
 import Stripe from "stripe";
 
 export const metadata: Metadata = {
@@ -60,7 +60,7 @@ const OrderDetailsPage = async (props: {
 
   return (
     <OrderDetailsTable
-      order={serializeOrderForClient(order)}
+      order={convertPrismaObjectToJSObject(order)}
       paypalClientId={process.env.PAYPAL_CLIENT_ID || "sb"}
       stripeClientSecret={client_secret}
       isAdmin={session?.user?.role === "admin" || false}

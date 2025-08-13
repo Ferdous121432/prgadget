@@ -7,6 +7,9 @@ export const APP_DESCRIPTION = "A modern ecommerce store built with Next.js";
 export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "https://prgadget.vercel.app";
 export const LATEST_PRODUCTS_LIMIT = 4;
+export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
+export const DB_LATEST_SALES_TAKE = 2;
+export const DB_ADMIN_PRODUCT_TAKE = 2;
 
 export const signInDefaultValues = {
   email: process.env.NODE_ENV === "development" ? "admin@example.com" : "",
@@ -34,19 +37,17 @@ export const PAYMENT_METHODS = process.env.PAYMENT_METHODS
 export const DEFAULT_PAYMENT_METHOD =
   process.env.DEFAULT_PAYMENT_METHOD || "PayPal";
 
-export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
-
 export const productDefaultValues = {
-  name: "",
+  name: "Shirt Formal",
   slug: "",
-  category: "",
+  category: "shirt",
   images: [],
-  brand: "",
-  description: "",
-  price: "0",
-  stock: 0,
-  rating: "0",
-  numReviews: "0",
+  brand: "catseye",
+  description: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  price: "66.99",
+  stock: 10,
+  rating: "4.5",
+  numReviews: "4",
   isFeatured: false,
   banner: null,
 };
@@ -62,3 +63,12 @@ export const reviewFormDefaultValues = {
 };
 
 export const SENDER_EMAIL = process.env.SENDER_EMAIL || "onboarding@resend.dev";
+
+// DB Monthly Sales Query
+export const MONTHLY_SALES_QUERY = ` 
+SELECT 
+to_char("createdAt", 'MM-YYYY') as month, 
+sum("totalPrice") as totalSales 
+FROM "Order" 
+GROUP BY to_char("createdAt", 'MM-YYYY')
+ORDER BY month`;

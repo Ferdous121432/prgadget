@@ -5,6 +5,7 @@ import {
   shippingAddressSchema,
   signInFormSchema,
   signUpFormSchema,
+  updateProfileSchema,
 } from "@/lib/validators";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { auth, signIn, signOut } from "@/auth";
@@ -12,6 +13,7 @@ import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 import { PaymentMethod, ShippingAddress } from "@/types";
+import { getMyCart } from "./cart.actions";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -73,6 +75,22 @@ export async function signUpUser(prevState: unknown, formData: FormData) {
       throw error;
     }
     return { success: false, message: formatError(error) };
+  }
+}
+
+// Sign out the user
+export async function signOutUser() {
+  try {
+    // Get current user's cart and delete it so it does not persist to next user
+    const currentCart = await getMyCart();
+    if (currentCart?.id) {
+      await prisma.cart.delete({ where: { id: currentCart.id } });
+    } else {
+      console.warn("No cart found for deletion.");
+    }
+    await signOut();
+  } catch (error) {
+    throw new Error(formatError(error));
   }
 }
 
@@ -152,6 +170,42 @@ export async function updateUserPaymentMethod(paymentMethod: PaymentMethod) {
     return {
       success: true,
       message: "Payment method updated successfully",
+      user: updatedUser,
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Update user profile
+export async function updateUserProfile(profileData: {
+  name: string;
+  email: string;
+}) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!currentUser) {
+      return { success: false, message: "User not found" };
+    }
+
+    const parsedProfileData = updateProfileSchema.parse(profileData);
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name: parsedProfileData.name,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Profile updated successfully",
       user: updatedUser,
     };
   } catch (error) {

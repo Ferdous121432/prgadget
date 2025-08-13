@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { APP_LOGO, APP_Name } from "@/lib/constants";
-import Menu from "./menu";
-import AppLogo from "./app-logo";
+import Menu from "./Menu";
+import AppLogo from "./AppLogo";
 
 // import CategoryDrawer from "./category-drawer";
 // import Search from "./search";
