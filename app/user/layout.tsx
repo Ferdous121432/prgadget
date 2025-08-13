@@ -1,6 +1,6 @@
 import AppLogo from "@/components/shared/header/AppLogo";
 import MainNav from "./MainNav";
-import Menu from "@/components/shared/header/Menu";
+import Menu from "@/components/shared/header/Menus";
 
 export default function UserLayout({
   children,

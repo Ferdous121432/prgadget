@@ -1,4 +1,4 @@
-import Menu from "./Menu";
+import Menu from "./Menus";
 import AppLogo from "./AppLogo";
 
 // import CategoryDrawer from "./category-drawer";

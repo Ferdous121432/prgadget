@@ -1,6 +1,6 @@
 import AppLogo from "@/components/shared/header/AppLogo";
 import MainNav from "./MainNav";
-import Menu from "@/components/shared/header/Menu";
+import Menu from "@/components/shared/header/Menus";
 // import AdminSearch from '@/components/admin/admin-search';
 
 export default function AdminLayout({
