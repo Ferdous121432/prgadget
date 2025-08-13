@@ -54,7 +54,7 @@ export type Review = z.infer<typeof insertReviewSchema> & {
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;
 
 // Admin
-export type DashboardStats = z.infer<typeof dashboardStatsSchema>;
+
 export type SalesData = {
   month: string;
   totalSales: number;
