@@ -7,9 +7,14 @@ import { getMyCart } from "./cart.actions";
 import { prisma } from "@/db/prisma";
 import { getUserById } from "./user.actions";
 import { insertOrderSchema } from "../validators";
-import { DB_LATEST_SALES_TAKE, PAGE_SIZE } from "../constants";
-import { Prisma } from "@prisma/client";
+import {
+  DB_ADMIN_PRODUCT_TAKE,
+  DB_LATEST_SALES_TAKE,
+  PAGE_SIZE,
+} from "../constants";
+import { Prisma } from "../generated/prisma";
 import { revalidatePath } from "next/cache";
+import { convertPrismaObjectToJSObject } from "../utils";
 
 export const createOrder = async () => {
   try {
@@ -290,26 +295,98 @@ ORDER BY to_char("createdAt", 'MM-YYYY')`;
 
 // Get all orders for admin
 export async function getAllOrders({
-  limit = PAGE_SIZE,
+  limit = DB_ADMIN_PRODUCT_TAKE,
   page,
+  query,
 }: {
   limit?: number;
   page: number;
+  query?: string;
 }) {
+  // Helper function to check if string is a valid UUID
+  const isValidUUID = (str: string) => {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(str);
+  };
+  // Enhanced query filter for multiple words and fields
+  const queryFilter: Prisma.OrderWhereInput =
+    query && query !== "all"
+      ? {
+          OR: [
+            // Search in user name (exact query)
+            {
+              user: {
+                name: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+            },
+            // Search in user email
+            {
+              user: {
+                email: {
+                  contains: query,
+                  mode: "insensitive",
+                },
+              },
+            },
+            // Only search in ID if query is a valid UUID
+            ...(isValidUUID(query)
+              ? [
+                  {
+                    id: {
+                      equals: query,
+                    },
+                  },
+                ]
+              : []),
+            // Split query into words and search each word in user name
+            ...query
+              .split(" ")
+              .filter((word) => word.length > 0)
+              .map((word) => ({
+                user: {
+                  name: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+              })),
+            // Split query into words and search each word in user email
+            ...query
+              .split(" ")
+              .filter((word) => word.length > 0)
+              .map((word) => ({
+                user: {
+                  email: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+              })),
+          ],
+        }
+      : {};
+
   const data = await prisma.order.findMany({
+    where: queryFilter,
     orderBy: { createdAt: "desc" },
     include: {
-      user: { select: { name: true } },
+      user: { select: { name: true, email: true } },
       orderItems: true,
     },
     take: limit,
     skip: (page - 1) * limit,
   });
 
-  const dataCount = await prisma.order.count();
+  const dataCount = await prisma.order.count({
+    where: queryFilter, // Apply same filter to count
+  });
 
   return {
-    data,
+    data: convertPrismaObjectToJSObject(data),
     totalPages: Math.ceil(dataCount / limit),
   };
 }

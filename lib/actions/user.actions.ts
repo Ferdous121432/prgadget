@@ -14,6 +14,9 @@ import { prisma } from "@/db/prisma";
 import { formatError } from "../utils";
 import { PaymentMethod, ShippingAddress } from "@/types";
 import { getMyCart } from "./cart.actions";
+import { DB_ADMIN_USERS_TAKE } from "../constants";
+import { revalidatePath } from "next/cache";
+import { Prisma } from "../generated/prisma";
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
@@ -206,6 +209,165 @@ export async function updateUserProfile(profileData: {
     return {
       success: true,
       message: "Profile updated successfully",
+      user: updatedUser,
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Get All Users
+// Get all the users
+export async function getAllUsers({
+  limit = DB_ADMIN_USERS_TAKE,
+  page,
+  query,
+}: {
+  limit?: number;
+  page: number;
+  query: string;
+}) {
+  // Helper function to check if string is a valid UUID
+  const isValidUUID = (str: string) => {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(str);
+  };
+
+  const queryFilter: Prisma.UserWhereInput =
+    query && query !== "all"
+      ? {
+          OR: [
+            // Search in user name
+            {
+              name: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            // Search in user email
+            {
+              email: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            // Search in user role (if exists)
+            {
+              role: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            // Only search in ID if query is a valid UUID
+            ...(isValidUUID(query)
+              ? [
+                  {
+                    id: {
+                      equals: query,
+                    },
+                  },
+                ]
+              : []),
+            // Multiple word search (excluding UUID searches)
+            ...query
+              .split(" ")
+              .filter((word) => word.length > 0)
+              .map((word) => ({
+                OR: [
+                  {
+                    name: {
+                      contains: word,
+                      mode: "insensitive" as const,
+                    },
+                  },
+                  {
+                    email: {
+                      contains: word,
+                      mode: "insensitive" as const,
+                    },
+                  },
+                  {
+                    role: {
+                      contains: word,
+                      mode: "insensitive" as const,
+                    },
+                  },
+                ],
+              })),
+          ],
+        }
+      : {};
+
+  const data = await prisma.user.findMany({
+    where: queryFilter,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.user.count({
+    where: queryFilter,
+  });
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+
+//Delete User
+export async function deleteUser(userId: string) {
+  try {
+    const session = await auth();
+    const currentUserId = session?.user?.id;
+
+    if (currentUserId === userId) {
+      return { success: false, message: "You cannot delete your own account" };
+    }
+
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    return { success: true, message: "User deleted successfully" };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+// Update User
+export async function updateUser(userData: {
+  id: string;
+  name?: string;
+  email?: string;
+  role?: string;
+}) {
+  try {
+    const session = await auth();
+
+    const isAdmin = session?.user?.role === "admin";
+
+    if (!isAdmin) {
+      return {
+        success: false,
+        message: "You are not authorized to update this user",
+      };
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userData.id },
+      data: {
+        name: userData.name,
+        role: userData.role,
+      },
+    });
+
+    revalidatePath("/admin/users");
+
+    return {
+      success: true,
+      message: "User updated successfully",
       user: updatedUser,
     };
   } catch (error) {

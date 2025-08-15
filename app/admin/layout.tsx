@@ -1,7 +1,7 @@
 import AppLogo from "@/components/shared/header/AppLogo";
 import MainNav from "./MainNav";
 import Menu from "@/components/shared/header/Menus";
-// import AdminSearch from '@/components/admin/admin-search';
+import AdminSearch from "@/components/admin/admin-search";
 
 export default function AdminLayout({
   children,
@@ -16,7 +16,7 @@ export default function AdminLayout({
             <AppLogo />
             <MainNav className="mx-6" />
             <div className="ml-auto items-center flex space-x-4">
-              {/* <AdminSearch /> */}
+              <AdminSearch />
               <Menu />
             </div>
           </div>

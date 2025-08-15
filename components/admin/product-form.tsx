@@ -2,7 +2,7 @@
 
 import { productDefaultValues } from "@/lib/constants";
 import { insertProductSchema, updateProductSchema } from "@/lib/validators";
-import { Product, ProductSchema, ProductWithId } from "@/types";
+import { ProductSchema, ProductWithId } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
@@ -25,6 +25,8 @@ import { Card, CardContent } from "../ui/card";
 import Image from "next/image";
 import { Checkbox } from "../ui/checkbox";
 import { jsxToasts } from "@/lib/customToaster";
+import { UploadDropzone } from "@/lib/uploadthing";
+import { useState } from "react";
 
 const ProductForm = ({
   type,
@@ -36,6 +38,8 @@ const ProductForm = ({
   productId?: string;
 }) => {
   const router = useRouter();
+
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const form = useForm<ProductSchema | ProductWithId>({
     resolver: (type === "Update"
@@ -255,39 +259,138 @@ const ProductForm = ({
                 <FormLabel>Images</FormLabel>
                 <Card>
                   <CardContent className="space-y-2 mt-2 min-h-48">
-                    <div className="flex-start space-x-2">
-                      {images.map((image: string) => (
-                        <Image
-                          key={image}
-                          src={image}
-                          alt="product image"
-                          className="w-20 h-20 object-cover object-center rounded-sm"
-                          width={100}
-                          height={100}
-                        />
+                    {/* Image Preview with Remove Functionality */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {images.map((image: string, index: number) => (
+                        <div
+                          key={`${image}-${index}`}
+                          className="relative group">
+                          <Image
+                            src={image}
+                            alt={`Product image ${index + 1}`}
+                            className="w-20 h-20 object-cover object-center rounded-sm border"
+                            width={100}
+                            height={100}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updatedImages = images.filter(
+                                (_, i) => i !== index
+                              );
+                              form.setValue("images", updatedImages);
+                              jsxToasts.successWithIcon(
+                                "Image removed",
+                                "Image deleted successfully"
+                              );
+                            }}
+                            className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md"
+                            title="Remove image">
+                            ×
+                          </button>
+                        </div>
                       ))}
-                      <FormControl>
-                        <UploadButton
-                          endpoint="imageUploader"
-                          onClientUploadComplete={(res: { url: string }[]) => {
-                            if (res && res.length > 0 && res[0].url) {
-                              form.setValue("images", [...images, res[0].url]);
+                    </div>
+
+                    {/* Upload Progress Indicator */}
+                    {uploadProgress > 0 && uploadProgress < 100 && (
+                      <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                        <div
+                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}></div>
+                      </div>
+                    )}
+
+                    <FormControl>
+                      <UploadDropzone
+                        endpoint="imageDropzone"
+                        onClientUploadComplete={(res: { url: string }[]) => {
+                          if (res && res.length > 0) {
+                            const newImageUrls = res
+                              .map((file) => file.url)
+                              .filter(Boolean);
+
+                            if (newImageUrls.length > 0) {
+                              // Check if adding new images would exceed any limits
+                              const totalImages =
+                                images.length + newImageUrls.length;
+                              if (totalImages > 10) {
+                                // Set your own limit
+                                jsxToasts.errorWithIcon(
+                                  "Too many images",
+                                  `Maximum 10 images allowed. You currently have ${images.length} images.`
+                                );
+                                return;
+                              }
+
+                              form.setValue("images", [
+                                ...images,
+                                ...newImageUrls,
+                              ]);
+                              jsxToasts.successWithIcon(
+                                "Upload successful",
+                                `${newImageUrls.length} image(s) uploaded successfully`
+                              );
                             } else {
                               jsxToasts.errorWithIcon(
-                                "Image upload failed",
-                                "No image URL received from upload"
+                                "Upload failed",
+                                "No valid image URLs received from upload"
                               );
                             }
-                          }}
-                          onUploadError={(error: Error) => {
+                          } else {
                             jsxToasts.errorWithIcon(
-                              "Image upload failed",
-                              error.message
+                              "Upload failed",
+                              "No files were uploaded"
                             );
-                          }}
-                        />
-                      </FormControl>
-                    </div>
+                          }
+                          // Reset progress
+                          setUploadProgress(0);
+                        }}
+                        onUploadError={(error: Error) => {
+                          console.error("Upload error:", error);
+
+                          // Handle specific error types
+                          if (error.message.includes("FileSizeMismatch")) {
+                            jsxToasts.errorWithIcon(
+                              "File too large",
+                              "Each image must be under 1MB"
+                            );
+                          } else if (
+                            error.message.includes("FileCountMismatch")
+                          ) {
+                            jsxToasts.errorWithIcon(
+                              "Too many files",
+                              "Please select 1-5 images at a time"
+                            );
+                          } else {
+                            jsxToasts.errorWithIcon(
+                              "Upload failed",
+                              error.message || "An unknown error occurred"
+                            );
+                          }
+                          // Reset progress on error
+                          setUploadProgress(0);
+                        }}
+                        onUploadBegin={(name: string) => {
+                          jsxToasts.infoWithIcon(
+                            "Uploading images...",
+                            `Processing ${name}. Please wait...`
+                          );
+                        }}
+                        onUploadProgress={(progress: number) => {
+                          setUploadProgress(progress);
+                        }}
+                        config={{
+                          mode: "auto", // or "manual" for more control
+                        }}
+                        className="w-full h-32 border-dashed border-2 border-gray-300 rounded-md flex items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+                        content={{
+                          uploadIcon: "📸",
+                          label: "Drop images here or click to browse",
+                          allowedContent: "Images up to 1MB (max 5 files)",
+                        }}
+                      />
+                    </FormControl>
                   </CardContent>
                 </Card>
                 <FormMessage />

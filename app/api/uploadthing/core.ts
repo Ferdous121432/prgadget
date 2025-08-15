@@ -31,6 +31,28 @@ export const ourFileRouter = {
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
+
+  //for UploadDropzone
+  imageDropzone: f({
+    image: {
+      maxFileSize: "1MB",
+      maxFileCount: 5, // Limit the number of files to 5
+      minFileCount: 1, // Ensure at least one file is uploaded
+    },
+  })
+    .middleware(async () => {
+      console.log("Creating image dropzone...💥💥💥");
+      const session = await auth();
+      const user = session?.user;
+
+      if (!user) throw new UploadThingError("Unauthorized");
+
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata }) => {
+      console.log("Dropzone upload complete for userId:", metadata.userId);
+      return { uploadedBy: metadata.userId };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

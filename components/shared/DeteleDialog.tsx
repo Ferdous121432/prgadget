@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { jsxToasts } from "@/lib/customToaster";
+import { useRouter } from "next/navigation";
 
 const DeleteDialog = ({
   id,
@@ -21,6 +22,7 @@ const DeleteDialog = ({
   id: string;
   action: (id: string) => Promise<{ success: boolean; message: string }>;
 }) => {
+  const Router = useRouter();
   // State to control the dialog visibility
   const [open, setOpen] = useState(false);
   // Transition state for the delete action
@@ -38,6 +40,7 @@ const DeleteDialog = ({
       } else {
         setOpen(false);
         jsxToasts.successWithIcon("Deleted successfully", res.message);
+        Router.refresh();
       }
     });
   };
