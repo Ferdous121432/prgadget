@@ -9,7 +9,7 @@ export const SERVER_URL =
 export const LATEST_PRODUCTS_LIMIT = 10;
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
 export const DB_LATEST_SALES_TAKE = 10;
-export const DB_ADMIN_PRODUCT_TAKE = 10;
+export const DB_ADMIN_PRODUCT_TAKE = 1;
 export const DB_ADMIN_USERS_TAKE = 10;
 
 export const signInDefaultValues = {

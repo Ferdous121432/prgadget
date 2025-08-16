@@ -59,3 +59,8 @@ export type SalesData = {
   month: string;
   totalSales: number;
 }[];
+
+export type Categories = {
+  category: string;
+  count: number;
+}[];

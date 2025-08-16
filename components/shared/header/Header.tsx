@@ -1,19 +1,20 @@
 import Menu from "./Menus";
 import AppLogo from "./AppLogo";
-
-// import CategoryDrawer from "./category-drawer";
-// import Search from "./search";
+import CategoryDrawer from "./CategoryDrawer";
+import Search from "./Search";
 
 const Header = () => {
   return (
     <header className="w-full border-b">
       <div className="wrapper flex-between">
         <div className="flex-start">
-          {/* <CategoryDrawer /> */}
+          <CategoryDrawer />
           <AppLogo />
         </div>
 
-        {/* <div className="hidden md:block"><Search /></div> */}
+        <div className="hidden md:block">
+          <Search />
+        </div>
         <Menu />
       </div>
     </header>

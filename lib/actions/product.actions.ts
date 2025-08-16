@@ -117,12 +117,30 @@ export async function getAllProducts({
     category && category !== "all" ? `AND category = '${category}'` : "";
 
   // Price filter
-  const priceCondition =
-    price && price !== "all"
-      ? `AND price BETWEEN ${Number(price.split("-")[0])} AND ${Number(
-          price.split("-")[1]
-        )}`
-      : "";
+  // Price filter (supports multiple ranges, e.g. "10-20,30-40")
+  let priceCondition = "";
+  if (price && price !== "all") {
+    const ranges = price.split(",").map((range) => range.trim());
+    if (ranges.length > 1) {
+      const conditions = ranges
+        .map((range) => {
+          const [min, max] = range.split("-").map(Number);
+          if (!isNaN(min) && !isNaN(max)) {
+            return `(price BETWEEN ${min} AND ${max})`;
+          }
+          return "";
+        })
+        .filter(Boolean);
+      if (conditions.length > 0) {
+        priceCondition = `AND (${conditions.join(" OR ")})`;
+      }
+    } else {
+      const [min, max] = ranges[0].split("-").map(Number);
+      if (!isNaN(min) && !isNaN(max)) {
+        priceCondition = `AND price BETWEEN ${min} AND ${max}`;
+      }
+    }
+  }
 
   // Rating filter
   const ratingCondition =
@@ -329,5 +347,56 @@ export async function getProductById(id: string) {
     return convertPrismaObjectToJSObject(product);
   } catch (error) {
     return { success: false, message: "Failed to fetch product." };
+  }
+}
+
+// Get Call Categories
+export async function getAllCategories() {
+  try {
+    const categories = await prisma.product.groupBy({
+      by: ["category"],
+      _count: {
+        _all: true, // This makes the groupBy valid
+      },
+      where: {
+        category: {
+          not: undefined,
+        },
+      },
+      orderBy: {
+        category: "asc",
+      },
+    });
+
+    // Extract both categories and count
+    const data = categories.map((item) => ({
+      category: item.category,
+      count: item._count._all,
+    }));
+    console.log("Categories Data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return { success: false, message: "Failed to fetch categories." };
+  }
+}
+
+// Get featured products
+export async function getFeaturedProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      where: {
+        isFeatured: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
+    });
+
+    return convertPrismaObjectToJSObject(products);
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+    return { success: false, message: "Failed to fetch featured products." };
   }
 }
