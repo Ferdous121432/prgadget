@@ -373,7 +373,6 @@ export async function getAllCategories() {
       category: item.category,
       count: item._count._all,
     }));
-    console.log("Categories Data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching categories:", error);

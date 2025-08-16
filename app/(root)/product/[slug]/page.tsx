@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import ProductPrice from "@/components/shared/product/product-price";
 import ProductImages from "@/components/shared/product/product-images";
 import { getMyCart } from "@/lib/actions/cart.actions";
-// import ReviewList from "./review-list";
+import ReviewList from "./ReviewList";
 import { auth } from "@/auth";
 import Rating from "@/components/shared/product/rating";
 import Link from "next/link";
@@ -98,11 +98,11 @@ const ProductDetailsPage = async (props: {
       </section>
       <section className="mt-10">
         <h2 className="h2-bold mb-5">Customer Reviews</h2>
-        {/* <ReviewList
+        <ReviewList
           userId={userId || ""}
           productId={product.id}
           productSlug={product.slug}
-        /> */}
+        />
         <Badge variant="outline" className="mt-4 ml-2" asChild>
           <Link href="/">Back To Home</Link>
         </Badge>

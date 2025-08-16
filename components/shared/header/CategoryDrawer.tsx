@@ -18,7 +18,7 @@ type Categories = {
 
 const CategoryDrawer = async () => {
   const categories = (await getAllCategories()) as Categories;
-  console.log("Categories:", categories);
+  // console.log("Categories:", categories);
 
   return (
     <Drawer direction="left">
