@@ -13,6 +13,7 @@ import Pagination from "@/components/shared/Pagination";
 import DeleteDialog from "@/components/shared/DeteleDialog";
 import { requireAdmin } from "@/lib/auth-guard";
 import { deleteProduct, getAllProducts } from "@/lib/actions/product.actions";
+import { Product, ProductWithId } from "@/types";
 
 const AdminProductsPage = async (props: {
   searchParams: Promise<{
@@ -29,11 +30,11 @@ const AdminProductsPage = async (props: {
   const searchText = searchParams.query || "";
   const category = searchParams.category || "";
 
-  const products = await getAllProducts({
+  const products = (await getAllProducts({
     query: searchText,
     page,
     category,
-  });
+  })) as { data: ProductWithId[]; totalPages: number };
 
   return (
     <div className="space-y-2">
