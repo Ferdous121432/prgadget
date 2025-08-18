@@ -2,11 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function SignOutButton() {
+  const router = useRouter();
   const handleSignOut = async () => {
     await signOut({ redirect: false });
-    window.location.reload();
+    router.push("/"); // Redirect to home page after sign out
   };
 
   return (

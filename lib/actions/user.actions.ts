@@ -25,7 +25,7 @@ export async function signInWithCredentials(
 ) {
   try {
     const user = signInFormSchema.parse({
-      email: formData.get("email"),
+      email: String(formData.get("email")).toLowerCase(),
       password: formData.get("password"),
     });
 
