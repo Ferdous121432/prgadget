@@ -86,10 +86,10 @@ export async function getAllProducts({
         sort === "lowest"
           ? { price: "asc" }
           : sort === "highest"
-          ? { price: "desc" }
-          : sort === "rating"
-          ? { rating: "desc" }
-          : { createdAt: "desc" },
+            ? { price: "desc" }
+            : sort === "rating"
+              ? { rating: "desc" }
+              : { createdAt: "desc" },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -209,10 +209,10 @@ export async function getAllProducts({
         sort === "lowest"
           ? "price ASC"
           : sort === "highest"
-          ? "price DESC"
-          : sort === "rating"
-          ? "rating DESC"
-          : '"createdAt" DESC'
+            ? "price DESC"
+            : sort === "rating"
+              ? "rating DESC"
+              : '"createdAt" DESC'
       }
     LIMIT $${searchTerms.length + 2}
     OFFSET $${searchTerms.length + 3}
@@ -369,10 +369,12 @@ export async function getAllCategories() {
     });
 
     // Extract both categories and count
-    const data = categories.map((item) => ({
-      category: item.category,
-      count: item._count._all,
-    }));
+    const data = categories.map(
+      (item: { category: string; _count: { _all: number } }) => ({
+        category: item.category,
+        count: item._count._all,
+      })
+    );
     return data;
   } catch (error) {
     console.error("Error fetching categories:", error);
