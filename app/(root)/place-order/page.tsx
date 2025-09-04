@@ -88,29 +88,37 @@ const PlaceOrderPage = async () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {cart.items.map((item) => (
-                    <TableRow key={item.slug}>
-                      <TableCell>
-                        <Link
-                          href={`/product/{item.slug}`}
-                          className="flex items-center">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            width={50}
-                            height={50}
-                          />
-                          <span className="px-2">{item.name}</span>
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        <span className="px-2">{item.quantity}</span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        ${item.price}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {cart.items.map(
+                    (item: {
+                      slug: string;
+                      image: string;
+                      name: string;
+                      quantity: number;
+                      price: number;
+                    }) => (
+                      <TableRow key={item.slug}>
+                        <TableCell>
+                          <Link
+                            href={`/product/${item.slug}`}
+                            className="flex items-center">
+                            <Image
+                              src={item.image}
+                              alt={item.name}
+                              width={50}
+                              height={50}
+                            />
+                            <span className="px-2">{item.name}</span>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <span className="px-2">{item.quantity}</span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          ${item.price}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
