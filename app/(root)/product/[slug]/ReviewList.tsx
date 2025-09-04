@@ -30,7 +30,7 @@ const ReviewList = ({
 
   useEffect(() => {
     const loadReviews = async () => {
-      const res = await getReviews({ productId });
+      const res = (await getReviews({ productId })) as { data: any[] };
       setReviews(res.data);
     };
 
