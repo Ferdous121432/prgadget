@@ -30,7 +30,7 @@ const ReviewList = ({
 
   useEffect(() => {
     const loadReviews = async () => {
-      const res = (await getReviews({ productId })) as { data: any[] };
+      const res = (await getReviews({ productId })) as { data: any };
       setReviews(res.data);
     };
 
@@ -39,7 +39,7 @@ const ReviewList = ({
 
   // Reload reviews after created or updated
   const reload = async () => {
-    const res = await getReviews({ productId });
+    const res = (await getReviews({ productId })) as { data: any };
     setReviews([...res.data]);
   };
 
