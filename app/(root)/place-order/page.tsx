@@ -90,11 +90,12 @@ const PlaceOrderPage = async () => {
                 <TableBody>
                   {cart.items.map(
                     (item: {
-                      slug: string;
-                      image: string;
+                      productId: string;
                       name: string;
+                      slug: string;
                       quantity: number;
-                      price: number;
+                      image: string;
+                      price: string;
                     }) => (
                       <TableRow key={item.slug}>
                         <TableCell>
@@ -114,7 +115,7 @@ const PlaceOrderPage = async () => {
                           <span className="px-2">{item.quantity}</span>
                         </TableCell>
                         <TableCell className="text-right">
-                          ${item.price}
+                          ${Number(item.price)}
                         </TableCell>
                       </TableRow>
                     )
