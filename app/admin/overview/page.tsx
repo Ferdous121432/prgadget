@@ -110,7 +110,7 @@ const AdminOverviewPage = async () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {summary.latestSales.map((order) => (
+                {summary.latestSales.map((order: Order) => (
                   <TableRow key={order.id}>
                     <TableCell>
                       {order?.user?.name ? order.user.name : "Deleted User"}
