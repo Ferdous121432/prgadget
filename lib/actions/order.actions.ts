@@ -67,41 +67,39 @@ export const createOrder = async () => {
     });
 
     // create a transaction to ensure atomicity
-    const insertedOrder = await prisma.$transaction(
-      async (tx: Prisma.TransactionClient) => {
-        const newOrder = await tx.order.create({
-          data: order,
-        });
+    const insertedOrder = await prisma.$transaction(async (tx: any) => {
+      const newOrder = await tx.order.create({
+        data: order,
+      });
 
-        //create order items
-        const orderItems = (cart.items as CartItem[]).map((item) => ({
-          productId: item.productId,
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          slug: item.slug,
-          image: item.image,
-        }));
+      //create order items
+      const orderItems = (cart.items as CartItem[]).map((item) => ({
+        productId: item.productId,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        slug: item.slug,
+        image: item.image,
+      }));
 
-        await Promise.all(
-          orderItems.map(async (orderItem) => {
-            await tx.orderItem.create({
-              data: {
-                ...orderItem,
-                orderId: newOrder.id,
-              },
-            });
-          })
-        );
+      await Promise.all(
+        orderItems.map(async (orderItem) => {
+          await tx.orderItem.create({
+            data: {
+              ...orderItem,
+              orderId: newOrder.id,
+            },
+          });
+        })
+      );
 
-        // Clear the cart after successful order creation
-        await tx.cart.deleteMany({
-          where: { userId: user.id },
-        });
+      // Clear the cart after successful order creation
+      await tx.cart.deleteMany({
+        where: { userId: user.id },
+      });
 
-        return newOrder;
-      }
-    );
+      return newOrder;
+    });
 
     return {
       success: true,
@@ -175,7 +173,7 @@ export async function updateOrderToPaid({
   if (order.isPaid) throw new Error("Order is already paid");
 
   // Transaction to update order and account for product stock
-  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+  await prisma.$transaction(async (tx: any) => {
     // Iterate over products and update stock
     for (const item of order.orderItems) {
       await tx.product.update({

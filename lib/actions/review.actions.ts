@@ -37,7 +37,7 @@ export async function createUpdateReview(
       },
     });
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx: any) => {
       if (reviewExists && session?.user?.id === review.userId) {
         // Update review
         await tx.review.update({
