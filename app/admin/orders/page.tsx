@@ -79,7 +79,7 @@ const AdminOrdersPage = async (props: {
               <TableRow key={order.id}>
                 <TableCell>{formatId(order.id)}</TableCell>
                 <TableCell>
-                  {formatDateTime(order.createdAt).dateTime}
+                  {formatDateTime(new Date(order.createdAt)).dateTime}
                 </TableCell>
                 <TableCell>{order.user.name}</TableCell>
                 <TableCell>
