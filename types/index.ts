@@ -11,6 +11,7 @@ import {
   updateOrderSchema,
   updateProductSchema,
   updateProfileSchema,
+  updateReviewSchema,
 } from "@/lib/validators";
 import { z } from "zod";
 
@@ -24,6 +25,7 @@ export type Product = z.infer<typeof insertProductSchema> & {
 
 export type ProductSchema = z.infer<typeof insertProductSchema>;
 export type ProductWithId = z.infer<typeof updateProductSchema>;
+export type Review = z.infer<typeof updateReviewSchema>;
 
 // Cart
 export type Cart = z.infer<typeof insertCartSchema>;
