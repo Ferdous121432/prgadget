@@ -81,6 +81,16 @@ export const shippingAddressSchema = z.object({
   lng: z.number().optional(),
 });
 
+// Schema for inserting an order item
+export const insertOrderItemSchema = z.object({
+  productId: z.string(),
+  slug: z.string(),
+  image: z.string(),
+  name: z.string(),
+  price: currency,
+  quantity: z.number(),
+});
+
 // Schema for payment method
 export const paymentMethodSchema = z
   .object({
@@ -91,7 +101,16 @@ export const paymentMethodSchema = z
     message: "Invalid payment method",
   });
 
-// Schema for inserting order
+// Schema for payment result
+export const paymentResultSchema = z.object({
+  id: z.string().min(1, "Payment ID is required"),
+  status: z.string().min(1, "Status is required"),
+  update_time: z.string().optional(),
+  email_address: z.string().email("Invalid email address").optional(),
+  pricePaid: currency,
+});
+
+/// Schema for inserting order
 export const insertOrderSchema = z.object({
   userId: z.string().min(1, "User is required"),
   itemsPrice: currency,
@@ -108,22 +127,20 @@ export const insertOrderSchema = z.object({
   deliveredAt: z.string().optional(),
 });
 
-// Schema for inserting an order item
-export const insertOrderItemSchema = z.object({
-  productId: z.string(),
-  slug: z.string(),
-  image: z.string(),
-  name: z.string(),
-  price: currency,
-  quantity: z.number(),
-});
-
-// Schema for the PayPal paymentResult
-export const paymentResultSchema = z.object({
-  id: z.string(),
-  status: z.string(),
-  email_address: z.string(),
-  pricePaid: z.string(),
+// Schema for updating an order
+export const updateOrderSchema = insertOrderSchema.extend({
+  id: z.string().min(1, "ID is required"),
+  createdAt: z.string(), // Use z.string() for ISO date, or z.date() if you want Date objects
+  isPaid: z.boolean(),
+  paidAt: z.date().nullable().optional(),
+  isDelivered: z.boolean(),
+  deliveredAt: z.date().nullable().optional(),
+  orderItems: z.array(insertOrderItemSchema),
+  user: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  paymentResult: paymentResultSchema,
 });
 
 // Schema for updating the user profile
