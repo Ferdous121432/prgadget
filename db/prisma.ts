@@ -1,5 +1,4 @@
 import { PrismaClient } from "@/lib/generated/prisma";
-// import { PrismaClient } from "@prisma/client";
 import { Pool, neonConfig } from "@neondatabase/serverless";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import ws from "ws";
@@ -17,12 +16,12 @@ export const prisma = new PrismaClient({ adapter }).$extends({
   result: {
     product: {
       price: {
-        compute(product: { price: number }) {
+        compute(product) {
           return product.price.toString();
         },
       },
       rating: {
-        compute(product: { rating: number }) {
+        compute(product) {
           return product.rating.toString();
         },
       },
@@ -30,25 +29,25 @@ export const prisma = new PrismaClient({ adapter }).$extends({
     cart: {
       itemsPrice: {
         needs: { itemsPrice: true },
-        compute(cart: { itemsPrice: number }) {
+        compute(cart) {
           return cart.itemsPrice.toString();
         },
       },
       shippingPrice: {
         needs: { shippingPrice: true },
-        compute(cart: { shippingPrice: number }) {
+        compute(cart) {
           return cart.shippingPrice.toString();
         },
       },
       taxPrice: {
         needs: { taxPrice: true },
-        compute(cart: { taxPrice: number }) {
+        compute(cart) {
           return cart.taxPrice.toString();
         },
       },
       totalPrice: {
         needs: { totalPrice: true },
-        compute(cart: { totalPrice: number }) {
+        compute(cart) {
           return cart.totalPrice.toString();
         },
       },
@@ -56,7 +55,7 @@ export const prisma = new PrismaClient({ adapter }).$extends({
     orderItem: {
       price: {
         needs: { price: true },
-        compute(orderItem: { price: number }) {
+        compute(orderItem) {
           return orderItem.price.toString();
         },
       },
