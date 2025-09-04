@@ -6,6 +6,7 @@ import { formatError } from "../utils";
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 // Create & Update Reviews
 export async function createUpdateReview(
@@ -36,7 +37,7 @@ export async function createUpdateReview(
       },
     });
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       if (reviewExists && session?.user?.id === review.userId) {
         // Update review
         await tx.review.update({
