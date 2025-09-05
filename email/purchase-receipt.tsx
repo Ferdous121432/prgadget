@@ -33,7 +33,7 @@ PurchaseReceiptEmail.PreviewProps = {
       postalCode: "10001",
       country: "US",
     },
-    createdAt: new Date(),
+    createdAt: new Date().toISOString(),
     totalPrice: "100",
     taxPrice: "10",
     shippingPrice: "10",
@@ -88,7 +88,7 @@ export default function PurchaseReceiptEmail({ order }: OrderInformationProps) {
                     Purchase Date
                   </Text>
                   <Text className="mt-0 mr-4">
-                    {dateFormatter.format(order.createdAt)}
+                    {dateFormatter.format(new Date(order.createdAt))}
                   </Text>
                 </Column>
                 <Column>

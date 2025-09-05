@@ -81,29 +81,6 @@ export const shippingAddressSchema = z.object({
   lng: z.number().optional(),
 });
 
-// Schema for payment method
-export const paymentMethodSchema = z
-  .object({
-    type: z.string().min(1, "Payment method is required"),
-  })
-  .refine((data) => PAYMENT_METHODS.includes(data.type), {
-    path: ["type"],
-    message: "Invalid payment method",
-  });
-
-// Schema for inserting order
-export const insertOrderSchema = z.object({
-  userId: z.string().min(1, "User is required"),
-  itemsPrice: currency,
-  shippingPrice: currency,
-  taxPrice: currency,
-  totalPrice: currency,
-  paymentMethod: z.string().refine((data) => PAYMENT_METHODS.includes(data), {
-    message: "Invalid payment method",
-  }),
-  shippingAddress: shippingAddressSchema,
-});
-
 // Schema for inserting an order item
 export const insertOrderItemSchema = z.object({
   productId: z.string(),
@@ -114,12 +91,56 @@ export const insertOrderItemSchema = z.object({
   quantity: z.number(),
 });
 
-// Schema for the PayPal paymentResult
+// Schema for payment method
+export const paymentMethodSchema = z
+  .object({
+    type: z.string().min(1, "Payment method is required"),
+  })
+  .refine((data) => PAYMENT_METHODS.includes(data.type), {
+    path: ["type"],
+    message: "Invalid payment method",
+  });
+
+// Schema for payment result
 export const paymentResultSchema = z.object({
-  id: z.string(),
-  status: z.string(),
-  email_address: z.string(),
-  pricePaid: z.string(),
+  id: z.string().min(1, "Payment ID is required"),
+  status: z.string().min(1, "Status is required"),
+  update_time: z.string().optional(),
+  email_address: z.string().email("Invalid email address").optional(),
+  pricePaid: currency,
+});
+
+/// Schema for inserting order
+export const insertOrderSchema = z.object({
+  userId: z.string().min(1, "User is required"),
+  itemsPrice: currency,
+  shippingPrice: currency,
+  taxPrice: currency,
+  totalPrice: currency,
+  paymentMethod: z.string().refine((data) => PAYMENT_METHODS.includes(data), {
+    message: "Invalid payment method",
+  }),
+  shippingAddress: shippingAddressSchema,
+  isPaid: z.boolean().optional(),
+  paidAt: z.string().optional(),
+  isDelivered: z.boolean().optional(),
+  deliveredAt: z.string().optional(),
+});
+
+// Schema for updating an order
+export const updateOrderSchema = insertOrderSchema.extend({
+  id: z.string().min(1, "ID is required"),
+  createdAt: z.string(), // Use z.string() for ISO date, or z.date() if you want Date objects
+  isPaid: z.boolean(),
+  paidAt: z.date().nullable().optional(),
+  isDelivered: z.boolean(),
+  deliveredAt: z.date().nullable().optional(),
+  orderItems: z.array(insertOrderItemSchema),
+  user: z.object({
+    name: z.string(),
+    email: z.string().email(),
+  }),
+  paymentResult: paymentResultSchema,
 });
 
 // Schema for updating the user profile
@@ -140,9 +161,20 @@ export const insertReviewSchema = z.object({
   description: z.string().min(3, "Description must be at least 3 characters"),
   productId: z.string().min(1, "Product is required"),
   userId: z.string().min(1, "User is required"),
+  user: z.object({
+    name: z.string(),
+    id: z.string(),
+  }),
   rating: z
     .number()
     .int()
     .min(1, "Rating must be at least 1")
     .max(5, "Rating must be at most 5"),
+});
+
+// Schema to update reviews
+export const updateReviewSchema = insertReviewSchema.extend({
+  id: z.string().min(1, "ID is required"),
+  createdAt: z.date().nullable().optional(),
+  updatedAt: z.date().nullable().optional(),
 });

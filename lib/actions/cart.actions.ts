@@ -2,7 +2,6 @@
 import { CartItem } from "@/types";
 import { cookies } from "next/headers";
 import { convertPrismaObjectToJSObject, formatError, round2 } from "../utils";
-import { th } from "zod/v4/locales";
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { cartItemSchema, insertCartSchema } from "../validators";

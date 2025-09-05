@@ -14,10 +14,24 @@ import Link from "next/link";
 import Pagination from "@/components/shared/Pagination";
 import { requireAdmin } from "@/lib/auth-guard";
 import DeleteDialog from "@/components/shared/DeteleDialog";
+import { Order } from "@/types";
 
 export const metadata: Metadata = {
   title: "Admin Orders",
 };
+
+// type Order = {
+//   id: string;
+//   createdAt: string;
+//   user: {
+//     name: string;
+//   };
+//   totalPrice: number;
+//   isPaid: boolean;
+//   paidAt?: string;
+//   isDelivered: boolean;
+//   deliveredAt?: string;
+// };
 
 const AdminOrdersPage = async (props: {
   searchParams: Promise<{ page: string; query: string }>;
@@ -61,11 +75,11 @@ const AdminOrdersPage = async (props: {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.data.map((order) => (
+            {orders.data.map((order: any) => (
               <TableRow key={order.id}>
                 <TableCell>{formatId(order.id)}</TableCell>
                 <TableCell>
-                  {formatDateTime(order.createdAt).dateTime}
+                  {formatDateTime(new Date(order.createdAt)).dateTime}
                 </TableCell>
                 <TableCell>{order.user.name}</TableCell>
                 <TableCell>

@@ -30,7 +30,7 @@ const ReviewList = ({
 
   useEffect(() => {
     const loadReviews = async () => {
-      const res = await getReviews({ productId });
+      const res = (await getReviews({ productId })) as { data: any };
       setReviews(res.data);
     };
 
@@ -39,7 +39,7 @@ const ReviewList = ({
 
   // Reload reviews after created or updated
   const reload = async () => {
-    const res = await getReviews({ productId });
+    const res = (await getReviews({ productId })) as { data: any };
     setReviews([...res.data]);
   };
 
@@ -77,11 +77,13 @@ const ReviewList = ({
                 <Rating value={review.rating} />
                 <div className="flex items-center">
                   <User className="mr-1 h-3 w-3" />
-                  {review.user ? review.user.name : "User"}
+                  {review.userId ? review.user.name : "User"}
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />
-                  {formatDateTime(review.createdAt).dateTime}
+                  {review.createdAt
+                    ? formatDateTime(review.createdAt).dateTime
+                    : ""}
                 </div>
               </div>
             </CardContent>

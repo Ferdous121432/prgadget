@@ -67,7 +67,7 @@ export const createOrder = async () => {
     });
 
     // create a transaction to ensure atomicity
-    const insertedOrder = await prisma.$transaction(async (tx) => {
+    const insertedOrder = await prisma.$transaction(async (tx: any) => {
       const newOrder = await tx.order.create({
         data: order,
       });
@@ -173,7 +173,7 @@ export async function updateOrderToPaid({
   if (order.isPaid) throw new Error("Order is already paid");
 
   // Transaction to update order and account for product stock
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: any) => {
     // Iterate over products and update stock
     for (const item of order.orderItems) {
       await tx.product.update({
@@ -268,10 +268,12 @@ FROM "Order"
 GROUP BY to_char("createdAt", 'MM-YYYY')
 ORDER BY to_char("createdAt", 'MM-YYYY')`;
 
-    const salesData: SalesData = salesRawData.map((item) => ({
-      month: item.month,
-      totalSales: parseFloat(item.totalsales),
-    }));
+    const salesData: SalesData = salesRawData.map(
+      (item: { month: string; totalsales: string }) => ({
+        month: item.month,
+        totalSales: parseFloat(item.totalsales),
+      })
+    );
 
     // Latest sales data
     const latestSales = await prisma.order.findMany({
