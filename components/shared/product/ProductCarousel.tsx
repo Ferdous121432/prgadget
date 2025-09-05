@@ -34,8 +34,8 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
                 <Image
                   src={product.banner!}
                   alt={product.name}
-                  height="0"
                   width="0"
+                  height="0"
                   sizes="100vw"
                   className="w-full h-auto"
                 />
@@ -49,8 +49,8 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="hidden md:block " />
+      <CarouselNext className="hidden md:block" />
     </Carousel>
   );
 };

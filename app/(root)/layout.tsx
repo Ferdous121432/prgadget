@@ -1,4 +1,4 @@
-import Footer from "@/components/Footer";
+import Footer from "@/components/shared/footer/Footer";
 import Header from "@/components/shared/header/Header";
 import type { Metadata } from "next";
 
