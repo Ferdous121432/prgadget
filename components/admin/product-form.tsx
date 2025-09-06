@@ -121,10 +121,16 @@ const ProductForm = ({
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8">
         <Tabs defaultValue="details" className="w-full">
-          <TabsList>
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="images">Images</TabsTrigger>
-            <TabsTrigger value="category">Category & Brand</TabsTrigger>
+          <TabsList className="gap-5 flex-row flex ">
+            <TabsTrigger className="w-full px-6" value="details">
+              Details
+            </TabsTrigger>
+            <TabsTrigger className="w-full px-6" value="images">
+              Images
+            </TabsTrigger>
+            <TabsTrigger className="w-full px-6" value="category">
+              Category & Brand
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="details">
             <Details />
