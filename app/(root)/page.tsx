@@ -23,15 +23,14 @@ const Page = async () => {
   return (
     <>
       {homeSlider.length > 0 && <ProductCarousel data={homeSlider} />}
-
+      <IconBoxes />
       <ProductList
         data={latestProducts}
         title="Newest Arrival"
         limit={LATEST_PRODUCTS_LIMIT}
       />
-      <ViewAllProductsButton />
+      {/* <ViewAllProductsButton /> */}
       <DealCountdown />
-      <IconBoxes />
     </>
   );
 };
