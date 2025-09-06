@@ -3,6 +3,7 @@ import IconBoxes from "@/components/IconBoxes";
 import ProductList from "@/components/shared/product/product-list";
 import ProductCarousel from "@/components/shared/product/ProductCarousel";
 import ViewAllProductsButton from "@/components/ViewAllProductsButton";
+import { getAllHomeSliders } from "@/lib/actions/homepage.actions";
 import {
   getFeaturedProducts,
   getLatestProducts,
@@ -16,22 +17,20 @@ import React from "react";
 
 const Page = async () => {
   const latestProducts = (await getLatestProducts()) as ProductWithId[];
-  const featuredProducts = (await getFeaturedProducts()) as ProductWithId[];
+  const homeSlider = (await getAllHomeSliders()) as any;
+  console.log("Home Sliders:", homeSlider);
 
   return (
     <>
-      {featuredProducts.length > 0 && (
-        <ProductCarousel data={featuredProducts} />
-      )}
-
+      {homeSlider.length > 0 && <ProductCarousel data={homeSlider} />}
+      <IconBoxes />
       <ProductList
         data={latestProducts}
         title="Newest Arrival"
         limit={LATEST_PRODUCTS_LIMIT}
       />
-      <ViewAllProductsButton />
+      {/* <ViewAllProductsButton /> */}
       <DealCountdown />
-      <IconBoxes />
     </>
   );
 };

@@ -73,3 +73,15 @@ sum("totalPrice") as totalSales
 FROM "Order" 
 GROUP BY to_char("createdAt", 'MM-YYYY')
 ORDER BY month`;
+
+// Product Categories
+export const PRODUCT_CATEGORIES = [
+  "Shirts",
+  "Pants",
+  "Jeans",
+  "T-Shirts",
+  "Jackets",
+  "Shoes",
+  "Hats",
+  "Accessories",
+];

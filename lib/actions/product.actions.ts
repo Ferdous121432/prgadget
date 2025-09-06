@@ -7,8 +7,8 @@ import { DB_ADMIN_PRODUCT_TAKE, LATEST_PRODUCTS_LIMIT } from "../constants";
 import { convertPrismaObjectToJSObject } from "../utils";
 import { revalidatePath } from "next/cache";
 import { Product, ProductWithId } from "@/types";
-import { success } from "zod";
 import { Prisma } from "../generated/prisma";
+import { utapi } from "@/app/api/uploadthing/uploadthing";
 
 // Get latest products
 
@@ -273,6 +273,11 @@ export async function deleteProduct(id: string) {
     });
     if (!productExists) {
       return { success: false, message: "Product not found." };
+    }
+
+    // Delete associated images from UploadThing
+    if (productExists.image_keys && Array.isArray(productExists.image_keys)) {
+      await utapi.deleteFiles(productExists.image_keys);
     }
 
     const data = await prisma.product.delete({

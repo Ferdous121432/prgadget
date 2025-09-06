@@ -9,15 +9,58 @@ const currency = z
     "Price must have exactly two decimal places"
   );
 
+// MainCategory
+export const createMainCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string().min(3, "Slug must be at least 3 characters"),
+  image: z.string().optional(),
+  image_key: z.string().optional(),
+});
+
+export const updateMainCategorySchema = createMainCategorySchema.extend({
+  id: z.string(),
+});
+
+// SubCategory
+export const createSubCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  mainCategoryId: z.string(),
+});
+
+export const updateSubCategorySchema = createSubCategorySchema.extend({
+  id: z.string(),
+});
+
+// SubSubCategory
+export const createSubSubCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  subCategoryId: z.string(),
+});
+
+export const updateSubSubCategorySchema = createSubSubCategorySchema.extend({
+  id: z.string(),
+});
+
 // Schema for inserting products
 export const insertProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
-  category: z.string().min(3, "Category must be at least 3 characters"),
+  mainCategoryId: z
+    .string()
+    .min(3, "Main category must be at least 3 characters"),
+  subCategoryId: z
+    .string()
+    .min(3, "Sub category must be at least 3 characters"),
+  subSubCategoryId: z
+    .string()
+    .min(3, "Sub sub category must be at least 3 characters"),
   brand: z.string().min(3, "Brand must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
   images: z.array(z.string()).min(1, "Product must have at least one image"),
+  image_keys: z
+    .array(z.string())
+    .min(1, "Product must have at least one image"),
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
   price: currency,
@@ -27,6 +70,9 @@ export const insertProductSchema = z.object({
 export const updateProductSchema = insertProductSchema.extend({
   id: z.string().min(1, "Id is required"),
   rating: z.string().optional(),
+  numReviews: z.number().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 // Schema for signing users in
@@ -177,4 +223,14 @@ export const updateReviewSchema = insertReviewSchema.extend({
   id: z.string().min(1, "ID is required"),
   createdAt: z.date().nullable().optional(),
   updatedAt: z.date().nullable().optional(),
+});
+
+export const sliderFormSchema = z.object({
+  image_url: z.string().min(1, "Image is required"),
+  linked_url: z.string().min(1, "Linked URL is required"),
+  image_name: z.string().min(1, "Image name is required"),
+  image_key: z.string().min(1, "Image key is required"),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+  id: z.string().optional().nullable(),
 });
