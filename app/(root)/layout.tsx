@@ -1,5 +1,5 @@
-import Footer from "@/components/shared/footer/Footer";
 import Header from "@/components/shared/header/Header";
+import Footer from "@/components/shared/footer/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
