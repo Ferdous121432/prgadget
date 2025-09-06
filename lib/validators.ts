@@ -9,11 +9,51 @@ const currency = z
     "Price must have exactly two decimal places"
   );
 
+// MainCategory
+export const createMainCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string().min(3, "Slug must be at least 3 characters"),
+  image: z.string().optional(),
+  image_key: z.string().optional(),
+});
+
+export const updateMainCategorySchema = createMainCategorySchema.extend({
+  id: z.string(),
+});
+
+// SubCategory
+export const createSubCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  mainCategoryId: z.string(),
+});
+
+export const updateSubCategorySchema = createSubCategorySchema.extend({
+  id: z.string(),
+});
+
+// SubSubCategory
+export const createSubSubCategorySchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  subCategoryId: z.string(),
+});
+
+export const updateSubSubCategorySchema = createSubSubCategorySchema.extend({
+  id: z.string(),
+});
+
 // Schema for inserting products
 export const insertProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
-  category: z.string().min(3, "Category must be at least 3 characters"),
+  mainCategoryId: z
+    .string()
+    .min(3, "Main category must be at least 3 characters"),
+  subCategoryId: z
+    .string()
+    .min(3, "Sub category must be at least 3 characters"),
+  subSubCategoryId: z
+    .string()
+    .min(3, "Sub sub category must be at least 3 characters"),
   brand: z.string().min(3, "Brand must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
@@ -30,6 +70,9 @@ export const insertProductSchema = z.object({
 export const updateProductSchema = insertProductSchema.extend({
   id: z.string().min(1, "Id is required"),
   rating: z.string().optional(),
+  numReviews: z.number().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
 });
 
 // Schema for signing users in

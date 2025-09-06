@@ -1,5 +1,8 @@
 import {
   cartItemSchema,
+  createMainCategorySchema,
+  createSubCategorySchema,
+  createSubSubCategorySchema,
   insertCartSchema,
   insertOrderItemSchema,
   insertOrderSchema,
@@ -9,10 +12,13 @@ import {
   paymentResultSchema,
   shippingAddressSchema,
   sliderFormSchema,
+  updateMainCategorySchema,
   updateOrderSchema,
   updateProductSchema,
   updateProfileSchema,
   updateReviewSchema,
+  updateSubCategorySchema,
+  updateSubSubCategorySchema,
 } from "@/lib/validators";
 import { z } from "zod";
 
@@ -39,6 +45,14 @@ export type OrderItem = z.infer<typeof insertOrderItemSchema>;
 export type Order = z.infer<typeof updateOrderSchema>;
 export type PaymentResult = z.infer<typeof paymentResultSchema>;
 export type SliderFormValues = z.infer<typeof sliderFormSchema>;
+
+// Category
+export type CreateMainCategory = z.infer<typeof createMainCategorySchema>;
+export type UpdateMainCategory = z.infer<typeof updateMainCategorySchema>;
+export type CreateSubCategory = z.infer<typeof createSubCategorySchema>;
+export type UpdateSubCategory = z.infer<typeof updateSubCategorySchema>;
+export type CreateSubSubCategory = z.infer<typeof createSubSubCategorySchema>;
+export type UpdateSubSubCategory = z.infer<typeof updateSubSubCategorySchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;
