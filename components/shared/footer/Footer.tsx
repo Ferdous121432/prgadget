@@ -1,6 +1,6 @@
 import React from "react";
 import TopFooter from "./TopFooter";
-import BottomFotter from "./BottomFotter";
+import BottomFooter from "./BottomFooter";
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="wrapper dark-mode-colors">
         <TopFooter />
       </div>
-      <BottomFotter />
+      <BottomFooter />
     </div>
   );
 }
