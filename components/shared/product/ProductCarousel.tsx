@@ -12,7 +12,8 @@ import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 import Image from "next/image";
 
-const ProductCarousel = ({ data }: { data: Product[] }) => {
+const ProductCarousel = ({ data }: { data: any }) => {
+  console.log("Carousel Data:", data);
   return (
     <Carousel
       className="w-full mb-12"
@@ -27,13 +28,13 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
         }),
       ]}>
       <CarouselContent>
-        {data.map((product: Product) => (
-          <CarouselItem key={product.id}>
-            <Link href={`/product/${product.slug}`}>
+        {data.map((slider: any) => (
+          <CarouselItem key={slider.id}>
+            <Link href={slider.linked_url || "#"}>
               <div className="relative mx-auto">
                 <Image
-                  src={product.banner!}
-                  alt={product.name}
+                  src={slider.image_url!}
+                  alt={slider.image_url!}
                   width="0"
                   height="0"
                   sizes="100vw"
@@ -41,7 +42,7 @@ const ProductCarousel = ({ data }: { data: Product[] }) => {
                 />
                 <div className="absolute inset-0 flex items-end justify-center">
                   <h2 className="bg-gray-900 bg-opacity-50 text-2xl font-bold px-2 text-white">
-                    {product.name}
+                    {slider.name}
                   </h2>
                 </div>
               </div>

@@ -18,6 +18,9 @@ export const insertProductSchema = z.object({
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
   images: z.array(z.string()).min(1, "Product must have at least one image"),
+  image_keys: z
+    .array(z.string())
+    .min(1, "Product must have at least one image"),
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
   price: currency,
@@ -177,4 +180,14 @@ export const updateReviewSchema = insertReviewSchema.extend({
   id: z.string().min(1, "ID is required"),
   createdAt: z.date().nullable().optional(),
   updatedAt: z.date().nullable().optional(),
+});
+
+export const sliderFormSchema = z.object({
+  image_url: z.string().min(1, "Image is required"),
+  linked_url: z.string().min(1, "Linked URL is required"),
+  image_name: z.string().min(1, "Image name is required"),
+  image_key: z.string().min(1, "Image key is required"),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+  id: z.string().optional().nullable(),
 });

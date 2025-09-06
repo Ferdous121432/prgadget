@@ -63,6 +63,11 @@ export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
  * 
  */
 export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
+/**
+ * Model HomePageSlider
+ * 
+ */
+export type HomePageSlider = $Result.DefaultSelection<Prisma.$HomePageSliderPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -281,6 +286,16 @@ export class PrismaClient<
     * ```
     */
   get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.homePageSlider`: Exposes CRUD operations for the **HomePageSlider** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HomePageSliders
+    * const homePageSliders = await prisma.homePageSlider.findMany()
+    * ```
+    */
+  get homePageSlider(): Prisma.HomePageSliderDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -730,7 +745,8 @@ export namespace Prisma {
     Cart: 'Cart',
     Order: 'Order',
     OrderItem: 'OrderItem',
-    Review: 'Review'
+    Review: 'Review',
+    HomePageSlider: 'HomePageSlider'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -749,7 +765,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "product" | "user" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "orderItem" | "review"
+      modelProps: "product" | "user" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "orderItem" | "review" | "homePageSlider"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1493,6 +1509,80 @@ export namespace Prisma {
           }
         }
       }
+      HomePageSlider: {
+        payload: Prisma.$HomePageSliderPayload<ExtArgs>
+        fields: Prisma.HomePageSliderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HomePageSliderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HomePageSliderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          findFirst: {
+            args: Prisma.HomePageSliderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HomePageSliderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          findMany: {
+            args: Prisma.HomePageSliderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>[]
+          }
+          create: {
+            args: Prisma.HomePageSliderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          createMany: {
+            args: Prisma.HomePageSliderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HomePageSliderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>[]
+          }
+          delete: {
+            args: Prisma.HomePageSliderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          update: {
+            args: Prisma.HomePageSliderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          deleteMany: {
+            args: Prisma.HomePageSliderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HomePageSliderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.HomePageSliderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>[]
+          }
+          upsert: {
+            args: Prisma.HomePageSliderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HomePageSliderPayload>
+          }
+          aggregate: {
+            args: Prisma.HomePageSliderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHomePageSlider>
+          }
+          groupBy: {
+            args: Prisma.HomePageSliderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HomePageSliderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HomePageSliderCountArgs<ExtArgs>
+            result: $Utils.Optional<HomePageSliderCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1599,6 +1689,7 @@ export namespace Prisma {
     order?: OrderOmit
     orderItem?: OrderItemOmit
     review?: ReviewOmit
+    homePageSlider?: HomePageSliderOmit
   }
 
   /* Types for Logging */
@@ -1889,6 +1980,7 @@ export namespace Prisma {
     slug: number
     category: number
     images: number
+    image_keys: number
     brand: number
     description: number
     stock: number
@@ -1954,6 +2046,7 @@ export namespace Prisma {
     slug?: true
     category?: true
     images?: true
+    image_keys?: true
     brand?: true
     description?: true
     stock?: true
@@ -2058,6 +2151,7 @@ export namespace Prisma {
     slug: string
     category: string
     images: string[]
+    image_keys: string[]
     brand: string | null
     description: string
     stock: number
@@ -2094,6 +2188,7 @@ export namespace Prisma {
     slug?: boolean
     category?: boolean
     images?: boolean
+    image_keys?: boolean
     brand?: boolean
     description?: boolean
     stock?: boolean
@@ -2114,6 +2209,7 @@ export namespace Prisma {
     slug?: boolean
     category?: boolean
     images?: boolean
+    image_keys?: boolean
     brand?: boolean
     description?: boolean
     stock?: boolean
@@ -2131,6 +2227,7 @@ export namespace Prisma {
     slug?: boolean
     category?: boolean
     images?: boolean
+    image_keys?: boolean
     brand?: boolean
     description?: boolean
     stock?: boolean
@@ -2148,6 +2245,7 @@ export namespace Prisma {
     slug?: boolean
     category?: boolean
     images?: boolean
+    image_keys?: boolean
     brand?: boolean
     description?: boolean
     stock?: boolean
@@ -2159,7 +2257,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "category" | "images" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "category" | "images" | "image_keys" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
@@ -2180,6 +2278,7 @@ export namespace Prisma {
       slug: string
       category: string
       images: string[]
+      image_keys: string[]
       brand: string | null
       description: string
       stock: number
@@ -2619,6 +2718,7 @@ export namespace Prisma {
     readonly slug: FieldRef<"Product", 'String'>
     readonly category: FieldRef<"Product", 'String'>
     readonly images: FieldRef<"Product", 'String[]'>
+    readonly image_keys: FieldRef<"Product", 'String[]'>
     readonly brand: FieldRef<"Product", 'String'>
     readonly description: FieldRef<"Product", 'String'>
     readonly stock: FieldRef<"Product", 'Int'>
@@ -13469,6 +13569,1027 @@ export namespace Prisma {
 
 
   /**
+   * Model HomePageSlider
+   */
+
+  export type AggregateHomePageSlider = {
+    _count: HomePageSliderCountAggregateOutputType | null
+    _min: HomePageSliderMinAggregateOutputType | null
+    _max: HomePageSliderMaxAggregateOutputType | null
+  }
+
+  export type HomePageSliderMinAggregateOutputType = {
+    id: string | null
+    image_url: string | null
+    linked_url: string | null
+    image_name: string | null
+    image_key: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HomePageSliderMaxAggregateOutputType = {
+    id: string | null
+    image_url: string | null
+    linked_url: string | null
+    image_name: string | null
+    image_key: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type HomePageSliderCountAggregateOutputType = {
+    id: number
+    image_url: number
+    linked_url: number
+    image_name: number
+    image_key: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type HomePageSliderMinAggregateInputType = {
+    id?: true
+    image_url?: true
+    linked_url?: true
+    image_name?: true
+    image_key?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HomePageSliderMaxAggregateInputType = {
+    id?: true
+    image_url?: true
+    linked_url?: true
+    image_name?: true
+    image_key?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type HomePageSliderCountAggregateInputType = {
+    id?: true
+    image_url?: true
+    linked_url?: true
+    image_name?: true
+    image_key?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type HomePageSliderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HomePageSlider to aggregate.
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomePageSliders to fetch.
+     */
+    orderBy?: HomePageSliderOrderByWithRelationInput | HomePageSliderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HomePageSliderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomePageSliders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomePageSliders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HomePageSliders
+    **/
+    _count?: true | HomePageSliderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HomePageSliderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HomePageSliderMaxAggregateInputType
+  }
+
+  export type GetHomePageSliderAggregateType<T extends HomePageSliderAggregateArgs> = {
+        [P in keyof T & keyof AggregateHomePageSlider]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHomePageSlider[P]>
+      : GetScalarType<T[P], AggregateHomePageSlider[P]>
+  }
+
+
+
+
+  export type HomePageSliderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HomePageSliderWhereInput
+    orderBy?: HomePageSliderOrderByWithAggregationInput | HomePageSliderOrderByWithAggregationInput[]
+    by: HomePageSliderScalarFieldEnum[] | HomePageSliderScalarFieldEnum
+    having?: HomePageSliderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HomePageSliderCountAggregateInputType | true
+    _min?: HomePageSliderMinAggregateInputType
+    _max?: HomePageSliderMaxAggregateInputType
+  }
+
+  export type HomePageSliderGroupByOutputType = {
+    id: string
+    image_url: string
+    linked_url: string
+    image_name: string
+    image_key: string
+    createdAt: Date
+    updatedAt: Date
+    _count: HomePageSliderCountAggregateOutputType | null
+    _min: HomePageSliderMinAggregateOutputType | null
+    _max: HomePageSliderMaxAggregateOutputType | null
+  }
+
+  type GetHomePageSliderGroupByPayload<T extends HomePageSliderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HomePageSliderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HomePageSliderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HomePageSliderGroupByOutputType[P]>
+            : GetScalarType<T[P], HomePageSliderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HomePageSliderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image_url?: boolean
+    linked_url?: boolean
+    image_name?: boolean
+    image_key?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["homePageSlider"]>
+
+  export type HomePageSliderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image_url?: boolean
+    linked_url?: boolean
+    image_name?: boolean
+    image_key?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["homePageSlider"]>
+
+  export type HomePageSliderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    image_url?: boolean
+    linked_url?: boolean
+    image_name?: boolean
+    image_key?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["homePageSlider"]>
+
+  export type HomePageSliderSelectScalar = {
+    id?: boolean
+    image_url?: boolean
+    linked_url?: boolean
+    image_name?: boolean
+    image_key?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type HomePageSliderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "image_url" | "linked_url" | "image_name" | "image_key" | "createdAt" | "updatedAt", ExtArgs["result"]["homePageSlider"]>
+
+  export type $HomePageSliderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HomePageSlider"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      image_url: string
+      linked_url: string
+      image_name: string
+      image_key: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["homePageSlider"]>
+    composites: {}
+  }
+
+  type HomePageSliderGetPayload<S extends boolean | null | undefined | HomePageSliderDefaultArgs> = $Result.GetResult<Prisma.$HomePageSliderPayload, S>
+
+  type HomePageSliderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HomePageSliderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HomePageSliderCountAggregateInputType | true
+    }
+
+  export interface HomePageSliderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HomePageSlider'], meta: { name: 'HomePageSlider' } }
+    /**
+     * Find zero or one HomePageSlider that matches the filter.
+     * @param {HomePageSliderFindUniqueArgs} args - Arguments to find a HomePageSlider
+     * @example
+     * // Get one HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HomePageSliderFindUniqueArgs>(args: SelectSubset<T, HomePageSliderFindUniqueArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one HomePageSlider that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HomePageSliderFindUniqueOrThrowArgs} args - Arguments to find a HomePageSlider
+     * @example
+     * // Get one HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HomePageSliderFindUniqueOrThrowArgs>(args: SelectSubset<T, HomePageSliderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HomePageSlider that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderFindFirstArgs} args - Arguments to find a HomePageSlider
+     * @example
+     * // Get one HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HomePageSliderFindFirstArgs>(args?: SelectSubset<T, HomePageSliderFindFirstArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HomePageSlider that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderFindFirstOrThrowArgs} args - Arguments to find a HomePageSlider
+     * @example
+     * // Get one HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HomePageSliderFindFirstOrThrowArgs>(args?: SelectSubset<T, HomePageSliderFindFirstOrThrowArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HomePageSliders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HomePageSliders
+     * const homePageSliders = await prisma.homePageSlider.findMany()
+     * 
+     * // Get first 10 HomePageSliders
+     * const homePageSliders = await prisma.homePageSlider.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const homePageSliderWithIdOnly = await prisma.homePageSlider.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HomePageSliderFindManyArgs>(args?: SelectSubset<T, HomePageSliderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a HomePageSlider.
+     * @param {HomePageSliderCreateArgs} args - Arguments to create a HomePageSlider.
+     * @example
+     * // Create one HomePageSlider
+     * const HomePageSlider = await prisma.homePageSlider.create({
+     *   data: {
+     *     // ... data to create a HomePageSlider
+     *   }
+     * })
+     * 
+     */
+    create<T extends HomePageSliderCreateArgs>(args: SelectSubset<T, HomePageSliderCreateArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many HomePageSliders.
+     * @param {HomePageSliderCreateManyArgs} args - Arguments to create many HomePageSliders.
+     * @example
+     * // Create many HomePageSliders
+     * const homePageSlider = await prisma.homePageSlider.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HomePageSliderCreateManyArgs>(args?: SelectSubset<T, HomePageSliderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many HomePageSliders and returns the data saved in the database.
+     * @param {HomePageSliderCreateManyAndReturnArgs} args - Arguments to create many HomePageSliders.
+     * @example
+     * // Create many HomePageSliders
+     * const homePageSlider = await prisma.homePageSlider.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many HomePageSliders and only return the `id`
+     * const homePageSliderWithIdOnly = await prisma.homePageSlider.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HomePageSliderCreateManyAndReturnArgs>(args?: SelectSubset<T, HomePageSliderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a HomePageSlider.
+     * @param {HomePageSliderDeleteArgs} args - Arguments to delete one HomePageSlider.
+     * @example
+     * // Delete one HomePageSlider
+     * const HomePageSlider = await prisma.homePageSlider.delete({
+     *   where: {
+     *     // ... filter to delete one HomePageSlider
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HomePageSliderDeleteArgs>(args: SelectSubset<T, HomePageSliderDeleteArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one HomePageSlider.
+     * @param {HomePageSliderUpdateArgs} args - Arguments to update one HomePageSlider.
+     * @example
+     * // Update one HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HomePageSliderUpdateArgs>(args: SelectSubset<T, HomePageSliderUpdateArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more HomePageSliders.
+     * @param {HomePageSliderDeleteManyArgs} args - Arguments to filter HomePageSliders to delete.
+     * @example
+     * // Delete a few HomePageSliders
+     * const { count } = await prisma.homePageSlider.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HomePageSliderDeleteManyArgs>(args?: SelectSubset<T, HomePageSliderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HomePageSliders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HomePageSliders
+     * const homePageSlider = await prisma.homePageSlider.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HomePageSliderUpdateManyArgs>(args: SelectSubset<T, HomePageSliderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HomePageSliders and returns the data updated in the database.
+     * @param {HomePageSliderUpdateManyAndReturnArgs} args - Arguments to update many HomePageSliders.
+     * @example
+     * // Update many HomePageSliders
+     * const homePageSlider = await prisma.homePageSlider.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more HomePageSliders and only return the `id`
+     * const homePageSliderWithIdOnly = await prisma.homePageSlider.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends HomePageSliderUpdateManyAndReturnArgs>(args: SelectSubset<T, HomePageSliderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one HomePageSlider.
+     * @param {HomePageSliderUpsertArgs} args - Arguments to update or create a HomePageSlider.
+     * @example
+     * // Update or create a HomePageSlider
+     * const homePageSlider = await prisma.homePageSlider.upsert({
+     *   create: {
+     *     // ... data to create a HomePageSlider
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HomePageSlider we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HomePageSliderUpsertArgs>(args: SelectSubset<T, HomePageSliderUpsertArgs<ExtArgs>>): Prisma__HomePageSliderClient<$Result.GetResult<Prisma.$HomePageSliderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of HomePageSliders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderCountArgs} args - Arguments to filter HomePageSliders to count.
+     * @example
+     * // Count the number of HomePageSliders
+     * const count = await prisma.homePageSlider.count({
+     *   where: {
+     *     // ... the filter for the HomePageSliders we want to count
+     *   }
+     * })
+    **/
+    count<T extends HomePageSliderCountArgs>(
+      args?: Subset<T, HomePageSliderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HomePageSliderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HomePageSlider.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HomePageSliderAggregateArgs>(args: Subset<T, HomePageSliderAggregateArgs>): Prisma.PrismaPromise<GetHomePageSliderAggregateType<T>>
+
+    /**
+     * Group by HomePageSlider.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HomePageSliderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HomePageSliderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HomePageSliderGroupByArgs['orderBy'] }
+        : { orderBy?: HomePageSliderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HomePageSliderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHomePageSliderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HomePageSlider model
+   */
+  readonly fields: HomePageSliderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HomePageSlider.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HomePageSliderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HomePageSlider model
+   */
+  interface HomePageSliderFieldRefs {
+    readonly id: FieldRef<"HomePageSlider", 'String'>
+    readonly image_url: FieldRef<"HomePageSlider", 'String'>
+    readonly linked_url: FieldRef<"HomePageSlider", 'String'>
+    readonly image_name: FieldRef<"HomePageSlider", 'String'>
+    readonly image_key: FieldRef<"HomePageSlider", 'String'>
+    readonly createdAt: FieldRef<"HomePageSlider", 'DateTime'>
+    readonly updatedAt: FieldRef<"HomePageSlider", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HomePageSlider findUnique
+   */
+  export type HomePageSliderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter, which HomePageSlider to fetch.
+     */
+    where: HomePageSliderWhereUniqueInput
+  }
+
+  /**
+   * HomePageSlider findUniqueOrThrow
+   */
+  export type HomePageSliderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter, which HomePageSlider to fetch.
+     */
+    where: HomePageSliderWhereUniqueInput
+  }
+
+  /**
+   * HomePageSlider findFirst
+   */
+  export type HomePageSliderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter, which HomePageSlider to fetch.
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomePageSliders to fetch.
+     */
+    orderBy?: HomePageSliderOrderByWithRelationInput | HomePageSliderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HomePageSliders.
+     */
+    cursor?: HomePageSliderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomePageSliders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomePageSliders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HomePageSliders.
+     */
+    distinct?: HomePageSliderScalarFieldEnum | HomePageSliderScalarFieldEnum[]
+  }
+
+  /**
+   * HomePageSlider findFirstOrThrow
+   */
+  export type HomePageSliderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter, which HomePageSlider to fetch.
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomePageSliders to fetch.
+     */
+    orderBy?: HomePageSliderOrderByWithRelationInput | HomePageSliderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HomePageSliders.
+     */
+    cursor?: HomePageSliderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomePageSliders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomePageSliders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HomePageSliders.
+     */
+    distinct?: HomePageSliderScalarFieldEnum | HomePageSliderScalarFieldEnum[]
+  }
+
+  /**
+   * HomePageSlider findMany
+   */
+  export type HomePageSliderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter, which HomePageSliders to fetch.
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HomePageSliders to fetch.
+     */
+    orderBy?: HomePageSliderOrderByWithRelationInput | HomePageSliderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HomePageSliders.
+     */
+    cursor?: HomePageSliderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HomePageSliders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HomePageSliders.
+     */
+    skip?: number
+    distinct?: HomePageSliderScalarFieldEnum | HomePageSliderScalarFieldEnum[]
+  }
+
+  /**
+   * HomePageSlider create
+   */
+  export type HomePageSliderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * The data needed to create a HomePageSlider.
+     */
+    data: XOR<HomePageSliderCreateInput, HomePageSliderUncheckedCreateInput>
+  }
+
+  /**
+   * HomePageSlider createMany
+   */
+  export type HomePageSliderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HomePageSliders.
+     */
+    data: HomePageSliderCreateManyInput | HomePageSliderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HomePageSlider createManyAndReturn
+   */
+  export type HomePageSliderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * The data used to create many HomePageSliders.
+     */
+    data: HomePageSliderCreateManyInput | HomePageSliderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HomePageSlider update
+   */
+  export type HomePageSliderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * The data needed to update a HomePageSlider.
+     */
+    data: XOR<HomePageSliderUpdateInput, HomePageSliderUncheckedUpdateInput>
+    /**
+     * Choose, which HomePageSlider to update.
+     */
+    where: HomePageSliderWhereUniqueInput
+  }
+
+  /**
+   * HomePageSlider updateMany
+   */
+  export type HomePageSliderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HomePageSliders.
+     */
+    data: XOR<HomePageSliderUpdateManyMutationInput, HomePageSliderUncheckedUpdateManyInput>
+    /**
+     * Filter which HomePageSliders to update
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * Limit how many HomePageSliders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HomePageSlider updateManyAndReturn
+   */
+  export type HomePageSliderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * The data used to update HomePageSliders.
+     */
+    data: XOR<HomePageSliderUpdateManyMutationInput, HomePageSliderUncheckedUpdateManyInput>
+    /**
+     * Filter which HomePageSliders to update
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * Limit how many HomePageSliders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HomePageSlider upsert
+   */
+  export type HomePageSliderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * The filter to search for the HomePageSlider to update in case it exists.
+     */
+    where: HomePageSliderWhereUniqueInput
+    /**
+     * In case the HomePageSlider found by the `where` argument doesn't exist, create a new HomePageSlider with this data.
+     */
+    create: XOR<HomePageSliderCreateInput, HomePageSliderUncheckedCreateInput>
+    /**
+     * In case the HomePageSlider was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HomePageSliderUpdateInput, HomePageSliderUncheckedUpdateInput>
+  }
+
+  /**
+   * HomePageSlider delete
+   */
+  export type HomePageSliderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+    /**
+     * Filter which HomePageSlider to delete.
+     */
+    where: HomePageSliderWhereUniqueInput
+  }
+
+  /**
+   * HomePageSlider deleteMany
+   */
+  export type HomePageSliderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HomePageSliders to delete
+     */
+    where?: HomePageSliderWhereInput
+    /**
+     * Limit how many HomePageSliders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * HomePageSlider without action
+   */
+  export type HomePageSliderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HomePageSlider
+     */
+    select?: HomePageSliderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HomePageSlider
+     */
+    omit?: HomePageSliderOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13488,6 +14609,7 @@ export namespace Prisma {
     slug: 'slug',
     category: 'category',
     images: 'images',
+    image_keys: 'image_keys',
     brand: 'brand',
     description: 'description',
     stock: 'stock',
@@ -13637,6 +14759,19 @@ export namespace Prisma {
   };
 
   export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
+
+
+  export const HomePageSliderScalarFieldEnum: {
+    id: 'id',
+    image_url: 'image_url',
+    linked_url: 'linked_url',
+    image_name: 'image_name',
+    image_key: 'image_key',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type HomePageSliderScalarFieldEnum = (typeof HomePageSliderScalarFieldEnum)[keyof typeof HomePageSliderScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -13802,6 +14937,7 @@ export namespace Prisma {
     slug?: StringFilter<"Product"> | string
     category?: StringFilter<"Product"> | string
     images?: StringNullableListFilter<"Product">
+    image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableFilter<"Product"> | string | null
     description?: StringFilter<"Product"> | string
     stock?: IntFilter<"Product"> | number
@@ -13821,6 +14957,7 @@ export namespace Prisma {
     slug?: SortOrder
     category?: SortOrder
     images?: SortOrder
+    image_keys?: SortOrder
     brand?: SortOrderInput | SortOrder
     description?: SortOrder
     stock?: SortOrder
@@ -13843,6 +14980,7 @@ export namespace Prisma {
     name?: StringFilter<"Product"> | string
     category?: StringFilter<"Product"> | string
     images?: StringNullableListFilter<"Product">
+    image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableFilter<"Product"> | string | null
     description?: StringFilter<"Product"> | string
     stock?: IntFilter<"Product"> | number
@@ -13862,6 +15000,7 @@ export namespace Prisma {
     slug?: SortOrder
     category?: SortOrder
     images?: SortOrder
+    image_keys?: SortOrder
     brand?: SortOrderInput | SortOrder
     description?: SortOrder
     stock?: SortOrder
@@ -13887,6 +15026,7 @@ export namespace Prisma {
     slug?: StringWithAggregatesFilter<"Product"> | string
     category?: StringWithAggregatesFilter<"Product"> | string
     images?: StringNullableListFilter<"Product">
+    image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableWithAggregatesFilter<"Product"> | string | null
     description?: StringWithAggregatesFilter<"Product"> | string
     stock?: IntWithAggregatesFilter<"Product"> | number
@@ -14620,12 +15760,75 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
 
+  export type HomePageSliderWhereInput = {
+    AND?: HomePageSliderWhereInput | HomePageSliderWhereInput[]
+    OR?: HomePageSliderWhereInput[]
+    NOT?: HomePageSliderWhereInput | HomePageSliderWhereInput[]
+    id?: UuidFilter<"HomePageSlider"> | string
+    image_url?: StringFilter<"HomePageSlider"> | string
+    linked_url?: StringFilter<"HomePageSlider"> | string
+    image_name?: StringFilter<"HomePageSlider"> | string
+    image_key?: StringFilter<"HomePageSlider"> | string
+    createdAt?: DateTimeFilter<"HomePageSlider"> | Date | string
+    updatedAt?: DateTimeFilter<"HomePageSlider"> | Date | string
+  }
+
+  export type HomePageSliderOrderByWithRelationInput = {
+    id?: SortOrder
+    image_url?: SortOrder
+    linked_url?: SortOrder
+    image_name?: SortOrder
+    image_key?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomePageSliderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: HomePageSliderWhereInput | HomePageSliderWhereInput[]
+    OR?: HomePageSliderWhereInput[]
+    NOT?: HomePageSliderWhereInput | HomePageSliderWhereInput[]
+    image_url?: StringFilter<"HomePageSlider"> | string
+    linked_url?: StringFilter<"HomePageSlider"> | string
+    image_name?: StringFilter<"HomePageSlider"> | string
+    image_key?: StringFilter<"HomePageSlider"> | string
+    createdAt?: DateTimeFilter<"HomePageSlider"> | Date | string
+    updatedAt?: DateTimeFilter<"HomePageSlider"> | Date | string
+  }, "id">
+
+  export type HomePageSliderOrderByWithAggregationInput = {
+    id?: SortOrder
+    image_url?: SortOrder
+    linked_url?: SortOrder
+    image_name?: SortOrder
+    image_key?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: HomePageSliderCountOrderByAggregateInput
+    _max?: HomePageSliderMaxOrderByAggregateInput
+    _min?: HomePageSliderMinOrderByAggregateInput
+  }
+
+  export type HomePageSliderScalarWhereWithAggregatesInput = {
+    AND?: HomePageSliderScalarWhereWithAggregatesInput | HomePageSliderScalarWhereWithAggregatesInput[]
+    OR?: HomePageSliderScalarWhereWithAggregatesInput[]
+    NOT?: HomePageSliderScalarWhereWithAggregatesInput | HomePageSliderScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"HomePageSlider"> | string
+    image_url?: StringWithAggregatesFilter<"HomePageSlider"> | string
+    linked_url?: StringWithAggregatesFilter<"HomePageSlider"> | string
+    image_name?: StringWithAggregatesFilter<"HomePageSlider"> | string
+    image_key?: StringWithAggregatesFilter<"HomePageSlider"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"HomePageSlider"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"HomePageSlider"> | Date | string
+  }
+
   export type ProductCreateInput = {
     id?: string
     name: string
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -14645,6 +15848,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -14664,6 +15868,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -14683,6 +15888,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -14702,6 +15908,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -14719,6 +15926,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -14736,6 +15944,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -15536,6 +16745,76 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type HomePageSliderCreateInput = {
+    id?: string
+    image_url: string
+    linked_url: string
+    image_name: string
+    image_key: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomePageSliderUncheckedCreateInput = {
+    id?: string
+    image_url: string
+    linked_url: string
+    image_name: string
+    image_key: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomePageSliderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
+    linked_url?: StringFieldUpdateOperationsInput | string
+    image_name?: StringFieldUpdateOperationsInput | string
+    image_key?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomePageSliderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
+    linked_url?: StringFieldUpdateOperationsInput | string
+    image_name?: StringFieldUpdateOperationsInput | string
+    image_key?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomePageSliderCreateManyInput = {
+    id?: string
+    image_url: string
+    linked_url: string
+    image_name: string
+    image_key: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type HomePageSliderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
+    linked_url?: StringFieldUpdateOperationsInput | string
+    image_name?: StringFieldUpdateOperationsInput | string
+    image_key?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HomePageSliderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    image_url?: StringFieldUpdateOperationsInput | string
+    linked_url?: StringFieldUpdateOperationsInput | string
+    image_name?: StringFieldUpdateOperationsInput | string
+    image_key?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UuidFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15655,6 +16934,7 @@ export namespace Prisma {
     slug?: SortOrder
     category?: SortOrder
     images?: SortOrder
+    image_keys?: SortOrder
     brand?: SortOrder
     description?: SortOrder
     stock?: SortOrder
@@ -16482,7 +17762,41 @@ export namespace Prisma {
     rating?: SortOrder
   }
 
+  export type HomePageSliderCountOrderByAggregateInput = {
+    id?: SortOrder
+    image_url?: SortOrder
+    linked_url?: SortOrder
+    image_name?: SortOrder
+    image_key?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomePageSliderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    image_url?: SortOrder
+    linked_url?: SortOrder
+    image_name?: SortOrder
+    image_key?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type HomePageSliderMinOrderByAggregateInput = {
+    id?: SortOrder
+    image_url?: SortOrder
+    linked_url?: SortOrder
+    image_name?: SortOrder
+    image_key?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type ProductCreateimagesInput = {
+    set: string[]
+  }
+
+  export type ProductCreateimage_keysInput = {
     set: string[]
   }
 
@@ -16519,6 +17833,11 @@ export namespace Prisma {
   }
 
   export type ProductUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ProductUpdateimage_keysInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -18453,6 +19772,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -18471,6 +19791,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -18552,6 +19873,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -18570,6 +19892,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -18588,6 +19911,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -18606,6 +19930,7 @@ export namespace Prisma {
     slug: string
     category: string
     images?: ProductCreateimagesInput | string[]
+    image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
     description: string
     stock: number
@@ -18685,6 +20010,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number
@@ -18703,6 +20029,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     category?: StringFieldUpdateOperationsInput | string
     images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     description?: StringFieldUpdateOperationsInput | string
     stock?: IntFieldUpdateOperationsInput | number

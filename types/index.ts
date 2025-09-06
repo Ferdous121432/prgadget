@@ -8,6 +8,7 @@ import {
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
+  sliderFormSchema,
   updateOrderSchema,
   updateProductSchema,
   updateProfileSchema,
@@ -37,6 +38,7 @@ export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 export type OrderItem = z.infer<typeof insertOrderItemSchema>;
 export type Order = z.infer<typeof updateOrderSchema>;
 export type PaymentResult = z.infer<typeof paymentResultSchema>;
+export type SliderFormValues = z.infer<typeof sliderFormSchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;

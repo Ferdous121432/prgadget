@@ -1,28 +1,17 @@
-import { Metadata } from "next";
-import { deleteUser, getAllUsers } from "@/lib/actions/user.actions";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { formatId } from "@/lib/utils";
+import AdminSliderPage from "@/components/admin/HomepageSlider";
+import HomePageSlider from "@/components/admin/HomepageSlider";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Pagination from "@/components/shared/Pagination";
-import { Badge } from "@/components/ui/badge";
-import DeleteDialog from "@/components/shared/DeteleDialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { requireAdmin } from "@/lib/auth-guard";
-import { User } from "@/lib/generated/prisma";
-import MenuHomePage from "./MenuHomePage";
+import { Metadata } from "next";
+import Link from "next/link";
+import React, { memo } from "react";
 
 export const metadata: Metadata = {
   title: "Admin Users",
 };
 
-const AdminUserPage = async (props: {
+const AdminHomePage = async (props: {
   searchParams: Promise<{
     page: string;
     query: string;
@@ -40,12 +29,29 @@ const AdminUserPage = async (props: {
   // SEO settings management
 
   return (
-    <div className="space-y-2  flex flex-row gap-10">
-      <MenuHomePage />
-
-      <div></div>
-    </div>
+    <>
+      <Tabs defaultValue="slider" className="w-[400px]">
+        <TabsList>
+          <TabsTrigger value="slider">Slider</TabsTrigger>
+          <TabsTrigger value="featured">Featured</TabsTrigger>
+          <TabsTrigger value="latest">Latest</TabsTrigger>
+          <TabsTrigger value="banners">Banners</TabsTrigger>
+        </TabsList>
+        <TabsContent value="slider">
+          <AdminSliderPage />
+        </TabsContent>
+        <TabsContent value="featured">
+          Manage the featured products settings here.
+        </TabsContent>
+        <TabsContent value="latest">
+          Manage the latest products settings here.
+        </TabsContent>
+        <TabsContent value="banners">
+          Manage the promotional banners settings here.
+        </TabsContent>
+      </Tabs>
+    </>
   );
 };
 
-export default AdminUserPage;
+export default AdminHomePage;

@@ -40,6 +40,7 @@ const ProductForm = ({
   const router = useRouter();
 
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadedImageKeys, setUploadedImageKeys] = useState<string[]>([]);
 
   const form = useForm<ProductSchema | ProductWithId>({
     resolver: (type === "Update"
@@ -48,6 +49,14 @@ const ProductForm = ({
     defaultValues:
       product && type === "Update" ? product : productDefaultValues,
   });
+
+  async function deleteImagesFromUploadThing(keys: string[]) {
+    await fetch("/api/delete-uploadthing", {
+      method: "POST",
+      body: JSON.stringify({ keys }),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 
   const onSubmit: SubmitHandler<ProductSchema | ProductWithId> = async (
     values
@@ -61,6 +70,8 @@ const ProductForm = ({
           "Failed to create product",
           res.message || "Something went wrong"
         );
+        // Delete uploaded images from UploadThing
+        await deleteImagesFromUploadThing(uploadedImageKeys);
       } else {
         jsxToasts.successWithIcon(
           "Product created successfully!",
@@ -84,6 +95,8 @@ const ProductForm = ({
           "Failed to update product",
           res.message || "Something went wrong"
         );
+        // Delete uploaded images from UploadThing
+        await deleteImagesFromUploadThing(uploadedImageKeys);
       } else {
         jsxToasts.successWithIcon(
           "Product updated successfully!",
@@ -304,11 +317,20 @@ const ProductForm = ({
                     <FormControl>
                       <UploadDropzone
                         endpoint="imageDropzone"
-                        onClientUploadComplete={(res: { url: string }[]) => {
+                        onClientUploadComplete={(
+                          res: { url: string; key: string }[]
+                        ) => {
                           if (res && res.length > 0) {
                             const newImageUrls = res
                               .map((file) => file.url)
                               .filter(Boolean);
+                            const newImageKeys = res
+                              .map((file) => file.key)
+                              .filter(Boolean);
+                            setUploadedImageKeys((prev) => [
+                              ...prev,
+                              ...newImageKeys,
+                            ]);
 
                             if (newImageUrls.length > 0) {
                               // Check if adding new images would exceed any limits
@@ -327,6 +349,11 @@ const ProductForm = ({
                                 ...images,
                                 ...newImageUrls,
                               ]);
+                              form.setValue("image_keys", [
+                                ...uploadedImageKeys,
+                                ...newImageKeys,
+                              ]);
+
                               jsxToasts.successWithIcon(
                                 "Upload successful",
                                 `${newImageUrls.length} image(s) uploaded successfully`
