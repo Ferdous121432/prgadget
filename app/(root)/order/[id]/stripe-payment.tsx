@@ -87,6 +87,7 @@ const StripePayment = ({
           />
         </div>
         <Button
+          asChild
           className="w-full button-primary "
           size="lg"
           disabled={stripe == null || elements == null || isLoading}>
@@ -107,10 +108,10 @@ const StripePayment = ({
             theme === "dark"
               ? "night"
               : theme === "light"
-              ? "stripe"
-              : systemTheme === "light"
-              ? "stripe"
-              : "night",
+                ? "stripe"
+                : systemTheme === "light"
+                  ? "stripe"
+                  : "night",
         },
       }}
       stripe={stripePromise}>

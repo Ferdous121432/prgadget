@@ -1,139 +1,125 @@
-// "use server";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
 import NextAuth from "next-auth";
-// import { authConfig } from "./auth.config";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { authConfig } from "./auth.config";
 import { compare } from "bcrypt-ts-edge";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
   session: {
-    strategy: "jwt" as const,
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   adapter: PrismaAdapter(prisma),
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       credentials: {
         email: { type: "email" },
         password: { type: "password" },
       },
       async authorize(credentials) {
-        if (credentials == null) return null;
-        console.log("❌❌❌❌❌");
-        // Find user in database
+        if (!credentials) return null;
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email as string,
-          },
+          where: { email: credentials.email as string },
         });
-        console.log("👌👌👌👌");
-        // Check if user exists and if the password matches
-        // if (user && user.password) {
-        //   const isMatch = await compare(
-        //     credentials.password as string,
-        //     user.password
-        //   );
-        //   // If password is correct, return user
-        //   if (isMatch) {
-        //     return {
-        //       id: user.id,
-        //       name: user.name,
-        //       email: user.email,
-        //       role: user.role,
-        //     };
-        //   } else {
-        //     console.log("❌❌❌❌❌❌❌❌❌❌❌");
-        //   }
-        // }
-
         if (user && user.password) {
-          const isMatch = credentials.password === user.password;
-
+          // Use bcrypt for password comparison
+          const isMatch = await compare(
+            credentials.password as string,
+            user.password
+          );
           if (isMatch) {
-            console.log("✅ Password match successful for user:", user.email);
             return {
               id: user.id,
               name: user.name,
               email: user.email,
               role: user.role,
             };
-          } else {
-            // console.log("❌❌❌❌❌❌❌❌❌❌❌");
           }
         }
-
-        // If user does not exist or password does not match return null
         return null;
       },
     }),
   ],
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
   callbacks: {
     async session({ session, user, trigger, token }) {
-      // Set the user ID from the token
       session.user.id = token.sub;
       session.user.role = token.role;
       session.user.name = token.name;
-      // console.log(session);
-      // console.log("💕💕💕");
-
-      // If there is an update, set the user name
       if (trigger === "update") {
         session.user.name = user.name;
       }
-
       return session;
     },
     async jwt({ token, user, trigger, session }) {
-      // Assign user fields to token
       if (user) {
         token.id = user.id;
         token.role = user.role;
-
-        // If user has no name then use the email
         if (user.name === "NO_NAME") {
           token.name = user.email!.split("@")[0];
-
-          // Update database to reflect the token name
           await prisma.user.update({
             where: { id: user.id },
             data: { name: token.name },
           });
         }
 
-        if (trigger === "signIn" || trigger === "signUp") {
-          const cookiesObject = await cookies();
-          const sessionCartId = cookiesObject.get("sessionCartId")?.value;
-          if (sessionCartId) {
-            const sessionCart = await prisma.cart.findFirst({
-              where: { sessionCartId },
-            });
-
-            if (sessionCart) {
-              // Delete current user cart
-              await prisma.cart.deleteMany({
-                where: { userId: user.id },
-              });
-
-              // Assign new cart
-              await prisma.cart.update({
-                where: { id: sessionCart.id },
-                data: { userId: user.id },
-              });
-            }
-          }
-        }
+        // TODO: Merge carts after sign in/sign up
+        // This is commented out because `cookies` cannot be used in middleware in Next.js 13+
+        // A different approach is needed to handle cart merging
+        // if (trigger === "signIn" || trigger === "signUp") {
+        //   const cookiesObject = await cookies();
+        //   const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+        //   if (sessionCartId) {
+        //     const sessionCart = await prisma.cart.findFirst({
+        //       where: { sessionCartId },
+        //     });
+        //     if (sessionCart) {
+        //       await prisma.cart.deleteMany({
+        //         where: { userId: user.id },
+        //       });
+        //       await prisma.cart.update({
+        //         where: { id: sessionCart.id },
+        //         data: { userId: user.id },
+        //       });
+        //     }
+        //   }
+        // }
       }
-
-      // Handle session updates
       if (session?.user.name && trigger === "update") {
         token.name = session.user.name;
       }
-
       return token;
+    },
+    async authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnProtectedPage = [
+        "/shipping-address",
+        "/payment-method",
+        "/place-order",
+        "/user/",
+        "/order/",
+        "/admin",
+        "/profile",
+      ].some((path) => nextUrl.pathname.startsWith(path));
+      if (isOnProtectedPage) {
+        if (isLoggedIn) return true;
+        return false;
+      }
+      return true;
     },
   },
 });

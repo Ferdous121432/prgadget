@@ -307,4 +307,10 @@ html.dark .upload-field .text-white {
   .custom-toast[data-type="warning"] {
     @apply bg-yellow-50 border-yellow-200 text-yellow-800;
   }
+
+  /* Shadcn drawer overrides */
+
+  .data-[vaul-drawer-direction="left"] {
+    @apply w-screen;
+  }
 }
