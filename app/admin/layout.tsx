@@ -1,7 +1,6 @@
-import AppLogo from "@/components/shared/header/AppLogo";
-import MainNav from "./MainNav";
-import Menu from "@/components/shared/header/Menus";
-import AdminSearch from "@/components/admin/admin-search";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
 
 export default function AdminLayout({
   children,
@@ -9,24 +8,18 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="border-b flex flex-col container mx-auto">
-          <div className="flex items-center  h-16 px-2">
-            <MainNav className=" justify-center items-center" />
-            <AppLogo />
-
-            <div className="ml-auto items-center flex space-x-4">
-              <AdminSearch />
-              <Menu />
-            </div>
-          </div>
-        </div>
-
-        <div className="flex-1 space-y-4 p-8 pt-6 container mx-auto">
-          {children}
-        </div>
-      </div>
-    </>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }>
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+        <div className="flex flex-1 px-4 flex-col">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

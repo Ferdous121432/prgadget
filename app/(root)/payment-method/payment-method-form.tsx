@@ -100,6 +100,7 @@ const PaymentMethodForm = ({
 
             <div className="flex gap-2">
               <Button
+                asChild
                 type="submit"
                 className="button-primary"
                 disabled={isPending}>

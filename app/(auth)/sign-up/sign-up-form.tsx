@@ -24,6 +24,7 @@ const SignUpForm = () => {
 
     return (
       <Button
+        asChild
         disabled={pending}
         className="w-full button-primary"
         variant="default">

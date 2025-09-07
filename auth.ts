@@ -3,7 +3,7 @@ import GitHubProvider from "next-auth/providers/github";
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
 
@@ -76,24 +76,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             data: { name: token.name },
           });
         }
-        if (trigger === "signIn" || trigger === "signUp") {
-          const cookiesObject = await cookies();
-          const sessionCartId = cookiesObject.get("sessionCartId")?.value;
-          if (sessionCartId) {
-            const sessionCart = await prisma.cart.findFirst({
-              where: { sessionCartId },
-            });
-            if (sessionCart) {
-              await prisma.cart.deleteMany({
-                where: { userId: user.id },
-              });
-              await prisma.cart.update({
-                where: { id: sessionCart.id },
-                data: { userId: user.id },
-              });
-            }
-          }
-        }
+
+        // TODO: Merge carts after sign in/sign up
+        // This is commented out because `cookies` cannot be used in middleware in Next.js 13+
+        // A different approach is needed to handle cart merging
+        // if (trigger === "signIn" || trigger === "signUp") {
+        //   const cookiesObject = await cookies();
+        //   const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+        //   if (sessionCartId) {
+        //     const sessionCart = await prisma.cart.findFirst({
+        //       where: { sessionCartId },
+        //     });
+        //     if (sessionCart) {
+        //       await prisma.cart.deleteMany({
+        //         where: { userId: user.id },
+        //       });
+        //       await prisma.cart.update({
+        //         where: { id: sessionCart.id },
+        //         data: { userId: user.id },
+        //       });
+        //     }
+        //   }
+        // }
       }
       if (session?.user.name && trigger === "update") {
         token.name = session.user.name;

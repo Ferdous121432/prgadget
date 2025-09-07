@@ -6,13 +6,11 @@ import React from "react";
 function AppLogo() {
   return (
     <div>
-      <Link
-        href="/"
-        className="flex-center rounded-2xl ml-4 dark:bg-slate-50 px-3 py-1">
+      <Link href="/" className="flex-center rounded-2xl ml-4  px-3 py-1">
         <Image
           src={APP_LOGO}
           alt={`${APP_Name} logo`}
-          height={48}
+          height={36}
           width={144}
           priority={true}
         />

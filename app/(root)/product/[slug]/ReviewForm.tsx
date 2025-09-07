@@ -97,6 +97,7 @@ const ReviewForm = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button
+        asChild
         className="button-primary"
         onClick={handleOpenForm}
         variant="default">
@@ -174,6 +175,7 @@ const ReviewForm = ({
             </div>
             <DialogFooter>
               <Button
+                asChild
                 type="submit"
                 size="lg"
                 className="w-full button-primary"
