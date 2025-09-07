@@ -1,13 +1,14 @@
+import GoogleProvider from "next-auth/providers/google";
 import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
-  providers: [], // Required by NextAuthConfig type
+  providers: [],
   pages: {
-    signIn: "/sign-in",
-    error: "/sign-in",
+    signIn: "/login",
+    error: "/login",
   },
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnProtectedPage = [
         "/shipping-address",
@@ -21,7 +22,7 @@ export const authConfig = {
 
       if (isOnProtectedPage) {
         if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        return false;
       }
 
       return true;

@@ -18,7 +18,7 @@ const UserButton = async () => {
   if (!session) {
     return (
       <Button asChild>
-        <Link href="/sign-in" className="button-primary gap-2">
+        <Link href="/login" className="button-primary gap-2">
           <UserIcon /> Sign In
         </Link>
       </Button>

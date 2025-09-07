@@ -51,7 +51,7 @@ const AdminSliderPage = async () => {
               <TableCell>
                 <Image
                   src={slider.image_url}
-                  alt={slider.name}
+                  alt={slider.name_url}
                   width={100}
                   height={50}
                   className="object-cover rounded"

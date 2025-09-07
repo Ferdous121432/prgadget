@@ -7,7 +7,7 @@ export async function requireAuth(currentPath?: string) {
   if (!session?.user) {
     // Use the provided path or fallback to "/"
     const callbackUrl = encodeURIComponent(currentPath || "/");
-    redirect(`/sign-in?callbackUrl=${callbackUrl}`);
+    redirect(`/login?callbackUrl=${callbackUrl}`);
   }
 
   return session;
@@ -30,7 +30,7 @@ export async function requireAdmin(currentPath?: string) {
   if (!session?.user) {
     // Use the provided path or fallback to "/"
     const callbackUrl = encodeURIComponent(currentPath || "/");
-    redirect(`/sign-in?callbackUrl=${callbackUrl}`);
+    redirect(`/login?callbackUrl=${callbackUrl}`);
   }
 
   if (!isAdmin) {

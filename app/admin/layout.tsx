@@ -11,10 +11,11 @@ export default function AdminLayout({
   return (
     <>
       <div className="flex flex-col">
-        <div className="border-b container mx-auto">
-          <div className="flex items-center  h-16 px-4">
+        <div className="border-b flex flex-col container mx-auto">
+          <div className="flex items-center  h-16 px-2">
+            <MainNav className=" justify-center items-center" />
             <AppLogo />
-            <MainNav className="mx-6" />
+
             <div className="ml-auto items-center flex space-x-4">
               <AdminSearch />
               <Menu />
