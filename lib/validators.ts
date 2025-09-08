@@ -234,3 +234,11 @@ export const sliderFormSchema = z.object({
   updatedAt: z.date().optional().nullable(),
   id: z.string().optional().nullable(),
 });
+
+export const sessionUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  role: z.string(),
+  avatar: z.string(),
+});

@@ -22,6 +22,7 @@ export default function ToggleButton() {
 
   return (
     <Toggle
+      asChild
       pressed={theme === "dark"}
       onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle dark mode"

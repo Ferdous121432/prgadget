@@ -10,6 +10,7 @@ import {
   insertReviewSchema,
   paymentMethodSchema,
   paymentResultSchema,
+  sessionUserSchema,
   shippingAddressSchema,
   sliderFormSchema,
   updateMainCategorySchema,
@@ -56,6 +57,7 @@ export type UpdateSubSubCategory = z.infer<typeof updateSubSubCategorySchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;
+export type SessionUser = z.infer<typeof sessionUserSchema>;
 
 // Admin
 

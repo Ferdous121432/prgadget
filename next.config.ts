@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "5gvtqd14y1.ufs.sh", // <-- add this block
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   eslint: {

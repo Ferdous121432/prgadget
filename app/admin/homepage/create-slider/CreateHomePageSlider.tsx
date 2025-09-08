@@ -68,11 +68,6 @@ const CreateHomePageSlider = () => {
         method="POST"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8">
-        <div>
-          <p className="text-yellow-300 font-semibold">
-            Image Size Ratio: width:length = 1:3{" "}
-          </p>
-        </div>
         <div className="upload-field">
           <Card>
             <CardContent className="space-y-2 mt-2">
@@ -80,19 +75,19 @@ const CreateHomePageSlider = () => {
                 <Image
                   src={image}
                   alt="banner image"
-                  className="w-full object-cover object-center rounded-sm"
-                  width={1920}
-                  height={680}
+                  className="w-full h-auto object-cover object-center rounded-sm"
+                  width={1200}
+                  height={400}
                 />
               )}
 
               <UploadButton
                 endpoint="imageUploader"
                 onClientUploadComplete={(
-                  res: { url: string; name: string; key: string }[]
+                  res: { ufsUrl: string; name: string; key: string }[]
                 ) => {
-                  if (res && res[0]?.url) {
-                    form.setValue("image_url", res[0].url);
+                  if (res && res[0]?.ufsUrl) {
+                    form.setValue("image_url", res[0].ufsUrl);
                     form.setValue("image_name", res[0].name);
                     form.setValue("image_key", res[0].key);
 
@@ -128,7 +123,11 @@ const CreateHomePageSlider = () => {
               <FormItem className="w-full">
                 <FormLabel>Linked URL</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter linked URL" {...field} />
+                  <Input
+                    placeholder="Enter linked URL"
+                    {...field}
+                    value={field.value ?? ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

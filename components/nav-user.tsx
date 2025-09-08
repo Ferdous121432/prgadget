@@ -1,5 +1,6 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -24,10 +25,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { SessionUser } from "@/types";
+import { signOutUser } from "@/lib/actions/user.actions";
+import SignOutButton from "./shared/header/SignOutButton";
 
-export function NavUser({
-  user,
-}: {
+export function NavUser({}: {
   user: {
     name: string;
     email: string;
@@ -35,6 +37,17 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+
+  const { data: session } = useSession();
+  console.log("Session in NavUser:", session);
+
+  const user: SessionUser = {
+    id: session?.user?.id ?? "",
+    name: session?.user?.name ?? "Unknown",
+    email: session?.user?.email ?? "",
+    role: session?.user?.role ?? "user",
+    avatar: session?.user?.image ?? "", // NextAuth uses 'image' for avatar
+  };
 
   return (
     <SidebarMenu>
@@ -93,8 +106,10 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <IconLogout />
-              Log out
+              {/* Log out */}
+              <form action={signOutUser} className="w-full">
+                <SignOutButton />
+              </form>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

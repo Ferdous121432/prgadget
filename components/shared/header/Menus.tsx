@@ -11,6 +11,8 @@ import {
 import UserButton from "./UserButton";
 import ModeToggle from "./ModeToggle";
 import ToggleButton from "./ToggleButton";
+import { Card } from "@/components/ui/card";
+import Search from "./Search";
 
 const Menu = () => {
   return (
@@ -30,16 +32,20 @@ const Menu = () => {
           <SheetTrigger className="align-middle">
             <EllipsisVertical />
           </SheetTrigger>
-          <SheetContent className="flex flex-col items-start">
-            <SheetTitle>Menu</SheetTitle>
-            <ModeToggle />
-            <Button asChild variant="ghost">
-              <Link href="/cart">
-                <ShoppingCart /> Cart
-              </Link>
-            </Button>
-            <UserButton />
-            <SheetDescription></SheetDescription>
+
+          <SheetContent className="flex flex-col rounded-l-lg items-start ">
+            <Card className="pt-10 px-6 w-full h-full flex flex-col items-start gap-4">
+              <SheetTitle className="text-2xl font-bold">User Panel</SheetTitle>
+              <ToggleButton />
+              <Search />
+              <Button asChild variant="ghost">
+                <Link href="/cart">
+                  <ShoppingCart /> Cart
+                </Link>
+              </Button>
+              <UserButton />
+              <SheetDescription></SheetDescription>
+            </Card>
           </SheetContent>
         </Sheet>
       </nav>

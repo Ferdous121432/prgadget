@@ -6,7 +6,7 @@ import React from "react";
 function AppLogo() {
   return (
     <div>
-      <Link href="/" className="flex-center rounded-2xl ml-4  px-3 py-1">
+      <Link href="/" className="flex-center rounded-2xl  px-3 py-1">
         <Image
           src={APP_LOGO}
           alt={`${APP_Name} logo`}

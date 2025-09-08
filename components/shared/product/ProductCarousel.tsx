@@ -23,8 +23,8 @@ const ProductCarousel = ({ data }: { data: any }) => {
       plugins={[
         Autoplay({
           delay: 5000,
-          stopOnInteraction: true,
-          stopOnMouseEnter: true,
+          stopOnInteraction: false,
+          stopOnMouseEnter: false,
         }),
       ]}>
       <CarouselContent>
@@ -50,8 +50,8 @@ const ProductCarousel = ({ data }: { data: any }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="hidden md:block " />
-      <CarouselNext className="hidden md:block" />
+      {/* <CarouselPrevious className="hidden md:block " />
+      <CarouselNext className="hidden md:block" /> */}
     </Carousel>
   );
 };
