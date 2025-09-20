@@ -7,12 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getAllCategories } from "@/lib/actions/product.actions";
-import { Categories } from "@/types";
+import { getAllMainCategories } from "@/lib/actions/category.actions";
+import { Categories, UpdateMainCategory } from "@/types";
 import { SearchIcon } from "lucide-react";
 
 const Search = async () => {
-  const categories = (await getAllCategories()) as Categories;
+  const categories = (await getAllMainCategories()) as any;
 
   return (
     <form action="/search" method="GET">
