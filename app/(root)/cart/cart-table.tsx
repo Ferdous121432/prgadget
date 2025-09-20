@@ -41,7 +41,12 @@ function AddButton({ item }: { item: CartItem }) {
             );
           }
           // Handle success add to cart with JSX
-          jsxToasts.successWithIcon("Added to cart!", res.message);
+          jsxToasts.successWithIcon({
+            title: "Added to cart!",
+            message: res.message,
+            href: "/cart",
+            hrefTitle: "Go to Cart",
+          });
         })
       }>
       {isPending ? (
@@ -72,7 +77,10 @@ function RemoveButton({ item }: { item: CartItem }) {
             );
           }
           // Handle success remove from cart with JSX
-          jsxToasts.successWithIcon("Removed from cart!", res.message);
+          jsxToasts.successWithIcon({
+            title: "Removed from cart!",
+            message: res.message,
+          });
         })
       }>
       {isPending ? (

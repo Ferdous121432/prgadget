@@ -52,7 +52,10 @@ const UpdateUserForm = ({
         );
       }
 
-      jsxToasts.successWithIcon("User updated successfully", res.message);
+      jsxToasts.successWithIcon({
+        title: "User updated successfully",
+        message: res.message,
+      });
       form.reset();
       router.push("/admin/users");
     } catch (error) {

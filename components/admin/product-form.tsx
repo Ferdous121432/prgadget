@@ -5,27 +5,11 @@ import { insertProductSchema, updateProductSchema } from "@/lib/validators";
 import { ProductSchema, ProductWithId } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import slugify from "slugify";
-import { Input } from "../ui/input";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Form } from "../ui/form";
 import { Button } from "../ui/button";
-import { Textarea } from "../ui/textarea";
 import { createProduct, updateProduct } from "@/lib/actions/product.actions";
-import { UploadButton } from "@/lib/uploadthing";
-import { Card, CardContent } from "../ui/card";
-import Image from "next/image";
-import { Checkbox } from "../ui/checkbox";
 import { jsxToasts } from "@/lib/customToaster";
-import { UploadDropzone } from "@/lib/uploadthing";
 import { useState } from "react";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
@@ -35,10 +19,16 @@ const ProductForm = ({
   type,
   product,
   productId,
+  mainCategories,
+  subCategories,
+  subSubCategories,
 }: {
   type: "Create" | "Update";
   product?: ProductSchema;
   productId?: string;
+  mainCategories?: { id: string; name: string }[];
+  subCategories?: { id: string; name: string; mainCategoryId: string }[];
+  subSubCategories?: { id: string; name: string; subCategoryId: string }[];
 }) => {
   const router = useRouter();
 
@@ -53,6 +43,14 @@ const ProductForm = ({
       product && type === "Update" ? product : productDefaultValues,
   });
 
+  function omitEmptyFields<T extends Record<string, any>>(obj: T): Partial<T> {
+    return Object.fromEntries(
+      Object.entries(obj).filter(
+        ([, value]) => value !== "" && value !== null && value !== undefined
+      )
+    ) as Partial<T>;
+  }
+
   async function deleteImagesFromUploadThing(keys: string[]) {
     await fetch("/api/delete-uploadthing", {
       method: "POST",
@@ -64,9 +62,10 @@ const ProductForm = ({
   const onSubmit: SubmitHandler<ProductSchema | ProductWithId> = async (
     values
   ) => {
+    const filteredValues = omitEmptyFields(values) as ProductSchema;
     // On Create
     if (type === "Create") {
-      const res = await createProduct(values);
+      const res = await createProduct(filteredValues);
 
       if (!res.success) {
         jsxToasts.errorWithIcon(
@@ -76,10 +75,10 @@ const ProductForm = ({
         // Delete uploaded images from UploadThing
         await deleteImagesFromUploadThing(uploadedImageKeys);
       } else {
-        jsxToasts.successWithIcon(
-          "Product created successfully!",
-          res.message || "Product created"
-        );
+        jsxToasts.successWithIcon({
+          title: "Product created successfully!",
+          message: res.message,
+        });
         router.push("/admin/products");
       }
     }
@@ -101,10 +100,10 @@ const ProductForm = ({
         // Delete uploaded images from UploadThing
         await deleteImagesFromUploadThing(uploadedImageKeys);
       } else {
-        jsxToasts.successWithIcon(
-          "Product updated successfully!",
-          res.message || "Product updated"
-        );
+        jsxToasts.successWithIcon({
+          title: "Product updated successfully!",
+          message: res.message,
+        });
         router.push("/admin/products");
       }
     }
@@ -144,7 +143,11 @@ const ProductForm = ({
             />
           </TabsContent>
           <TabsContent value="category">
-            <Category />
+            <Category
+              mainCategories={mainCategories}
+              subCategories={subCategories}
+              subSubCategories={subSubCategories}
+            />
           </TabsContent>
         </Tabs>
 

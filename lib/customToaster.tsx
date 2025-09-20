@@ -7,7 +7,17 @@ import Link from "next/link";
 // Custom toast functions with JSX content
 export const jsxToasts = {
   // Success toast with custom JSX
-  successWithIcon: (title: string, message?: string) => {
+  successWithIcon: ({
+    title,
+    message,
+    href,
+    hrefTitle,
+  }: {
+    title: string;
+    message?: any;
+    href?: string;
+    hrefTitle?: string;
+  }) => {
     toast(
       <div className="flex items-center gap-3">
         <CheckCircle className="h-5 w-5 text-green-500 dark:text-slate-50 flex-shrink-0" />
@@ -17,9 +27,11 @@ export const jsxToasts = {
           </p>
           {message && <p className="text-sm text-green-700">{message}</p>}
         </div>
-        <Link href="/cart">
-          <Button className="button-primary">Go to Cart</Button>
-        </Link>
+        {href && (
+          <Link href={`${href}`} className="ml-auto">
+            <Button className="button-primary">{hrefTitle || ""}</Button>
+          </Link>
+        )}
       </div>
     );
   },

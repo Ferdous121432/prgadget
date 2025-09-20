@@ -1,9 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import AppLogo from "./shared/header/AppLogo";
-import Menu from "./shared/header/Menus";
-import AdminSearch from "./admin/admin-search";
 
 export function SiteHeader() {
   return (
@@ -14,11 +11,11 @@ export function SiteHeader() {
           orientation="vertical"
           className="mx-2 mt-4 data-[orientation=vertical]:h-4"
         />
-        <div className="flex flex-1 justify-between items-center gap-4">
+        <div className="flex flex-1 justify-start items-center gap-4">
           <AppLogo />
           <div className="flex flex-1 justify-end items-center gap-4">
-            <AdminSearch />
-            <Menu />
+            {/* <AdminSearch /> */}
+            {/* <Menu /> */}
           </div>
         </div>
       </div>

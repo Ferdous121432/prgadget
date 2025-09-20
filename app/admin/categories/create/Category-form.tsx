@@ -1,13 +1,5 @@
 "use client";
 
-import { categoryDefaultValues, productDefaultValues } from "@/lib/constants";
-import {
-  createCategorySchema,
-  insertProductSchema,
-  updateCategorySchema,
-  updateProductSchema,
-} from "@/lib/validators";
-import { Category, ProductSchema, ProductWithId } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
@@ -24,10 +16,22 @@ import slugify from "slugify";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 import { jsxToasts } from "@/lib/customToaster";
+import {
+  createMainCategory,
+  updateMainCategory,
+} from "@/lib/actions/category.actions";
+import { MainCategory } from "@/lib/generated/prisma";
+import {
+  createMainCategorySchema,
+  updateMainCategorySchema,
+} from "@/lib/validators";
+import { mainCategoryDefaultValues } from "@/lib/constants";
+import { CreateMainCategory } from "@/types";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import { UploadButton } from "@/lib/uploadthing";
 import { useState } from "react";
-import { createCategory, updateCategory } from "@/lib/actions/category.actions";
 
 const CategoryForm = ({
   type,
@@ -35,34 +39,46 @@ const CategoryForm = ({
   categoryId,
 }: {
   type: "Create" | "Update";
-  category?: Category;
+  category?: MainCategory;
   categoryId?: string;
 }) => {
   const router = useRouter();
+  const [uploadedImageKeys, setUploadedImageKeys] = useState<string[]>([]);
 
-  const form = useForm<Category>({
+  const form = useForm<MainCategory | CreateMainCategory>({
     resolver: (type === "Update"
-      ? zodResolver(updateCategorySchema)
-      : zodResolver(createCategorySchema)) as any,
+      ? (zodResolver(updateMainCategorySchema) as any)
+      : zodResolver(createMainCategorySchema)) as any,
     defaultValues:
-      category && type === "Update" ? category : categoryDefaultValues,
+      category && type === "Update" ? category : mainCategoryDefaultValues,
   });
 
-  const onSubmit: SubmitHandler<Category> = async (values) => {
+  // Function to delete images from UploadThing by their keys
+  async function deleteImagesFromUploadThing(keys: string[]) {
+    await fetch("/api/delete-uploadthing", {
+      method: "POST",
+      body: JSON.stringify({ keys }),
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  const onSubmit: SubmitHandler<CreateMainCategory> = async (values) => {
     // On Create
     if (type === "Create") {
-      const res = await createCategory(values);
+      const res = await createMainCategory(values);
 
       if (!res.success) {
         jsxToasts.errorWithIcon(
           "Failed to create category",
           res.message || "Something went wrong"
         );
+        // Delete uploaded images from UploadThing
+        await deleteImagesFromUploadThing(uploadedImageKeys);
       } else {
-        jsxToasts.successWithIcon(
-          "Category created successfully!",
-          res.message || "Category created"
-        );
+        jsxToasts.successWithIcon({
+          title: "Category created successfully",
+          message: res.message,
+        });
         router.push("/admin/categories");
       }
     }
@@ -74,7 +90,7 @@ const CategoryForm = ({
         return;
       }
 
-      const res = await updateCategory({ ...values, id: categoryId });
+      const res = await updateMainCategory({ ...values, id: categoryId });
 
       if (!res.success) {
         jsxToasts.errorWithIcon(
@@ -82,14 +98,16 @@ const CategoryForm = ({
           res.message || "Something went wrong"
         );
       } else {
-        jsxToasts.successWithIcon(
-          "Category updated successfully!",
-          res.message || "Category updated"
-        );
+        jsxToasts.successWithIcon({
+          title: "Category updated successfully",
+          message: res.message,
+        });
         router.push("/admin/categories");
       }
     }
   };
+
+  const image = form.watch("image");
 
   return (
     <Form {...form}>
@@ -97,6 +115,7 @@ const CategoryForm = ({
         method="POST"
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8">
+        {/* NAME & SLUG */}
         <div className="flex flex-col md:flex-row gap-5">
           {/* Name */}
           <FormField
@@ -106,7 +125,7 @@ const CategoryForm = ({
               field,
             }: {
               field: ControllerRenderProps<
-                z.infer<typeof createCategorySchema>,
+                z.infer<typeof createMainCategorySchema>,
                 "name"
               >;
             }) => (
@@ -127,7 +146,7 @@ const CategoryForm = ({
               field,
             }: {
               field: ControllerRenderProps<
-                z.infer<typeof createCategorySchema>,
+                z.infer<typeof createMainCategorySchema>,
                 "slug"
               >;
             }) => (
@@ -154,32 +173,48 @@ const CategoryForm = ({
             )}
           />
         </div>
-        <div className="flex flex-col md:flex-row gap-5">
-          {/* Description */}
-          <FormField
-            control={form.control}
-            name="description"
-            render={({
-              field,
-            }: {
-              field: ControllerRenderProps<
-                z.infer<typeof createCategorySchema>,
-                "description"
-              >;
-            }) => (
-              <FormItem className="w-full">
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Enter product description"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+        {/* IMAGE */}
+        <div className="upload-field">
+          <Card>
+            <CardContent className="space-y-2 mt-2">
+              {image && image.trim() !== "" && (
+                <Image
+                  src={image}
+                  alt="banner image"
+                  className="w-full h-auto object-cover object-center rounded-sm"
+                  width={1200}
+                  height={400}
+                />
+              )}
+
+              <UploadButton
+                endpoint="imageUploader"
+                onClientUploadComplete={(
+                  res: { ufsUrl: string; name: string; key: string }[]
+                ) => {
+                  if (res && res[0]?.ufsUrl) {
+                    form.setValue("image", res[0].ufsUrl);
+                    form.setValue("image_key", res[0].key);
+
+                    // Track uploaded image key for deletion if needed
+                    setUploadedImageKeys((prev) => [...prev, res[0].key]);
+
+                    jsxToasts.successWithIcon({
+                      title: "Image uploaded successfully!",
+                      message: "",
+                    });
+                  }
+                }}
+                onUploadError={(error: Error) => {
+                  jsxToasts.errorWithIcon(
+                    "Failed to upload Image",
+                    "Something went wrong"
+                  );
+                }}
+              />
+            </CardContent>
+          </Card>
         </div>
         <div>
           <Button

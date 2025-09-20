@@ -48,10 +48,10 @@ const ProfileForm = () => {
 
     await update(newSession);
 
-    jsxToasts.successWithIcon(
-      "Profile updated successfully",
-      res.message || "Profile updated"
-    );
+    jsxToasts.successWithIcon({
+      title: "Profile updated successfully",
+      message: res.message,
+    });
   };
 
   return (

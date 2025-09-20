@@ -20,6 +20,7 @@ import {
   IconSettings,
   IconUsers,
   IconUserStar,
+  IconMail,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/nav-documents";
@@ -34,6 +35,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import AdminSearch from "./admin/admin-search";
+import { Button } from "./ui/button";
+import ToggleButton from "./shared/header/ToggleButton";
 
 const data = {
   user: {
@@ -141,17 +145,17 @@ const data = {
     },
     {
       name: "Categories",
-      url: "/admin/Categories",
+      url: "/admin/categories",
       icon: IconCategory,
     },
     {
       name: "Sub Categories",
-      url: "/admin/Categories",
+      url: "/admin/sub-categories",
       icon: IconCategoryPlus,
     },
     {
       name: "Sub Sub Categories",
-      url: "/admin/Categories",
+      url: "/admin/sub-sub-categories",
       icon: IconCategoryMinus,
     },
   ],
@@ -162,7 +166,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="flex flex-row justify-between items-center">
             <SidebarMenuButton
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5">
@@ -171,12 +175,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <span className="text-base font-semibold">Admin Panel</span>
               </a>
             </SidebarMenuButton>
+            <Button
+              type="button"
+              size="icon"
+              className="size-8 group-data-[collapsible=icon]:opacity-0"
+              variant="outline">
+              <ToggleButton />
+            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments title="Products" items={data.products} />
+        <div className="px-2 pt-6 w-full">
+          <AdminSearch />
+        </div>
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>

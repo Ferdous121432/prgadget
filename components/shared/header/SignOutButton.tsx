@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { IconLogout } from "@tabler/icons-react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -14,9 +15,10 @@ export default function SignOutButton() {
   return (
     <Button
       onClick={handleSignOut}
-      className="w-full items-center button-primary hover:text-slate-50 py-4 px-2 h-4 justify-center"
+      className="w-full relative items-center button-primary hover:text-slate-50 py-4 px-2 h-4 justify-center"
       variant="ghost">
-      Sign Out
+      <IconLogout className="absolute left-3 text-white font-semibold dark:text-slate-600 " />
+      <span>Log out</span>
     </Button>
   );
 }

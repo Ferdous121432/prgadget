@@ -88,10 +88,10 @@ const ReviewForm = ({
 
     onReviewSubmitted();
 
-    jsxToasts.successWithIcon(
-      "Review added successfully",
-      res.message || "Something went wrong"
-    );
+    jsxToasts.successWithIcon({
+      title: "Review created successfully",
+      message: res.message,
+    });
   };
 
   return (

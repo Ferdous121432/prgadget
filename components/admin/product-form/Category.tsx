@@ -9,17 +9,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
 import { insertProductSchema } from "@/lib/validators";
 import { ProductSchema } from "@/types";
+import { SelectValue } from "@radix-ui/react-select";
 import React from "react";
 import { useFormContext, ControllerRenderProps } from "react-hook-form";
 import slugify from "slugify";
 import z from "zod";
 
-function Category() {
+function Category({
+  mainCategories,
+  subCategories,
+  subSubCategories,
+}: {
+  mainCategories?: { id: string; name: string }[];
+  subCategories?: { id: string; name: string; mainCategoryId: string }[];
+  subSubCategories?: { id: string; name: string; subCategoryId: string }[];
+}) {
   const form = useFormContext<ProductSchema>();
-
+  console.log({
+    mainCategories,
+    subCategories,
+    subSubCategories,
+  });
   return (
     <div className="w-full flex flex-col gap-5">
       {/* Category & Brand */}
@@ -39,7 +57,24 @@ function Category() {
             <FormItem className="w-full">
               <FormLabel>Main Category</FormLabel>
               <FormControl>
-                <Input placeholder="Enter main category" {...field} />
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue("subCategoryId", "");
+                    form.setValue("subSubCategoryId", "");
+                  }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select main category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mainCategories?.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +95,29 @@ function Category() {
             <FormItem className="w-full">
               <FormLabel>Sub Category</FormLabel>
               <FormControl>
-                <Input placeholder="Enter sub category" {...field} />
+                <Select
+                  value={field.value}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    form.setValue("subSubCategoryId", "");
+                  }}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select parent category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subCategories
+                      ?.filter(
+                        (cat) =>
+                          cat.mainCategoryId ===
+                          form.getValues("mainCategoryId")
+                      )
+                      .map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,7 +138,23 @@ function Category() {
             <FormItem className="w-full">
               <FormLabel>Sub Sub Category</FormLabel>
               <FormControl>
-                <Input placeholder="Enter sub sub category" {...field} />
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select sub sub category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subSubCategories
+                      ?.filter(
+                        (cat) =>
+                          cat.subCategoryId === form.getValues("subCategoryId")
+                      )
+                      .map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
