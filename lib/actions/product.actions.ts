@@ -10,6 +10,82 @@ import { Product, ProductWithId } from "@/types";
 import { Prisma } from "../generated/prisma";
 import { utapi } from "@/app/api/uploadthing/uploadthing";
 
+//Create a new product
+export async function createProduct(data: Product) {
+  try {
+    const product = await prisma.product.create({
+      data,
+    });
+
+    revalidatePath("/admin/products");
+
+    return { success: true, message: "Product created successfully." };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Failed to create product.",
+    };
+  }
+}
+
+// Update product by ID
+export async function updateProduct(data: ProductWithId) {
+  try {
+    const productExists = await prisma.product.findUnique({
+      where: {
+        id: data.id,
+      },
+    });
+    if (!productExists) {
+      return { success: false, message: "Product not found." };
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    });
+
+    revalidatePath("/admin/products");
+
+    return { success: true, message: "Product updated successfully." };
+  } catch (error) {
+    return { success: false, message: "Failed to update product." };
+  }
+}
+
+// Delete product by ID
+export async function deleteProduct(id: string) {
+  try {
+    const productExists = await prisma.product.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!productExists) {
+      return { success: false, message: "Product not found." };
+    }
+
+    // Delete associated images from UploadThing
+    if (productExists.image_keys && Array.isArray(productExists.image_keys)) {
+      await utapi.deleteFiles(productExists.image_keys);
+    }
+
+    const data = await prisma.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    revalidatePath("/admin/products");
+
+    return { success: true, message: "Product deleted successfully." };
+  } catch (error) {
+    return { success: false, message: "Failed to delete product." };
+  }
+}
+
 // Get latest products
 
 export async function getLatestProducts() {
@@ -261,79 +337,6 @@ export async function getAllProducts({
     data: convertPrismaObjectToJSObject(data),
     totalPages: Math.ceil(dataCount / limit),
   };
-}
-
-// Delete product by ID
-export async function deleteProduct(id: string) {
-  try {
-    const productExists = await prisma.product.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (!productExists) {
-      return { success: false, message: "Product not found." };
-    }
-
-    // Delete associated images from UploadThing
-    if (productExists.image_keys && Array.isArray(productExists.image_keys)) {
-      await utapi.deleteFiles(productExists.image_keys);
-    }
-
-    const data = await prisma.product.delete({
-      where: {
-        id,
-      },
-    });
-
-    revalidatePath("/admin/products");
-
-    return { success: true, message: "Product deleted successfully." };
-  } catch (error) {
-    return { success: false, message: "Failed to delete product." };
-  }
-}
-
-//Create a new product
-export async function createProduct(data: Product) {
-  try {
-    const product = await prisma.product.create({
-      data,
-    });
-
-    revalidatePath("/admin/products");
-
-    return { success: true, message: "Product created successfully." };
-  } catch (error) {
-    return { success: false, message: "Failed to create product." };
-  }
-}
-
-// Update product by ID
-export async function updateProduct(data: ProductWithId) {
-  try {
-    const productExists = await prisma.product.findUnique({
-      where: {
-        id: data.id,
-      },
-    });
-    if (!productExists) {
-      return { success: false, message: "Product not found." };
-    }
-
-    const updatedProduct = await prisma.product.update({
-      where: {
-        id: data.id,
-      },
-      data,
-    });
-
-    revalidatePath("/admin/products");
-
-    return { success: true, message: "Product updated successfully." };
-  } catch (error) {
-    return { success: false, message: "Failed to update product." };
-  }
 }
 
 // Get product by ID

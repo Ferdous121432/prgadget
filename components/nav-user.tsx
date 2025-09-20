@@ -39,7 +39,6 @@ export function NavUser({}: {
   const { isMobile } = useSidebar();
 
   const { data: session } = useSession();
-  console.log("Session in NavUser:", session);
 
   const user: SessionUser = {
     id: session?.user?.id ?? "",

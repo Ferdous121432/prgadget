@@ -145,17 +145,17 @@ const data = {
     },
     {
       name: "Categories",
-      url: "/admin/Categories",
+      url: "/admin/categories",
       icon: IconCategory,
     },
     {
       name: "Sub Categories",
-      url: "/admin/Categories",
+      url: "/admin/sub-categories",
       icon: IconCategoryPlus,
     },
     {
       name: "Sub Sub Categories",
-      url: "/admin/Categories",
+      url: "/admin/sub-sub-categories",
       icon: IconCategoryMinus,
     },
   ],

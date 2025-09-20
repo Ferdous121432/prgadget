@@ -19,14 +19,15 @@ model MainCategory {
   id            String        @id @default(uuid())
   name          String        @unique
   slug          String        @unique
-  image         String?
-  image_key     String? // Key for image stored in UploadThing
+  image         String
+  image_key     String // Key for image stored in UploadThing
   subcategories SubCategory[]
   products      Product[]
 }
 
 model SubCategory {
   id               String           @id @default(uuid())
+  slug             String           @unique
   name             String
   mainCategory     MainCategory     @relation(fields: [mainCategoryId], references: [id])
   mainCategoryId   String
@@ -36,6 +37,7 @@ model SubCategory {
 
 model SubSubCategory {
   id            String      @id @default(uuid())
+  slug          String      @unique
   name          String
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
   subCategoryId String
@@ -46,7 +48,7 @@ model Product {
   id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String
   slug             String          @unique(map: "product_slug_key")
-  category         String
+  category         String?
   images           String[]
   image_keys       String[] // Keys for images stored in UploadThing
   brand            String?

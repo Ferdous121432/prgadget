@@ -16,15 +16,18 @@ const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
     startTransition(async () => {
       const res = await addItemToCart(item);
       if (!res.success) {
-        // Using JSX toast with custom div
         jsxToasts.errorWithIcon(
           "Failed to add to cart",
           res.message || "Something went wrong"
         );
         return;
       }
-      // Handle success add to cart with JSX
-      jsxToasts.successWithIcon("Added to cart!", res.message);
+      jsxToasts.successWithIcon({
+        title: "Added to cart!",
+        message: res.message,
+        href: "/cart",
+        hrefTitle: "Go to Cart",
+      });
     });
   };
 

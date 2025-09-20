@@ -66,10 +66,11 @@ function Images({
                               (_, i) => i !== index
                             );
                             form.setValue("images", updatedImages);
-                            jsxToasts.successWithIcon(
-                              "Image removed",
-                              "Image deleted successfully"
-                            );
+                            jsxToasts.successWithIcon({
+                              title: "Image removed",
+                              message:
+                                "Image has been removed from the product",
+                            });
                           }}
                           className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md"
                           title="Remove image">

@@ -28,6 +28,7 @@ const DeleteDialog = ({
   // Transition state for the delete action
   const [isPending, startTransition] = useTransition();
 
+  //TODO: Refactor this function to be reusable
   const handleDeleteClick = () => {
     startTransition(async () => {
       const res = await action(id);
@@ -39,7 +40,12 @@ const DeleteDialog = ({
         );
       } else {
         setOpen(false);
-        jsxToasts.successWithIcon("Deleted successfully", res.message);
+        jsxToasts.successWithIcon({
+          title: "Deleted successfully!",
+          message: res.message,
+          href: "/admin/overview",
+          hrefTitle: "Go to Overview",
+        });
         Router.refresh();
       }
     });

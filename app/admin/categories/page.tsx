@@ -12,11 +12,16 @@ import {
 import Pagination from "@/components/shared/Pagination";
 import DeleteDialog from "@/components/shared/DeteleDialog";
 import { requireAdmin } from "@/lib/auth-guard";
-import { Category, CategoryWithId, Product, ProductWithId } from "@/types";
+import { UpdateMainCategory } from "@/types";
 import {
-  deleteCategory,
-  getAllProductCategories,
+  deleteMainCategory,
+  getAllMainCategories,
 } from "@/lib/actions/category.actions";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BadgeDollarSign, Barcode, CreditCard } from "lucide-react";
+import { DataTable } from "@/components/data-table";
+import Data from "./../orders/data.json";
+import Image from "next/image";
 
 const AdminProductsPage = async (props: {
   searchParams: Promise<{
@@ -33,13 +38,63 @@ const AdminProductsPage = async (props: {
   const searchText = searchParams.query || "";
   const category = searchParams.category || "";
 
-  const categories = (await getAllProductCategories()) as {
-    data: CategoryWithId[];
+  const categories = (await getAllMainCategories()) as {
+    data: UpdateMainCategory[];
     totalPages: number;
   };
 
+  console.log("Categories 💥:", categories);
   return (
     <div className="space-y-2">
+      <div className="py-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <BadgeDollarSign />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {/* {formatCurrency(
+                summary.totalSales._sum.totalPrice?.toString() || 0
+              )} */}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sales</CardTitle>
+            <CreditCard />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {/* {formatNumber(summary.ordersCount)} */}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Customers</CardTitle>
+            {/* <Users /> */}
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {/* {formatNumber(summary.usersCount)} */}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Products</CardTitle>
+            <Barcode />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {/* {formatNumber(summary.productCounts)} */}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <DataTable data={Data} />
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <h1 className="h2-bold">Categories</h1>
@@ -64,21 +119,32 @@ const AdminProductsPage = async (props: {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>NAME</TableHead>
-            <TableHead>DESCRIPTION</TableHead>
+            <TableHead>LIST OF SUB</TableHead>
+            <TableHead>IMAGE</TableHead>
             <TableHead className="w-[100px]">ACTIONS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {categories.data?.map((category) => (
             <TableRow key={category.id}>
-              <TableCell>{category.id}</TableCell>
+              <TableCell>...{category.id.split("-").pop()}</TableCell>
               <TableCell>{category.name}</TableCell>
-              <TableCell>{category.description}</TableCell>
+              <TableCell>{category.name}</TableCell>
+              <TableCell>
+                {category.image && (
+                  <Image
+                    src={category.image}
+                    alt={category.name}
+                    width={150}
+                    height={50}
+                  />
+                )}
+              </TableCell>
               <TableCell className="flex gap-1">
                 <Button asChild variant="outline" size="sm">
                   <Link href={`/admin/categories/${category.id}`}>Edit</Link>
                 </Button>
-                <DeleteDialog id={category.id} action={deleteCategory} />
+                <DeleteDialog id={category.id} action={deleteMainCategory} />
               </TableCell>
             </TableRow>
           ))}

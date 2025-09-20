@@ -93,10 +93,10 @@ const OrderDetailsTable = ({
         onClick={() =>
           startTransition(async () => {
             const res = await updateOrderToPaidCOD(order.id);
-            jsxToasts.successWithIcon(
-              "Order Paid",
-              res.message || "Order paid successfully"
-            );
+            jsxToasts.successWithIcon({
+              title: "Order Paid ",
+              message: res.message || "Order has been paid successfully",
+            });
           })
         }>
         {isPending ? "processing..." : "Mark As Paid"}
@@ -117,10 +117,10 @@ const OrderDetailsTable = ({
         onClick={() =>
           startTransition(async () => {
             const res = await updateOrderToDelivered(order.id);
-            jsxToasts.successWithIcon(
-              "Order Delivered",
-              res.message || "Order delivered successfully"
-            );
+            jsxToasts.successWithIcon({
+              title: "Order delivered successfully",
+              message: res.message || "Order has been delivered successfully",
+            });
           })
         }>
         {isPending ? "processing..." : "Mark As Delivered"}

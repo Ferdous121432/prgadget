@@ -13,8 +13,8 @@ const currency = z
 export const createMainCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
-  image: z.string().optional(),
-  image_key: z.string().optional(),
+  image: z.string(),
+  image_key: z.string(),
 });
 
 export const updateMainCategorySchema = createMainCategorySchema.extend({
@@ -24,6 +24,7 @@ export const updateMainCategorySchema = createMainCategorySchema.extend({
 // SubCategory
 export const createSubCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string(),
   mainCategoryId: z.string(),
 });
 
@@ -34,6 +35,7 @@ export const updateSubCategorySchema = createSubCategorySchema.extend({
 // SubSubCategory
 export const createSubSubCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string(),
   subCategoryId: z.string(),
 });
 
@@ -48,12 +50,8 @@ export const insertProductSchema = z.object({
   mainCategoryId: z
     .string()
     .min(3, "Main category must be at least 3 characters"),
-  subCategoryId: z
-    .string()
-    .min(3, "Sub category must be at least 3 characters"),
-  subSubCategoryId: z
-    .string()
-    .min(3, "Sub sub category must be at least 3 characters"),
+  subCategoryId: z.string().optional(),
+  subSubCategoryId: z.string().optional(),
   brand: z.string().min(3, "Brand must be at least 3 characters"),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),

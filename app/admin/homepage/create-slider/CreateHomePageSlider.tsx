@@ -52,10 +52,12 @@ const CreateHomePageSlider = () => {
       // Delete uploaded images from UploadThing
       await deleteImagesFromUploadThing(uploadedImageKeys);
     } else {
-      jsxToasts.successWithIcon(
-        "Slider created successfully!",
-        res.message || "Slider created"
-      );
+      jsxToasts.successWithIcon({
+        title: "Slider created successfully",
+        message: res.message,
+        href: "/admin/homepage",
+        hrefTitle: "Go to homepage",
+      });
       router.push("/admin/homepage");
     }
   };
@@ -94,10 +96,12 @@ const CreateHomePageSlider = () => {
                     // Track uploaded image key for deletion if needed
                     setUploadedImageKeys((prev) => [...prev, res[0].key]);
 
-                    jsxToasts.successWithIcon(
-                      "Banner uploaded",
-                      "Banner image uploaded successfully"
-                    );
+                    jsxToasts.successWithIcon({
+                      title: "Image uploaded successfully!",
+                      message: "",
+                      href: "/admin/homepage",
+                      hrefTitle: "Go to homepage",
+                    });
                   }
                 }}
                 onUploadError={(error: Error) => {
