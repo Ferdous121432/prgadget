@@ -95,7 +95,7 @@ function RemoveButton({ item }: { item: CartItem }) {
 const CartTable = ({ cart }: { cart?: Cart }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
+  // console.log(first)
   return (
     <>
       <h1 className="py-4 h2-bold">Shopping Cart</h1>
