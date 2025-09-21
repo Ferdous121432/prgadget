@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAllMainCategories } from "@/lib/actions/category.actions";
-import { Categories, UpdateMainCategory } from "@/types";
 import { SearchIcon } from "lucide-react";
 
 const Search = async () => {
@@ -25,9 +24,9 @@ const Search = async () => {
             <SelectItem key="All" value="all">
               All
             </SelectItem>
-            {categories.map((x) => (
-              <SelectItem key={x.category} value={x.category}>
-                {x.category}
+            {categories.map((x: { id: string; name: string }) => (
+              <SelectItem key={x.id} value={x.id}>
+                {x.name}
               </SelectItem>
             ))}
           </SelectContent>
