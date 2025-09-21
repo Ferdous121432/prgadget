@@ -189,7 +189,7 @@ const SearchPage = async (props: {
                 Any
               </Link>
             </li>
-            {categories.map((x: MainCategory) => (
+            {categories.map((x: any) => (
               <li key={x.id}>
                 <Link
                   className={`${category === x.name && "font-bold"}`}
