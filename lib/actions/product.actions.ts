@@ -133,7 +133,7 @@ export async function getAllProducts({
 }) {
   // If no query, use simple filtering
   if (!query || query === "all") {
-    const categoryFilter = category && category !== "all" ? { category } : {};
+    // const categoryFilter = category && category !== "all" ? { category } : {};
     const priceFilter: Prisma.ProductWhereInput =
       price && price !== "all"
         ? {
@@ -154,7 +154,7 @@ export async function getAllProducts({
 
     const data = await prisma.product.findMany({
       where: {
-        ...categoryFilter,
+        // ...categoryFilter,
         ...priceFilter,
         ...ratingFilter,
       },
@@ -172,7 +172,7 @@ export async function getAllProducts({
 
     const dataCount = await prisma.product.count({
       where: {
-        ...categoryFilter,
+        // ...categoryFilter,
         ...priceFilter,
         ...ratingFilter,
       },
