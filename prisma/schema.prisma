@@ -5,9 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../lib/generated/prisma"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+  // previewFeatures removed as "driverAdapters" is deprecated
 }
 
 datasource db {
@@ -48,7 +48,6 @@ model Product {
   id               String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String
   slug             String          @unique(map: "product_slug_key")
-  category         String?
   images           String[]
   image_keys       String[] // Keys for images stored in UploadThing
   brand            String?

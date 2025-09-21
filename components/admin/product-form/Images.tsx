@@ -129,10 +129,10 @@ function Images({
                               ...newImageKeys,
                             ]);
 
-                            jsxToasts.successWithIcon(
-                              "Upload successful",
-                              `${newImageUrls.length} image(s) uploaded successfully`
-                            );
+                            jsxToasts.successWithIcon({
+                              title: "Upload successful",
+                              message: `${newImageUrls.length} image(s) uploaded successfully`,
+                            });
                           } else {
                             jsxToasts.errorWithIcon(
                               "Upload failed",

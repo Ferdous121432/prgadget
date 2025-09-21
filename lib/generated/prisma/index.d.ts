@@ -5606,7 +5606,6 @@ export namespace Prisma {
     id: string | null
     name: string | null
     slug: string | null
-    category: string | null
     brand: string | null
     description: string | null
     stock: number | null
@@ -5625,7 +5624,6 @@ export namespace Prisma {
     id: string | null
     name: string | null
     slug: string | null
-    category: string | null
     brand: string | null
     description: string | null
     stock: number | null
@@ -5644,7 +5642,6 @@ export namespace Prisma {
     id: number
     name: number
     slug: number
-    category: number
     images: number
     image_keys: number
     brand: number
@@ -5681,7 +5678,6 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
-    category?: true
     brand?: true
     description?: true
     stock?: true
@@ -5700,7 +5696,6 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
-    category?: true
     brand?: true
     description?: true
     stock?: true
@@ -5719,7 +5714,6 @@ export namespace Prisma {
     id?: true
     name?: true
     slug?: true
-    category?: true
     images?: true
     image_keys?: true
     brand?: true
@@ -5827,7 +5821,6 @@ export namespace Prisma {
     id: string
     name: string
     slug: string
-    category: string | null
     images: string[]
     image_keys: string[]
     brand: string | null
@@ -5867,7 +5860,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
-    category?: boolean
     images?: boolean
     image_keys?: boolean
     brand?: boolean
@@ -5894,7 +5886,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
-    category?: boolean
     images?: boolean
     image_keys?: boolean
     brand?: boolean
@@ -5918,7 +5909,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
-    category?: boolean
     images?: boolean
     image_keys?: boolean
     brand?: boolean
@@ -5942,7 +5932,6 @@ export namespace Prisma {
     id?: boolean
     name?: boolean
     slug?: boolean
-    category?: boolean
     images?: boolean
     image_keys?: boolean
     brand?: boolean
@@ -5959,7 +5948,7 @@ export namespace Prisma {
     subSubCategoryId?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "category" | "images" | "image_keys" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt" | "mainCategoryId" | "subCategoryId" | "subSubCategoryId", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "images" | "image_keys" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt" | "mainCategoryId" | "subCategoryId" | "subSubCategoryId", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
@@ -5992,7 +5981,6 @@ export namespace Prisma {
       id: string
       name: string
       slug: string
-      category: string | null
       images: string[]
       image_keys: string[]
       brand: string | null
@@ -6438,7 +6426,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Product", 'String'>
     readonly name: FieldRef<"Product", 'String'>
     readonly slug: FieldRef<"Product", 'String'>
-    readonly category: FieldRef<"Product", 'String'>
     readonly images: FieldRef<"Product", 'String[]'>
     readonly image_keys: FieldRef<"Product", 'String[]'>
     readonly brand: FieldRef<"Product", 'String'>
@@ -18428,7 +18415,6 @@ export namespace Prisma {
     id: 'id',
     name: 'name',
     slug: 'slug',
-    category: 'category',
     images: 'images',
     image_keys: 'image_keys',
     brand: 'brand',
@@ -18926,7 +18912,6 @@ export namespace Prisma {
     id?: UuidFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
     slug?: StringFilter<"Product"> | string
-    category?: StringNullableFilter<"Product"> | string | null
     images?: StringNullableListFilter<"Product">
     image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableFilter<"Product"> | string | null
@@ -18952,7 +18937,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
-    category?: SortOrderInput | SortOrder
     images?: SortOrder
     image_keys?: SortOrder
     brand?: SortOrderInput | SortOrder
@@ -18981,7 +18965,6 @@ export namespace Prisma {
     OR?: ProductWhereInput[]
     NOT?: ProductWhereInput | ProductWhereInput[]
     name?: StringFilter<"Product"> | string
-    category?: StringNullableFilter<"Product"> | string | null
     images?: StringNullableListFilter<"Product">
     image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableFilter<"Product"> | string | null
@@ -19007,7 +18990,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
-    category?: SortOrderInput | SortOrder
     images?: SortOrder
     image_keys?: SortOrder
     brand?: SortOrderInput | SortOrder
@@ -19036,7 +19018,6 @@ export namespace Prisma {
     id?: UuidWithAggregatesFilter<"Product"> | string
     name?: StringWithAggregatesFilter<"Product"> | string
     slug?: StringWithAggregatesFilter<"Product"> | string
-    category?: StringNullableWithAggregatesFilter<"Product"> | string | null
     images?: StringNullableListFilter<"Product">
     image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -20013,7 +19994,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -20036,7 +20016,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -20059,7 +20038,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20082,7 +20060,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20105,7 +20082,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -20126,7 +20102,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20144,7 +20119,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21171,6 +21145,14 @@ export namespace Prisma {
     not?: NestedUuidFilter<$PrismaModel> | string
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -21184,14 +21166,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type StringNullableListFilter<$PrismaModel = never> = {
-    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    has?: string | StringFieldRefInput<$PrismaModel> | null
-    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
-    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
-    isEmpty?: boolean
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -21276,7 +21250,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
-    category?: SortOrder
     images?: SortOrder
     image_keys?: SortOrder
     brand?: SortOrder
@@ -21304,7 +21277,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
-    category?: SortOrder
     brand?: SortOrder
     description?: SortOrder
     stock?: SortOrder
@@ -21323,7 +21295,6 @@ export namespace Prisma {
     id?: SortOrder
     name?: SortOrder
     slug?: SortOrder
-    category?: SortOrder
     brand?: SortOrder
     description?: SortOrder
     stock?: SortOrder
@@ -22423,10 +22394,6 @@ export namespace Prisma {
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
   }
 
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
-  }
-
   export type ProductUpdateimagesInput = {
     set?: string[]
     push?: string | string[]
@@ -22435,6 +22402,10 @@ export namespace Prisma {
   export type ProductUpdateimage_keysInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -23344,7 +23315,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -23366,7 +23336,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -23443,7 +23412,6 @@ export namespace Prisma {
     id?: UuidFilter<"Product"> | string
     name?: StringFilter<"Product"> | string
     slug?: StringFilter<"Product"> | string
-    category?: StringNullableFilter<"Product"> | string | null
     images?: StringNullableListFilter<"Product">
     image_keys?: StringNullableListFilter<"Product">
     brand?: StringNullableFilter<"Product"> | string | null
@@ -23511,7 +23479,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -23533,7 +23500,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -23657,7 +23623,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -23679,7 +23644,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -24971,7 +24935,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -24993,7 +24956,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25078,7 +25040,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25100,7 +25061,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25122,7 +25082,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25144,7 +25103,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25227,7 +25185,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25249,7 +25206,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25328,7 +25284,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25370,7 +25325,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25392,7 +25346,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25414,7 +25367,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25440,7 +25392,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25480,7 +25431,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25502,7 +25452,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25524,7 +25473,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25544,7 +25492,6 @@ export namespace Prisma {
     id?: string
     name: string
     slug: string
-    category?: string | null
     images?: ProductCreateimagesInput | string[]
     image_keys?: ProductCreateimage_keysInput | string[]
     brand?: string | null
@@ -25564,7 +25511,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25586,7 +25532,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25608,7 +25553,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
-    category?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ProductUpdateimagesInput | string[]
     image_keys?: ProductUpdateimage_keysInput | string[]
     brand?: NullableStringFieldUpdateOperationsInput | string | null

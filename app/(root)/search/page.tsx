@@ -1,11 +1,10 @@
 import PaginationComponent from "@/components/shared/product/Pagination";
 import ProductCard from "@/components/shared/product/product-card";
 import { Button } from "@/components/ui/button";
-import {
-  getAllProducts,
-  getAllCategories,
-} from "@/lib/actions/product.actions";
-import { Categories, ProductWithId } from "@/types";
+import { getAllMainCategories } from "@/lib/actions/category.actions";
+import { getAllProducts } from "@/lib/actions/product.actions";
+import { MainCategory } from "@/lib/generated/prisma";
+import { Categories, ProductWithId, UpdateMainCategory } from "@/types";
 import Link from "next/link";
 
 const prices = [
@@ -126,7 +125,7 @@ const SearchPage = async (props: {
     page: currentPage,
   })) as { data: ProductWithId[]; totalPages: number; [key: string]: any };
 
-  const categories = (await getAllCategories()) as Categories;
+  const { data: categories } = (await getAllMainCategories()) as any;
 
   // Generate pagination range
   const generatePaginationRange = (current: number, total: number) => {
@@ -190,12 +189,12 @@ const SearchPage = async (props: {
                 Any
               </Link>
             </li>
-            {categories.map((x) => (
-              <li key={x.category}>
+            {categories.map((x: MainCategory) => (
+              <li key={x.id}>
                 <Link
-                  className={`${category === x.category && "font-bold"}`}
-                  href={getFilterUrl({ c: x.category, pg: "1" })}>
-                  {x.category}
+                  className={`${category === x.name && "font-bold"}`}
+                  href={getFilterUrl({ c: x.name, pg: "1" })}>
+                  {x.name}
                 </Link>
               </li>
             ))}

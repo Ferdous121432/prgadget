@@ -2,12 +2,8 @@ import DealCountdown from "@/components/DealCountdown";
 import IconBoxes from "@/components/IconBoxes";
 import ProductList from "@/components/shared/product/product-list";
 import ProductCarousel from "@/components/shared/product/ProductCarousel";
-import ViewAllProductsButton from "@/components/ViewAllProductsButton";
 import { getAllHomeSliders } from "@/lib/actions/homepage.actions";
-import {
-  getFeaturedProducts,
-  getLatestProducts,
-} from "@/lib/actions/product.actions";
+import { getLatestProducts } from "@/lib/actions/product.actions";
 import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
 import { ProductWithId } from "@/types";
 

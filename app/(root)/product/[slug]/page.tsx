@@ -40,9 +40,7 @@ const ProductDetailsPage = async (props: {
           {/* Details Column */}
           <div className="col-span-2 p-5">
             <div className="flex flex-col gap-6">
-              <p>
-                {product.brand} {product.category}
-              </p>
+              <p>{product.brand}</p>
               <h1 className="h3-bold">{product.name}</h1>
               <Rating value={Number(product.rating)} />
               <p>{product.numReviews} reviews</p>
