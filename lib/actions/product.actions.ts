@@ -189,8 +189,8 @@ export async function getAllProducts({
   const searchPattern = searchTerms.join(" | ");
 
   // Category filter
-  const categoryCondition =
-    category && category !== "all" ? `AND category = '${category}'` : "";
+  // const categoryCondition =
+  //   category && category !== "all" ? `AND category = '${category}'` : "";
 
   // Price filter
   // Price filter (supports multiple ranges, e.g. "10-20,30-40")
@@ -276,7 +276,6 @@ export async function getAllProducts({
         )
         .join("")}
     )
-    ${categoryCondition}
     ${priceCondition}
     ${ratingCondition}
     ORDER BY 
@@ -320,7 +319,6 @@ export async function getAllProducts({
         )
         .join("")}
     )
-    ${categoryCondition}
     ${priceCondition}
     ${ratingCondition}
   `;
