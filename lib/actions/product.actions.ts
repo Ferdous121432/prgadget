@@ -23,7 +23,7 @@ export async function createProduct(data: Product) {
   } catch (error) {
     return {
       success: false,
-      message: error.message || "Failed to create product.",
+      message: "Failed to create product.",
     };
   }
 }
@@ -133,7 +133,7 @@ export async function getAllProducts({
 }) {
   // If no query, use simple filtering
   if (!query || query === "all") {
-    const categoryFilter = category && category !== "all" ? { category } : {};
+    // const categoryFilter = category && category !== "all" ? { category } : {};
     const priceFilter: Prisma.ProductWhereInput =
       price && price !== "all"
         ? {
@@ -154,7 +154,7 @@ export async function getAllProducts({
 
     const data = await prisma.product.findMany({
       where: {
-        ...categoryFilter,
+        // ...categoryFilter,
         ...priceFilter,
         ...ratingFilter,
       },
@@ -172,7 +172,7 @@ export async function getAllProducts({
 
     const dataCount = await prisma.product.count({
       where: {
-        ...categoryFilter,
+        // ...categoryFilter,
         ...priceFilter,
         ...ratingFilter,
       },
@@ -189,8 +189,8 @@ export async function getAllProducts({
   const searchPattern = searchTerms.join(" | ");
 
   // Category filter
-  const categoryCondition =
-    category && category !== "all" ? `AND category = '${category}'` : "";
+  // const categoryCondition =
+  //   category && category !== "all" ? `AND category = '${category}'` : "";
 
   // Price filter
   // Price filter (supports multiple ranges, e.g. "10-20,30-40")
@@ -276,7 +276,6 @@ export async function getAllProducts({
         )
         .join("")}
     )
-    ${categoryCondition}
     ${priceCondition}
     ${ratingCondition}
     ORDER BY 
@@ -320,7 +319,6 @@ export async function getAllProducts({
         )
         .join("")}
     )
-    ${categoryCondition}
     ${priceCondition}
     ${ratingCondition}
   `;
@@ -355,38 +353,6 @@ export async function getProductById(id: string) {
     return convertPrismaObjectToJSObject(product);
   } catch (error) {
     return { success: false, message: "Failed to fetch product." };
-  }
-}
-
-// Get Call Categories
-export async function getAllCategories() {
-  try {
-    const categories = await prisma.product.groupBy({
-      by: ["category"],
-      _count: {
-        _all: true, // This makes the groupBy valid
-      },
-      where: {
-        category: {
-          not: undefined,
-        },
-      },
-      orderBy: {
-        category: "asc",
-      },
-    });
-
-    // Extract both categories and count
-    const data = categories.map(
-      (item: { category: string; _count: { _all: number } }) => ({
-        category: item.category,
-        count: item._count._all,
-      })
-    );
-    return data;
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    return { success: false, message: "Failed to fetch categories." };
   }
 }
 

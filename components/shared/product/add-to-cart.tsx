@@ -45,7 +45,10 @@ const AddToCart = ({ cart, item }: { cart?: Cart; item: CartItem }) => {
         return;
       }
       // Handle success remove from cart with JSX
-      jsxToasts.successWithIcon("Removed from cart!", res.message);
+      jsxToasts.successWithIcon({
+        title: "Removed from cart!",
+        message: res.message,
+      });
 
       return;
     });

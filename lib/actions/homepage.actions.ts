@@ -62,6 +62,6 @@ export async function deleteHomeSlider(id: string) {
     return { success: true, message: "Slider deleted successfully." };
   } catch (error) {
     console.log("Error deleting slider:", error);
-    return { success: false, message: error.message };
+    return { success: false, message: "Failed to delete slider." };
   }
 }
