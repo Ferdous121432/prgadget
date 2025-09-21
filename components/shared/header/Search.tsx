@@ -11,7 +11,7 @@ import { getAllMainCategories } from "@/lib/actions/category.actions";
 import { SearchIcon } from "lucide-react";
 
 const Search = async () => {
-  const categories = (await getAllMainCategories()) as any;
+  const { data: categories } = (await getAllMainCategories()) as any;
 
   return (
     <form action="/search" method="GET">

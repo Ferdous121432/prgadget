@@ -125,7 +125,7 @@ const SearchPage = async (props: {
     page: currentPage,
   })) as { data: ProductWithId[]; totalPages: number; [key: string]: any };
 
-  const categories = (await getAllMainCategories()) as any;
+  const { data: categories } = (await getAllMainCategories()) as any;
 
   // Generate pagination range
   const generatePaginationRange = (current: number, total: number) => {
@@ -189,7 +189,7 @@ const SearchPage = async (props: {
                 Any
               </Link>
             </li>
-            {categories.map((x: any) => (
+            {categories.map((x: MainCategory) => (
               <li key={x.id}>
                 <Link
                   className={`${category === x.name && "font-bold"}`}

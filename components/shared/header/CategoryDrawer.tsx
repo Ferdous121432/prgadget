@@ -17,7 +17,7 @@ type Categories = {
 }[];
 
 const CategoryDrawer = async () => {
-  const categories = (await getAllMainCategories()) as any;
+  const { data: categories } = (await getAllMainCategories()) as any;
   // console.log("Categories:", categories);
 
   return (
