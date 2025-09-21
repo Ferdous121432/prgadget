@@ -26,7 +26,6 @@ function AddButton({ item }: { item: CartItem }) {
   const [isPending, startTransition] = useTransition();
   return (
     <Button
-      asChild
       disabled={isPending}
       variant="outline"
       type="button"
@@ -62,7 +61,6 @@ function RemoveButton({ item }: { item: CartItem }) {
   const [isPending, startTransition] = useTransition();
   return (
     <Button
-      asChild
       disabled={isPending}
       variant="outline"
       type="button"
@@ -157,7 +155,6 @@ const CartTable = ({ cart }: { cart?: Cart }) => {
                 </span>
               </div>
               <Button
-                asChild
                 className="w-full button-primary"
                 disabled={isPending}
                 onClick={() =>
