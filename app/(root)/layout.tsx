@@ -1,6 +1,7 @@
 import Footer from "@/components/shared/footer/Footer";
 import Header from "@/components/shared/header/Header";
 import type { Metadata } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "PRgadget",
