@@ -24,7 +24,6 @@ const CredentialsSignInForm = () => {
 
     return (
       <Button
-        asChild
         disabled={pending}
         className="w-full button-primary"
         variant="default">

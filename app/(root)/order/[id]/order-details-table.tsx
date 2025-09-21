@@ -86,7 +86,6 @@ const OrderDetailsTable = ({
 
     return (
       <Button
-        asChild
         type="button"
         disabled={isPending}
         className="button-primary"
@@ -110,8 +109,6 @@ const OrderDetailsTable = ({
 
     return (
       <Button
-        asChild
-        type="button"
         disabled={isPending}
         className="button-primary"
         onClick={() =>

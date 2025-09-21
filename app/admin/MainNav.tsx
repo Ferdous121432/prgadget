@@ -52,7 +52,7 @@ const MainNav = ({
     <>
       <Drawer direction="left">
         <DrawerTrigger>
-          <Button asChild variant="outline" className="">
+          <Button variant="outline" className="">
             <MenuIcon />
           </Button>
         </DrawerTrigger>
@@ -74,7 +74,7 @@ const MainNav = ({
             ))}
           </DrawerHeader>
           <DrawerFooter>
-            <Button asChild>Submit</Button>
+            <Button>Submit</Button>
             <DrawerClose>
               <Button variant="outline">Cancel</Button>
             </DrawerClose>

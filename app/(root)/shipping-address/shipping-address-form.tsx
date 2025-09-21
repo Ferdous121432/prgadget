@@ -174,7 +174,6 @@ const ShippingAddressForm = ({ address }: { address: ShippingAddress }) => {
             </div>
             <div className="flex gap-2">
               <Button
-                asChild
                 type="submit"
                 className="button-primary"
                 disabled={isPending}>
