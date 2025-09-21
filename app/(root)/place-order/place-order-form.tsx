@@ -37,8 +37,6 @@ const PlaceOrderForm = () => {
   const PlaceOrderButton = () => {
     return (
       <Button
-        asChild
-        type="button"
         onClick={handleSubmit}
         disabled={isPending}
         className="w-full button-primary">

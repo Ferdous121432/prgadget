@@ -87,7 +87,6 @@ const StripePayment = ({
           />
         </div>
         <Button
-          asChild
           className="w-full button-primary "
           size="lg"
           disabled={stripe == null || elements == null || isLoading}>
