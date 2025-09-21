@@ -5,7 +5,7 @@ export const APP_LOGO = logo;
 
 export const APP_DESCRIPTION = "A modern ecommerce store built with Next.js";
 export const SERVER_URL =
-  process.env.NEXT_PUBLIC_SERVER_URL || "https://prgadget.vercel.app";
+  process.env.NEXT_PUBLIC_SERVER_URL || "https://prgt.firdous.pro";
 export const LATEST_PRODUCTS_LIMIT = 10;
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
 export const DB_LATEST_SALES_TAKE = 10;
