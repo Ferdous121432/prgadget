@@ -86,20 +86,6 @@ export async function deleteProduct(id: string) {
   }
 }
 
-// Get latest products
-
-export async function getLatestProducts() {
-  // const prisma = new PrismaClient();
-
-  const data = await prisma.product.findMany({
-    take: LATEST_PRODUCTS_LIMIT,
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return convertPrismaObjectToJSObject(data);
-}
-
 //Get single product by slug
 export async function getProductBySlug(slug: string) {
   // const prisma = new PrismaClient();
@@ -366,12 +352,29 @@ export async function getFeaturedProducts() {
       orderBy: {
         createdAt: "desc",
       },
-      take: 5,
+      take: LATEST_PRODUCTS_LIMIT,
     });
 
     return convertPrismaObjectToJSObject(products);
   } catch (error) {
     console.error("Error fetching featured products:", error);
     return { success: false, message: "Failed to fetch featured products." };
+  }
+}
+
+// Get latest products
+
+export async function getLatestProducts() {
+  try {
+    const products = await prisma.product.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: LATEST_PRODUCTS_LIMIT,
+    });
+    return convertPrismaObjectToJSObject(products);
+  } catch (error) {
+    console.error("Error fetching latest products:", error);
+    return { success: false, message: "Failed to fetch latest products." };
   }
 }

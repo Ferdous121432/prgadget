@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/db/prisma";
 import { UTApi } from "uploadthing/server";
 import { utapi } from "@/app/api/uploadthing/uploadthing";
+import { convertPrismaObjectToJSObject } from "../utils";
 
 // Create a new homepage slider
 export async function createHomeSlider(data: any) {
@@ -28,7 +29,7 @@ export async function getAllHomeSliders() {
         createdAt: "desc",
       },
     });
-    return sliders;
+    return convertPrismaObjectToJSObject(sliders);
   } catch (error) {
     return [];
   }

@@ -47,6 +47,7 @@ export default function RootLayout({
           <Toaster position="top-center" closeButton />
           {children}
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
