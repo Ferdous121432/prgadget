@@ -267,3 +267,23 @@ export async function getCategoriesForProductForm() {
     return { mainCategories: [], subCategories: [], subSubCategories: [] };
   }
 }
+
+export async function getFeaturedCategories() {
+  try {
+    const categories = await prisma.mainCategory.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        image: true,
+      },
+    });
+    return { success: true, data: categories };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to retrieve featured categories",
+    };
+  }
+}

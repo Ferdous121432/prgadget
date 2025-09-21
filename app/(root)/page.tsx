@@ -1,5 +1,6 @@
 import DealCountdown from "@/components/DealCountdown";
 import IconBoxes from "@/components/IconBoxes";
+import FeaturedCategory from "@/components/shared/homepage/FeaturedCategory";
 import ProductList from "@/components/shared/product/product-list";
 import ProductCarousel from "@/components/shared/product/ProductCarousel";
 import { getAllHomeSliders } from "@/lib/actions/homepage.actions";
@@ -11,10 +12,19 @@ import React from "react";
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+type HomeSlider = {
+  id: string;
+  // image_Key: string;
+  image_url: string;
+  image_name: string;
+  linked_url: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 const Page = async () => {
   const latestProducts = (await getLatestProducts()) as ProductWithId[];
-  const homeSlider = (await getAllHomeSliders()) as any;
-  console.log("Home Sliders:", homeSlider);
+  const homeSlider: HomeSlider[] = await getAllHomeSliders();
 
   return (
     <>
@@ -25,7 +35,13 @@ const Page = async () => {
         title="Newest Arrival"
         limit={LATEST_PRODUCTS_LIMIT}
       />
-      {/* <ViewAllProductsButton /> */}
+      <ProductList
+        data={latestProducts}
+        title="Newest Arrival"
+        limit={LATEST_PRODUCTS_LIMIT}
+      />
+      <FeaturedCategory />
+
       <DealCountdown />
     </>
   );

@@ -7,7 +7,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { getAllMainCategories } from "@/lib/actions/category.actions";
+import { getFeaturedCategories } from "@/lib/actions/category.actions";
+import { FeaturedCategories } from "@/types";
 import { MenuIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -17,8 +18,7 @@ type Categories = {
 }[];
 
 const CategoryDrawer = async () => {
-  const { data: categories } = (await getAllMainCategories()) as any;
-  // console.log("Categories:", categories);
+  const { data: categories = [] } = (await getFeaturedCategories()) as any;
 
   return (
     <Drawer direction="left">
@@ -31,14 +31,14 @@ const CategoryDrawer = async () => {
         <DrawerHeader>
           <DrawerTitle>Select a category</DrawerTitle>
           <div className="space-y-1 mt-4">
-            {categories.map((x: { id: string; name: string }) => (
+            {categories.map((x: FeaturedCategories) => (
               <Button
                 variant="ghost"
                 className="w-full justify-start"
                 key={x.id}
                 asChild>
                 <DrawerClose asChild>
-                  <Link href={`/search?category=${x.id}`}>{x.name}</Link>
+                  <Link href={`/search?category=${x.slug}`}>{x.name}</Link>
                 </DrawerClose>
               </Button>
             ))}

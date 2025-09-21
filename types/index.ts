@@ -3,6 +3,7 @@ import {
   createMainCategorySchema,
   createSubCategorySchema,
   createSubSubCategorySchema,
+  FeaturedCategoriesSchema,
   insertCartSchema,
   insertOrderItemSchema,
   insertOrderSchema,
@@ -54,6 +55,7 @@ export type CreateSubCategory = z.infer<typeof createSubCategorySchema>;
 export type UpdateSubCategory = z.infer<typeof updateSubCategorySchema>;
 export type CreateSubSubCategory = z.infer<typeof createSubSubCategorySchema>;
 export type UpdateSubSubCategory = z.infer<typeof updateSubSubCategorySchema>;
+export type FeaturedCategories = z.infer<typeof FeaturedCategoriesSchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;

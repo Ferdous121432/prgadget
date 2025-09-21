@@ -6,8 +6,12 @@ export const APP_LOGO = logo;
 export const APP_DESCRIPTION = "A modern ecommerce store built with Next.js";
 export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "https://prgt.firdous.pro";
-export const LATEST_PRODUCTS_LIMIT = 10;
+
+// Frontend Query Limits
+export const LATEST_PRODUCTS_LIMIT = 5;
 export const PAGE_SIZE = Number(process.env.PAGE_SIZE) || 12;
+
+// DB Query Limits
 export const DB_LATEST_SALES_TAKE = 10;
 export const DB_ADMIN_PRODUCT_TAKE = 10;
 export const DB_ADMIN_USERS_TAKE = 10;

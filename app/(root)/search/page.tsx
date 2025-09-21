@@ -125,7 +125,7 @@ const SearchPage = async (props: {
     page: currentPage,
   })) as { data: ProductWithId[]; totalPages: number; [key: string]: any };
 
-  const { data: categories } = (await getAllMainCategories()) as any;
+  const { data: categories = [] } = (await getAllMainCategories()) as any;
 
   // Generate pagination range
   const generatePaginationRange = (current: number, total: number) => {

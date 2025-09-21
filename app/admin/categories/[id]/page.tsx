@@ -6,7 +6,6 @@ import CategoryForm from "../create/Category-form";
 import {
   getAllMainCategories,
   getMainCategoryById,
-  getSubCategoryById,
 } from "@/lib/actions/category.actions";
 import { MainCategory } from "@/lib/generated/prisma";
 

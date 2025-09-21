@@ -8,10 +8,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getAllMainCategories } from "@/lib/actions/category.actions";
+import { UpdateMainCategory } from "@/types";
 import { SearchIcon } from "lucide-react";
 
 const Search = async () => {
-  const { data: categories } = (await getAllMainCategories()) as any;
+  const { data: categories } = (await getAllMainCategories()) as {
+    data: UpdateMainCategory[];
+    totalPages: number;
+  };
 
   return (
     <form action="/search" method="GET">

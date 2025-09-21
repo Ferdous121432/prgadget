@@ -240,3 +240,10 @@ export const sessionUserSchema = z.object({
   role: z.string(),
   avatar: z.string(),
 });
+
+export const FeaturedCategoriesSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  image: z.string(),
+});
