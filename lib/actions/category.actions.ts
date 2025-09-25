@@ -9,8 +9,7 @@ import {
   CreateSubSubCategory,
   UpdateSubSubCategory,
 } from "@/types";
-import { z } from "zod";
-import { jsxToasts } from "@/lib/customToaster";
+import { convertPrismaObjectToJSObject } from "../utils";
 
 //MAIN CATEGORY ACTIONS
 
@@ -285,5 +284,47 @@ export async function getFeaturedCategories() {
       success: false,
       message: "Failed to retrieve featured categories",
     };
+  }
+}
+
+// categories, sub categories, sub sub categories for navigation
+
+export async function getNavCategories() {
+  try {
+    const categories = await prisma.mainCategory.findMany({
+      include: {
+        subcategories: {
+          include: {
+            subsubcategories: true,
+          },
+        },
+      },
+    });
+    return categories;
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to retrieve featured categories",
+    };
+  }
+}
+
+// get category by slug
+export async function getCategoryBySlug(slug: string) {
+  if (!slug) {
+    return { success: false, message: "No slug provided" };
+  }
+  try {
+    const category = await prisma.mainCategory.findUnique({
+      where: { slug },
+      include: {
+        products: { take: 10 },
+      },
+    });
+    return { success: true, data: convertPrismaObjectToJSObject(category) };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Failed to retrieve category" };
   }
 }

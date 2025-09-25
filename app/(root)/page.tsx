@@ -4,7 +4,10 @@ import FeaturedCategory from "@/components/shared/homepage/FeaturedCategory";
 import ProductList from "@/components/shared/product/product-list";
 import ProductCarousel from "@/components/shared/product/ProductCarousel";
 import { getAllHomeSliders } from "@/lib/actions/homepage.actions";
-import { getLatestProducts } from "@/lib/actions/product.actions";
+import {
+  getFeaturedProducts,
+  getLatestProducts,
+} from "@/lib/actions/product.actions";
 import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
 import { ProductWithId } from "@/types";
 
@@ -23,6 +26,7 @@ type HomeSlider = {
 };
 
 const Page = async () => {
+  const featuredProducts = (await getFeaturedProducts()) as ProductWithId[];
   const latestProducts = (await getLatestProducts()) as ProductWithId[];
   const homeSlider: HomeSlider[] = await getAllHomeSliders();
 
@@ -31,8 +35,8 @@ const Page = async () => {
       {homeSlider.length > 0 && <ProductCarousel data={homeSlider} />}
       <IconBoxes />
       <ProductList
-        data={latestProducts}
-        title="Newest Arrival"
+        data={featuredProducts}
+        title="Featured Products"
         limit={LATEST_PRODUCTS_LIMIT}
       />
       <ProductList
