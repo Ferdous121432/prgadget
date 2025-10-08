@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import React from "react";
-import FilterSidebarContent from "./filter";
+import { CategoryFilter } from "./filter";
 
 interface HomeSidebarProps {
   children: React.ReactNode | React.ReactNode[];
@@ -57,11 +57,14 @@ export default function FilterSidebar({ children }: HomeSidebarProps) {
                 </Button>
               </div>
               <div className="flex-1 overflow-y-auto">
-                <div>sidebar</div>
+                <div>
+                  <CategoryFilter />
+                </div>
               </div>
             </div>
           </div>
         )}
+
         {/* Sidebar for md and up */}
         <div
           className={`transition-all duration-300 overflow-hidden hidden md:block ${
@@ -71,8 +74,7 @@ export default function FilterSidebar({ children }: HomeSidebarProps) {
           <div className="h-full">
             {open && (
               <div>
-                {/* <FilterSidebarContent /> */}
-                Sidebar
+                <CategoryFilter />
               </div>
             )}
           </div>

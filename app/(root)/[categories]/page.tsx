@@ -8,22 +8,45 @@ export const metadata = {
   description: "Explore our categories",
 };
 
-async function page(props: { params: { categories: string } }) {
-  const { categories } = await props.params;
-
+async function page(props: {
+  params: Promise<{ categories: string }>;
+  searchParams: Promise<{
+    q?: string;
+    category?: string;
+    price?: string;
+    rating?: string;
+    sort?: string;
+    page?: string;
+  }>;
+}) {
+  const paramsObj = await props.params;
+  const { categories } = paramsObj;
+  const searchParamsObj = await props.searchParams; // Await the promise
   const { data: category } = (await getCategoryBySlug(categories)) as any;
-  console.log("category by slug", category);
+
+  console.log({
+    "categories param": categories,
+    searchParams: searchParamsObj,
+  });
+  // console.log("category by slug", category);
+
+  const initialFilters = {
+    q: searchParamsObj.q ?? "all",
+    category: searchParamsObj.category ?? "all",
+    price: searchParamsObj.price ?? "all",
+    rating: searchParamsObj.rating ?? "all",
+    sort: searchParamsObj.sort ?? "newest",
+    page: searchParamsObj.page ?? "1",
+  };
 
   if (!category) {
     return <div>Category not found</div>;
   }
 
   return (
-    <div>
-      <FilterSidebar>
-        <CategoryProducts products={category.products} />
-      </FilterSidebar>
-    </div>
+    <FilterSidebar>
+      <CategoryProducts products={category.products} />
+    </FilterSidebar>
   );
 }
 

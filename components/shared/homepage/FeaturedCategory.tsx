@@ -22,7 +22,7 @@ import { FeaturedCategories } from "@/types";
 
 async function FeaturedCategory() {
   const { data: categories } = (await getFeaturedCategories()) as any;
-  console.log("Categories:", categories);
+  // console.log("Categories:", categories);
 
   return (
     <div>

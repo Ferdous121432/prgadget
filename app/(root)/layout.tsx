@@ -16,7 +16,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const navCategories = (await getNavCategories()) as any[];
-  console.log("navCategories", navCategories);
+  // console.log("navCategories", navCategories);
   return (
     <div className="flex h-screen flex-col ">
       <Header />

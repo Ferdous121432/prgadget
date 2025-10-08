@@ -26,9 +26,11 @@ type HomeSlider = {
 };
 
 const Page = async () => {
-  const featuredProducts = (await getFeaturedProducts()) as ProductWithId[];
-  const latestProducts = (await getLatestProducts()) as ProductWithId[];
-  const homeSlider: HomeSlider[] = await getAllHomeSliders();
+  const [featuredProducts, latestProducts, homeSlider] = await Promise.all([
+    getFeaturedProducts() as Promise<ProductWithId[]>,
+    getLatestProducts() as Promise<ProductWithId[]>,
+    getAllHomeSliders() as Promise<HomeSlider[]>,
+  ]);
 
   return (
     <>
