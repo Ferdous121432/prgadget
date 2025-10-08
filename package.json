@@ -45,6 +45,7 @@
     "@tabler/icons-react": "^3.34.1",
     "@tanstack/react-table": "^8.21.3",
     "@uploadthing/react": "^7.3.2",
+    "@upstash/redis": "^1.35.5",
     "@vercel/speed-insights": "^1.2.0",
     "bcrypt-ts-edge": "^3.0.1",
     "class-variance-authority": "^0.7.1",

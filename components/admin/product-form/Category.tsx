@@ -16,7 +16,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { insertProductSchema } from "@/lib/validators";
-import { ProductSchema } from "@/types";
+import { ProductSchema, ProductWithId } from "@/types";
 import { SelectValue } from "@radix-ui/react-select";
 import React from "react";
 import { useFormContext, ControllerRenderProps } from "react-hook-form";
@@ -32,12 +32,12 @@ function Category({
   subCategories?: { id: string; name: string; mainCategoryId: string }[];
   subSubCategories?: { id: string; name: string; subCategoryId: string }[];
 }) {
-  const form = useFormContext<ProductSchema>();
-  console.log({
-    mainCategories,
-    subCategories,
-    subSubCategories,
-  });
+  const form = useFormContext<ProductSchema | ProductWithId>();
+  // console.log({
+  //   mainCategories,
+  //   subCategories,
+  //   subSubCategories,
+  // });
   return (
     <div className="w-full flex flex-col gap-5">
       {/* Category & Brand */}

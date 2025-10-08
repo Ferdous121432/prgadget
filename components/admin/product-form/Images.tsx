@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ProductSchema } from "@/types";
+import { ProductSchema, ProductWithId } from "@/types";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import { Dispatch, SetStateAction } from "react";
@@ -30,7 +30,7 @@ function Images({
   uploadedImageKeys,
   setUploadedImageKeys,
 }: ImagesProps) {
-  const form = useFormContext<ProductSchema>();
+  const form = useFormContext<ProductSchema | ProductWithId>();
 
   const images = form.watch("images");
   const isFeatured = form.watch("isFeatured");

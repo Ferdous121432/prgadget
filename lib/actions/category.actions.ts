@@ -10,6 +10,12 @@ import {
   UpdateSubSubCategory,
 } from "@/types";
 import { convertPrismaObjectToJSObject } from "../utils";
+import {
+  getCachedData,
+  invalidateCategoryCaches,
+  generateCacheKey,
+  CACHE_CONFIG,
+} from "../cache/redis";
 
 //MAIN CATEGORY ACTIONS
 
@@ -20,6 +26,10 @@ export async function createMainCategory(data: CreateMainCategory) {
       data,
     });
     revalidatePath("/admin/categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Main category created successfully." };
   } catch (error) {
     console.error(error);
@@ -35,6 +45,10 @@ export async function updateMainCategory(data: UpdateMainCategory) {
       data,
     });
     revalidatePath("/admin/categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Main category updated successfully." };
   } catch (error) {
     console.error(error);
@@ -49,6 +63,10 @@ export async function deleteMainCategory(id: string) {
       where: { id },
     });
     revalidatePath("/admin/categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Main category deleted successfully." };
   } catch (error) {
     console.error(error);
@@ -56,21 +74,30 @@ export async function deleteMainCategory(id: string) {
   }
 }
 
-// get all main categories
+// get all main categories with Redis cache
 export async function getAllMainCategories() {
-  try {
-    const mainCategories = await prisma.mainCategory.findMany({
-      include: {
-        subcategories: true,
-      },
-    });
-    const totalcategories = await prisma.mainCategory.count();
-    const totalPages = Math.ceil(totalcategories / 10);
-    return { success: true, data: mainCategories, totalPages };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Failed to retrieve main categories" };
-  }
+  return getCachedData(
+    CACHE_CONFIG.MAIN_CATEGORIES.key,
+    async () => {
+      try {
+        const mainCategories = await prisma.mainCategory.findMany({
+          include: {
+            subcategories: true,
+          },
+        });
+        const totalcategories = await prisma.mainCategory.count();
+        const totalPages = Math.ceil(totalcategories / 10);
+        return { success: true, data: mainCategories, totalPages };
+      } catch (error) {
+        console.error(error);
+        return {
+          success: false,
+          message: "Failed to retrieve main categories",
+        };
+      }
+    },
+    CACHE_CONFIG.MAIN_CATEGORIES.ttl
+  );
 }
 
 // get main category by id
@@ -98,6 +125,10 @@ export const createSubCategories = async (data: CreateSubCategory) => {
       data,
     });
     revalidatePath("/admin/sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub category created successfully." };
   } catch (error) {
     return {
@@ -115,6 +146,10 @@ export async function updateSubCategory(data: UpdateSubCategory) {
       data,
     });
     revalidatePath("/admin/sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub category updated successfully." };
   } catch (error) {
     console.error(error);
@@ -129,6 +164,10 @@ export async function deleteSubCategory(id: string) {
       where: { id },
     });
     revalidatePath("/admin/sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub category deleted successfully." };
   } catch (error) {
     console.error(error);
@@ -179,6 +218,10 @@ export const createSubSubCategories = async (data: CreateSubSubCategory) => {
       data,
     });
     revalidatePath("/admin/sub-sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub-Sub category created successfully." };
   } catch (error) {
     return {
@@ -196,6 +239,10 @@ export async function updateSubSubCategory(data: UpdateSubSubCategory) {
       data,
     });
     revalidatePath("/admin/sub-sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub-Sub category updated successfully." };
   } catch (error) {
     console.error(error);
@@ -210,6 +257,10 @@ export async function deleteSubSubCategory(id: string) {
       where: { id },
     });
     revalidatePath("/admin/sub-sub-categories");
+
+    // Invalidate category caches
+    await invalidateCategoryCaches();
+
     return { success: true, message: "Sub-Sub category deleted successfully." };
   } catch (error) {
     console.error(error);
@@ -267,64 +318,154 @@ export async function getCategoriesForProductForm() {
   }
 }
 
+// get featured categories with Redis cache
 export async function getFeaturedCategories() {
-  try {
-    const categories = await prisma.mainCategory.findMany({
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        image: true,
-      },
-    });
-    return { success: true, data: categories };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      message: "Failed to retrieve featured categories",
-    };
-  }
-}
-
-// categories, sub categories, sub sub categories for navigation
-
-export async function getNavCategories() {
-  try {
-    const categories = await prisma.mainCategory.findMany({
-      include: {
-        subcategories: {
-          include: {
-            subsubcategories: true,
+  return getCachedData(
+    CACHE_CONFIG.FEATURED_CATEGORIES.key,
+    async () => {
+      try {
+        const categories = await prisma.mainCategory.findMany({
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            image: true,
           },
-        },
-      },
-    });
-    return categories;
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      message: "Failed to retrieve featured categories",
-    };
-  }
+        });
+        return { success: true, data: categories };
+      } catch (error) {
+        console.error(error);
+        return {
+          success: false,
+          message: "Failed to retrieve featured categories",
+        };
+      }
+    },
+    CACHE_CONFIG.FEATURED_CATEGORIES.ttl
+  );
 }
 
-// get category by slug
+// categories for navigation with Redis cache
+export async function getNavCategories() {
+  return getCachedData(
+    CACHE_CONFIG.NAV_CATEGORIES.key,
+    async () => {
+      try {
+        const categories = await prisma.mainCategory.findMany({
+          include: {
+            subcategories: {
+              include: {
+                subsubcategories: true,
+              },
+            },
+          },
+        });
+        return categories;
+      } catch (error) {
+        console.error(error);
+        return {
+          success: false,
+          message: "Failed to retrieve featured categories",
+        };
+      }
+    },
+    CACHE_CONFIG.NAV_CATEGORIES.ttl
+  );
+}
+
+// get category by slug with Redis cache
 export async function getCategoryBySlug(slug: string) {
   if (!slug) {
     return { success: false, message: "No slug provided" };
   }
-  try {
-    const category = await prisma.mainCategory.findUnique({
-      where: { slug },
-      include: {
-        products: { take: 10 },
-      },
-    });
-    return { success: true, data: convertPrismaObjectToJSObject(category) };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Failed to retrieve category" };
+
+  const cacheKey = generateCacheKey(CACHE_CONFIG.CATEGORY_BY_SLUG.key, {
+    slug,
+  });
+
+  return getCachedData(
+    cacheKey,
+    async () => {
+      try {
+        const category = await prisma.mainCategory.findUnique({
+          where: { slug },
+          include: {
+            products: { take: 10 },
+          },
+        });
+        return { success: true, data: convertPrismaObjectToJSObject(category) };
+      } catch (error) {
+        console.error(error);
+        return { success: false, message: "Failed to retrieve category" };
+      }
+    },
+    CACHE_CONFIG.CATEGORY_BY_SLUG.ttl
+  );
+}
+
+// get sub category by slug with Redis cache
+export async function getSubCategoryBySlug(slug: string) {
+  if (!slug) {
+    return { success: false, message: "No slug provided" };
   }
+
+  const cacheKey = generateCacheKey(CACHE_CONFIG.SUB_CATEGORY_BY_SLUG.key, {
+    slug,
+  });
+
+  return getCachedData(
+    cacheKey,
+    async () => {
+      try {
+        const subCategory = await prisma.subCategory.findUnique({
+          where: { slug },
+          include: {
+            products: { take: 10 },
+          },
+        });
+        return {
+          success: true,
+          data: convertPrismaObjectToJSObject(subCategory),
+        };
+      } catch (error) {
+        console.error(error);
+        return { success: false, message: "Failed to retrieve sub category" };
+      }
+    },
+    CACHE_CONFIG.SUB_CATEGORY_BY_SLUG.ttl
+  );
+}
+
+// get sub sub category by slug with Redis cache
+export async function getSubSubCategoryBySlug(slug: string) {
+  if (!slug) {
+    return { success: false, message: "No slug provided" };
+  }
+  const cacheKey = generateCacheKey(CACHE_CONFIG.SUB_SUB_CATEGORY_BY_SLUG.key, {
+    slug,
+  });
+  return getCachedData(
+    cacheKey,
+    async () => {
+      try {
+        const subSubCategory = await prisma.subSubCategory.findUnique({
+          where: { slug },
+          include: {
+            products: { take: 10 },
+          },
+        });
+        return {
+          success: true,
+          data: convertPrismaObjectToJSObject(subSubCategory),
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          success: false,
+          message: "Failed to retrieve sub sub category",
+        };
+      }
+    },
+    CACHE_CONFIG.SUB_SUB_CATEGORY_BY_SLUG.ttl
+  );
 }

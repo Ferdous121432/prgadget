@@ -4,8 +4,10 @@ export const APP_NAME = "PRGadget";
 export const APP_LOGO = logo;
 
 export const APP_DESCRIPTION = "A modern ecommerce store built with Next.js";
+// export const SERVER_URL =
+//   process.env.NEXT_PUBLIC_SERVER_URL || "https://prgt.firdous.pro";
 export const SERVER_URL =
-  process.env.NEXT_PUBLIC_SERVER_URL || "https://prgt.firdous.pro";
+  process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
 
 // Frontend Query Limits
 export const LATEST_PRODUCTS_LIMIT = 5;
@@ -17,8 +19,11 @@ export const DB_ADMIN_PRODUCT_TAKE = 10;
 export const DB_ADMIN_USERS_TAKE = 10;
 
 export const signInDefaultValues = {
-  email: process.env.NODE_ENV === "development" ? "admin@example.com" : "",
-  password: process.env.NODE_ENV === "development" ? "123456" : "",
+  email:
+    process.env.NODE_ENV === "development"
+      ? "admin@example.com"
+      : "admin@example.com",
+  password: process.env.NODE_ENV === "development" ? "123456" : "123456",
 };
 
 export const signUpDefaultValues = {

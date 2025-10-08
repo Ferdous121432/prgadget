@@ -14,6 +14,10 @@ import { useState } from "react";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
 import Category from "./product-form/Category";
+import {
+  deleteImagesFromUploadThing,
+  omitEmptyFields,
+} from "@/lib/hooks/util-functions";
 
 const ProductForm = ({
   type,
@@ -36,33 +40,19 @@ const ProductForm = ({
   const [uploadedImageKeys, setUploadedImageKeys] = useState<string[]>([]);
 
   const form = useForm<ProductSchema | ProductWithId>({
-    resolver: (type === "Update"
-      ? zodResolver(updateProductSchema)
-      : zodResolver(insertProductSchema)) as any,
+    resolver:
+      type === "Update"
+        ? zodResolver(updateProductSchema as any)
+        : zodResolver(insertProductSchema as any),
     defaultValues:
       product && type === "Update" ? product : productDefaultValues,
   });
-
-  function omitEmptyFields<T extends Record<string, any>>(obj: T): Partial<T> {
-    return Object.fromEntries(
-      Object.entries(obj).filter(
-        ([, value]) => value !== "" && value !== null && value !== undefined
-      )
-    ) as Partial<T>;
-  }
-
-  async function deleteImagesFromUploadThing(keys: string[]) {
-    await fetch("/api/delete-uploadthing", {
-      method: "POST",
-      body: JSON.stringify({ keys }),
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   const onSubmit: SubmitHandler<ProductSchema | ProductWithId> = async (
     values
   ) => {
     const filteredValues = omitEmptyFields(values) as ProductSchema;
+
     // On Create
     if (type === "Create") {
       const res = await createProduct(filteredValues);

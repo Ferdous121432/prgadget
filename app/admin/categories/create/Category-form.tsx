@@ -32,6 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { UploadButton } from "@/lib/uploadthing";
 import { useState } from "react";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/util-functions";
 
 const CategoryForm = ({
   type,
@@ -46,21 +47,13 @@ const CategoryForm = ({
   const [uploadedImageKeys, setUploadedImageKeys] = useState<string[]>([]);
 
   const form = useForm<MainCategory | CreateMainCategory>({
-    resolver: (type === "Update"
-      ? (zodResolver(updateMainCategorySchema) as any)
-      : zodResolver(createMainCategorySchema)) as any,
+    resolver:
+      type === "Update"
+        ? (zodResolver(updateMainCategorySchema) as any)
+        : (zodResolver(createMainCategorySchema) as any),
     defaultValues:
       category && type === "Update" ? category : mainCategoryDefaultValues,
   });
-
-  // Function to delete images from UploadThing by their keys
-  async function deleteImagesFromUploadThing(keys: string[]) {
-    await fetch("/api/delete-uploadthing", {
-      method: "POST",
-      body: JSON.stringify({ keys }),
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   const onSubmit: SubmitHandler<CreateMainCategory> = async (values) => {
     // On Create
