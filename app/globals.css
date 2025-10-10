@@ -83,7 +83,7 @@ body {
 
 @layer utilities {
   .wrapper {
-    @apply max-w-7xl lg:mx-auto p-5 md:px-10 w-full;
+    @apply max-w-7xl lg:mx-auto p-3 md:px-5 w-full;
   }
   .text-destructive {
     @apply text-red-900 font-semibold;

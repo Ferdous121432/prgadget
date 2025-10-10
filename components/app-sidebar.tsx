@@ -10,17 +10,13 @@ import {
   IconFileDescription,
   IconHome,
   IconBrandProducthunt,
-  IconHelp,
   IconCategory,
   IconCategoryMinus,
   IconCategoryPlus,
   IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
   IconUsers,
   IconUserStar,
-  IconMail,
+  IconAffiliate,
 } from "@tabler/icons-react";
 
 import { NavDocuments } from "@/components/nav-documents";
@@ -120,28 +116,17 @@ const data = {
       ],
     },
   ],
-  // navSecondary: [
-  //   {
-  //     title: "Settings",
-  //     url: "#",
-  //     icon: IconSettings,
-  //   },
-  //   {
-  //     title: "Get Help",
-  //     url: "#",
-  //     icon: IconHelp,
-  //   },
-  //   {
-  //     title: "Search",
-  //     url: "#",
-  //     icon: IconSearch,
-  //   },
-  // ],
+
   products: [
     {
       name: "Products",
       url: "/admin/products",
       icon: IconBrandProducthunt,
+    },
+    {
+      name: "Brands",
+      url: "/admin/brands",
+      icon: IconAffiliate,
     },
     {
       name: "Categories",

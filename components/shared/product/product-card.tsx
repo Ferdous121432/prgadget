@@ -7,7 +7,7 @@ import ProductPrice from "./product-price";
 
 const ProductCard = ({ product }: { product: Product }) => {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full overflow-hidden max-w-sm">
       <CardHeader className="p-0 items-center">
         <Link href={`/product/${product.slug}`}>
           <Image
@@ -20,12 +20,12 @@ const ProductCard = ({ product }: { product: Product }) => {
           />
         </Link>
       </CardHeader>
-      <CardContent className="p-4 grid gap-4">
+      <CardContent className="h-full grid gap-2">
         <div className="text-xs">{product.brand}</div>
         <Link href={`/product/${product.slug}`}>
           <h2 className="text-sm font-medium">{product.name}</h2>
         </Link>
-        <div className="flex-between gap-4">
+        <div className="flex-between h-full flex-wrap gap-4">
           <Rating value={Number(product.rating)} />
           {product.stock > 0 ? (
             <ProductPrice value={Number(product.price)} />

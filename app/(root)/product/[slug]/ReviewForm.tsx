@@ -60,7 +60,7 @@ const ReviewForm = ({
     form.setValue("productId", productId);
     form.setValue("userId", userId);
 
-    const review = await getReviewByProductId({ productId });
+    const review = (await getReviewByProductId({ productId })).data;
 
     if (review) {
       form.setValue("title", review.title);
@@ -75,7 +75,6 @@ const ReviewForm = ({
   const onSubmit: SubmitHandler<z.infer<typeof insertReviewSchema>> = async (
     values
   ) => {
-    console.log("Review submitted:💥💥");
     const res = await createUpdateReview({ ...values, productId });
     if (!res.success) {
       jsxToasts.errorWithIcon(

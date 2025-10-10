@@ -41,29 +41,24 @@ const CategoryForm = ({
   categories,
 }: {
   type: "Create" | "Update";
-  subCategory?: UpdateSubCategory;
+  subCategory?: any;
   categoryId?: string;
   categories?: { id: string; name: string }[];
 }) => {
   const router = useRouter();
 
-  console.log({
-    type,
-    subCategory,
-    categoryId,
-    categories,
-  });
-
-  const form = useForm<CreateSubCategory | UpdateSubCategory>({
+  const form = useForm<UpdateSubCategory | CreateSubCategory>({
     resolver: (type === "Update"
       ? zodResolver(updateSubCategorySchema)
       : zodResolver(createSubCategorySchema)) as any,
+
     defaultValues:
       type === "Update" && subCategory
         ? {
             name: subCategory.name,
             slug: subCategory.slug,
             mainCategoryId: subCategory.mainCategoryId,
+            id: categoryId,
           }
         : {
             name: "",
@@ -72,10 +67,10 @@ const CategoryForm = ({
           },
   });
 
-  const onSubmit: SubmitHandler<CreateSubCategory | UpdateSubCategory> = async (
+  const onSubmit: SubmitHandler<UpdateSubCategory | CreateSubCategory> = async (
     values
   ) => {
-    console.log("Form Values:", values);
+    console.log("Form Values: 💥💥 ", values);
     // On Create
     if (type === "Create") {
       const res = await createSubCategories(values as CreateSubCategory);
@@ -96,12 +91,14 @@ const CategoryForm = ({
 
     // On Update
     if (type === "Update") {
-      console.log("Updating category with ID:", categoryId);
       if (!categoryId) {
         router.push("/admin/sub-categories");
         return;
       }
-      const res = await updateSubCategory({ ...values, id: categoryId });
+      const res = (await updateSubCategory({
+        ...values,
+        id: categoryId,
+      })) as any;
 
       if (!res.success) {
         jsxToasts.errorWithIcon(

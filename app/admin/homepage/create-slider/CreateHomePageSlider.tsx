@@ -22,6 +22,7 @@ import { createHomeSlider } from "@/lib/actions/homepage.actions";
 import { sliderFormSchema } from "@/lib/validators";
 import { SliderFormValues } from "@/types";
 import { Input } from "@/components/ui/input";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
 
 const CreateHomePageSlider = () => {
   const router = useRouter();
@@ -31,15 +32,6 @@ const CreateHomePageSlider = () => {
   const form = useForm<SliderFormValues>({
     resolver: zodResolver(sliderFormSchema),
   });
-
-  // Function to delete images from UploadThing by their keys
-  async function deleteImagesFromUploadThing(keys: string[]) {
-    await fetch("/api/delete-uploadthing", {
-      method: "POST",
-      body: JSON.stringify({ keys }),
-      headers: { "Content-Type": "application/json" },
-    });
-  }
 
   const onSubmit: SubmitHandler<SliderFormValues> = async (values: any) => {
     const res = await createHomeSlider(values);

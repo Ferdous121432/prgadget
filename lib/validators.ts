@@ -24,8 +24,8 @@ export const updateMainCategorySchema = createMainCategorySchema.extend({
 // SubCategory
 export const createSubCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
-  slug: z.string(),
-  mainCategoryId: z.string(),
+  slug: z.string().min(3, "Slug must be at least 3 characters"),
+  mainCategoryId: z.string().min(1, "Main category is required"),
 });
 
 export const updateSubCategorySchema = createSubCategorySchema.extend({
@@ -67,8 +67,13 @@ export const insertProductSchema = z.object({
 // Schema for updating products
 export const updateProductSchema = insertProductSchema.extend({
   id: z.string().min(1, "Id is required"),
-  rating: z.string().optional(),
-  numReviews: z.number().optional(),
+});
+
+// Schema for products
+export const productSchemaWithID = insertProductSchema.extend({
+  id: z.string().min(1, "Id is required"),
+  rating: z.string().optional().nullable(),
+  numReviews: z.number().optional().nullable(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });

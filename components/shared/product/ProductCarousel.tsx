@@ -36,7 +36,7 @@ const ProductCarousel = ({ data }: { data: any }) => {
                   alt={slider.image_url!}
                   width="0"
                   height="0"
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="w-full h-auto"
                 />
                 <div className="absolute inset-0 flex items-end justify-center">

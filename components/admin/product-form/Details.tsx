@@ -11,14 +11,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { insertProductSchema } from "@/lib/validators";
-import { ProductSchema } from "@/types";
+import { ProductSchema, ProductWithId } from "@/types";
 import React from "react";
 import { useFormContext, ControllerRenderProps } from "react-hook-form";
 import slugify from "slugify";
 import z from "zod";
 
 function Details() {
-  const form = useFormContext<ProductSchema>();
+  const form = useFormContext<ProductSchema | ProductWithId>();
 
   return (
     <div className="w-full flex flex-col gap-5">

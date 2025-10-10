@@ -22,7 +22,7 @@ import { FeaturedCategories } from "@/types";
 
 async function FeaturedCategory() {
   const { data: categories } = (await getFeaturedCategories()) as any;
-  console.log("Categories:", categories);
+  // console.log("Categories:", categories);
 
   return (
     <div>
@@ -30,7 +30,7 @@ async function FeaturedCategory() {
         <CardTitle className="text-xl w-full text-center font-bold p-4">
           Featured Categories
         </CardTitle>
-        <CardContent className="grid grid-cols-2 md:grid-cols-6 gap-4 p-4 justify-center items-center">
+        <CardContent className="grid grid-cols-2 md:grid-cols-8 gap-4 p-4 justify-center items-center">
           {categories.map((category: FeaturedCategories) => (
             <Link key={category.id} href={`/category/${category.slug}`}>
               <div className="space-y-2 justify-center items-center flex flex-col">
