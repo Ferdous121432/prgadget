@@ -69,6 +69,15 @@ export const updateProductSchema = insertProductSchema.extend({
   id: z.string().min(1, "Id is required"),
 });
 
+// Schema for products
+export const productSchemaWithID = insertProductSchema.extend({
+  id: z.string().min(1, "Id is required"),
+  rating: z.string().optional().nullable(),
+  numReviews: z.number().optional().nullable(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+});
+
 // Schema for signing users in
 export const signInFormSchema = z.object({
   email: z.string().email("Invalid email address"),
