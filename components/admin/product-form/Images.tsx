@@ -16,12 +16,24 @@ import Image from "next/image";
 import { jsxToasts } from "@/lib/customToaster";
 import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
 import { Checkbox } from "@radix-ui/react-checkbox";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
 
 interface ImagesProps {
   uploadProgress: number;
   setUploadProgress: Dispatch<SetStateAction<number>>;
   uploadedImageKeys: string[];
   setUploadedImageKeys: Dispatch<SetStateAction<string[]>>;
+}
+
+// Helper function to extract key from UploadThing URL
+function extractKeyFromUrl(url: string): string | null {
+  try {
+    // UploadThing URLs are like: https://utfs.io/f/KEY
+    const match = url.match(/\/f\/([^/?]+)/);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
 }
 
 function Images({
@@ -61,19 +73,95 @@ function Images({
                         />
                         <button
                           type="button"
-                          onClick={() => {
-                            const updatedImages = images.filter(
-                              (_, i) => i !== index
-                            );
-                            form.setValue("images", updatedImages);
-                            jsxToasts.successWithIcon({
-                              title: "Image removed",
-                              message:
-                                "Image has been removed from the product",
-                            });
-                          }}
-                          className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md"
-                          title="Remove image">
+                          onClick={async () => {
+                            try {
+                              const currentImages =
+                                form.getValues("images") || [];
+                              const currentImageKeys =
+                                form.getValues("image_keys") || [];
+
+                              // Check if arrays are in sync
+                              if (
+                                currentImages.length !== currentImageKeys.length
+                              ) {
+                                // Strategy: Find the correct key by matching the image URL to key
+                                const imageToDelete = currentImages[index];
+                                const imageKey =
+                                  extractKeyFromUrl(imageToDelete); // Extract key from URL
+
+                                let keyToDelete = null;
+                                let keyIndex = -1;
+
+                                // Try to find matching key
+                                if (imageKey) {
+                                  keyIndex = currentImageKeys.findIndex(
+                                    (key) => key === imageKey
+                                  );
+                                  if (keyIndex !== -1) {
+                                    keyToDelete = currentImageKeys[keyIndex];
+                                  }
+                                }
+
+                                if (keyToDelete) {
+                                  await deleteImagesFromUploadThing([
+                                    keyToDelete,
+                                  ]);
+
+                                  // Remove image and its corresponding key
+                                  const updatedImages = currentImages.filter(
+                                    (_, i) => i !== index
+                                  );
+                                  const updatedImageKeys =
+                                    currentImageKeys.filter(
+                                      (_, i) => i !== keyIndex
+                                    );
+
+                                  form.setValue("images", updatedImages);
+                                  form.setValue("image_keys", updatedImageKeys);
+                                  setUploadedImageKeys(updatedImageKeys);
+                                } else {
+                                  // If we can't find the key, just remove the image
+                                  const updatedImages = currentImages.filter(
+                                    (_, i) => i !== index
+                                  );
+                                  form.setValue("images", updatedImages);
+                                }
+                              } else {
+                                // Arrays are in sync - normal deletion
+                                const imageKeyToDelete =
+                                  currentImageKeys[index];
+
+                                if (imageKeyToDelete) {
+                                  await deleteImagesFromUploadThing([
+                                    imageKeyToDelete,
+                                  ]);
+                                }
+
+                                const updatedImages = currentImages.filter(
+                                  (_, i) => i !== index
+                                );
+                                const updatedImageKeys =
+                                  currentImageKeys.filter(
+                                    (_, i) => i !== index
+                                  );
+
+                                form.setValue("images", updatedImages);
+                                form.setValue("image_keys", updatedImageKeys);
+                                setUploadedImageKeys(updatedImageKeys);
+                              }
+
+                              jsxToasts.successWithIcon({
+                                title: "Image removed",
+                                message:
+                                  "Image has been removed from the product",
+                              });
+                            } catch (error) {
+                              jsxToasts.errorWithIcon(
+                                "Failed to remove image",
+                                "Please try again"
+                              );
+                            }
+                          }}>
                           ×
                         </button>
                       </div>
@@ -102,55 +190,42 @@ function Images({
                           const newImageKeys = res
                             .map((file) => file.key)
                             .filter(Boolean);
-                          setUploadedImageKeys((prev) => [
-                            ...prev,
-                            ...newImageKeys,
-                          ]);
 
-                          if (newImageUrls.length > 0) {
-                            // Check if adding new images would exceed any limits
-                            const totalImages =
-                              images.length + newImageUrls.length;
-                            if (totalImages > 10) {
-                              // Set your own limit
-                              jsxToasts.errorWithIcon(
-                                "Too many images",
-                                `Maximum 10 images allowed. You currently have ${images.length} images.`
-                              );
-                              return;
-                            }
-
-                            form.setValue("images", [
-                              ...images,
-                              ...newImageUrls,
-                            ]);
-                            form.setValue("image_keys", [
-                              ...uploadedImageKeys,
-                              ...newImageKeys,
-                            ]);
-
-                            jsxToasts.successWithIcon({
-                              title: "Upload successful",
-                              message: `${newImageUrls.length} image(s) uploaded successfully`,
-                            });
-                          } else {
+                          // CRITICAL: Make sure we have matching lengths
+                          if (newImageUrls.length !== newImageKeys.length) {
                             jsxToasts.errorWithIcon(
-                              "Upload failed",
-                              "No valid image URLs received from upload"
+                              "Upload error",
+                              "File upload data mismatch"
                             );
+                            return;
                           }
-                        } else {
-                          jsxToasts.errorWithIcon(
-                            "Upload failed",
-                            "No files were uploaded"
-                          );
+
+                          const currentImages = form.getValues("images") || [];
+                          const currentImageKeys =
+                            form.getValues("image_keys") || [];
+
+                          // Always keep arrays in sync
+                          const updatedImages = [
+                            ...currentImages,
+                            ...newImageUrls,
+                          ];
+                          const updatedImageKeys = [
+                            ...currentImageKeys,
+                            ...newImageKeys,
+                          ];
+
+                          // Update both arrays atomically
+                          form.setValue("images", updatedImages);
+                          form.setValue("image_keys", updatedImageKeys);
+                          setUploadedImageKeys(updatedImageKeys);
+
+                          jsxToasts.successWithIcon({
+                            title: "Upload successful",
+                            message: `${newImageUrls.length} image(s) uploaded successfully`,
+                          });
                         }
-                        // Reset progress
-                        setUploadProgress(0);
                       }}
                       onUploadError={(error: Error) => {
-                        console.error("Upload error:", error);
-
                         // Handle specific error types
                         if (error.message.includes("FileSizeMismatch")) {
                           jsxToasts.errorWithIcon(

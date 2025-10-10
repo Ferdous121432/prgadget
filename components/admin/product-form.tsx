@@ -14,10 +14,8 @@ import { useState } from "react";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
 import Category from "./product-form/Category";
-import {
-  deleteImagesFromUploadThing,
-  omitEmptyFields,
-} from "@/lib/hooks/util-functions";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
+import { omitEmptyFields } from "@/lib/hooks/util-functions";
 
 const ProductForm = ({
   type,

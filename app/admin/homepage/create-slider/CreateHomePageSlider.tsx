@@ -22,7 +22,7 @@ import { createHomeSlider } from "@/lib/actions/homepage.actions";
 import { sliderFormSchema } from "@/lib/validators";
 import { SliderFormValues } from "@/types";
 import { Input } from "@/components/ui/input";
-import { deleteImagesFromUploadThing } from "@/lib/hooks/util-functions";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
 
 const CreateHomePageSlider = () => {
   const router = useRouter();
