@@ -6,7 +6,7 @@ import { DB_ADMIN_PRODUCT_TAKE, LATEST_PRODUCTS_LIMIT } from "../constants";
 
 import { convertPrismaObjectToJSObject } from "../utils";
 import { revalidatePath } from "next/cache";
-import { Product, ProductWithId } from "@/types";
+import { Product, ProductWithId, ProductWithIds } from "@/types";
 import { Prisma } from "../generated/prisma";
 import { utapi } from "@/app/api/uploadthing/uploadthing";
 import {
@@ -15,6 +15,11 @@ import {
   generateCacheKey,
   CACHE_CONFIG,
 } from "../cache/redis";
+import {
+  upsertProductVector,
+  deleteProductVector,
+  vectorSearchProducts,
+} from "./vector-search.actions";
 
 //Create a new product
 export async function createProduct(data: Product) {
@@ -24,6 +29,9 @@ export async function createProduct(data: Product) {
     });
 
     revalidatePath("/admin/products");
+
+    // Add to vector database
+    await upsertProductVector(product as any);
 
     // Invalidate all product-related caches
     await invalidateProductCaches();
@@ -54,6 +62,9 @@ export async function updateProduct(data: ProductWithId) {
 
     revalidatePath("/admin/products");
 
+    // Update in vector database
+    await upsertProductVector(updatedProduct as any);
+
     // Invalidate all product-related caches
     await invalidateProductCaches();
 
@@ -83,6 +94,9 @@ export async function deleteProduct(id: string) {
     });
 
     revalidatePath("/admin/products");
+
+    // Remove from vector database
+    await deleteProductVector(id);
 
     // Invalidate all product-related caches
     await invalidateProductCaches();
@@ -119,6 +133,7 @@ export async function getAllProducts({
   price,
   rating,
   sort,
+  useVectorSearch = false,
 }: {
   query: string;
   limit?: number;
@@ -127,7 +142,38 @@ export async function getAllProducts({
   price?: string;
   rating?: string;
   sort?: string;
+  useVectorSearch?: boolean;
 }) {
+  // If query exists and vector search is enabled, use vector search
+  if (query && query !== "all" && query.trim() !== "" && useVectorSearch) {
+    console.log("🔍 Using vector search for:", query);
+
+    // Parse price range
+    let minPrice, maxPrice;
+    if (price && price !== "all") {
+      const [min, max] = price.split("-").map(Number);
+      minPrice = min;
+      maxPrice = max;
+    }
+
+    // Parse rating
+    let minRating: number | undefined;
+    if (rating && rating !== "all") {
+      minRating = Number(rating);
+    }
+
+    return await vectorSearchProducts({
+      query,
+      page,
+      category: category !== "all" ? category : undefined,
+      minPrice,
+      maxPrice,
+      minRating,
+      sort,
+      limit: LATEST_PRODUCTS_LIMIT,
+    });
+  }
+
   const cacheKey = generateCacheKey(CACHE_CONFIG.ALL_PRODUCTS.key, {
     query,
     limit,
@@ -141,9 +187,6 @@ export async function getAllProducts({
   return getCachedData(
     cacheKey,
     async () => {
-      // Your existing getAllProducts logic here (unchanged)
-      // ... (keep all your existing logic)
-
       // If no query, use simple filtering
       if (!query || query === "all") {
         const priceFilter: Prisma.ProductWhereInput =

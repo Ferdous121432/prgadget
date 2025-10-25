@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { getAllMainCategories } from "@/lib/actions/category.actions";
 import { getAllProducts } from "@/lib/actions/product.actions";
 import { MainCategory } from "@/lib/generated/prisma";
-import { Categories, ProductWithId, UpdateMainCategory } from "@/types";
+import { ProductWithId } from "@/types";
 import Link from "next/link";
+import VectorSearchToggle from "@/components/shared/vector-search-toggle-searchpage";
 
 const prices = [
   {
@@ -78,6 +79,7 @@ const SearchPage = async (props: {
     rating?: string;
     sort?: string;
     page?: string;
+    vectorSearch?: string;
   }>;
 }) => {
   const {
@@ -87,9 +89,11 @@ const SearchPage = async (props: {
     rating = "all",
     sort = "newest",
     page = "1",
+    vectorSearch = "true",
   } = await props.searchParams;
 
   const currentPage = Number(page);
+  const useVectorSearch = vectorSearch === "true";
 
   // Construct filter url
   const getFilterUrl = ({
@@ -98,20 +102,23 @@ const SearchPage = async (props: {
     s,
     r,
     pg,
+    vs,
   }: {
     c?: string;
     p?: string;
     s?: string;
     r?: string;
     pg?: string;
+    vs?: string;
   }) => {
-    const params = { q, category, price, rating, sort, page };
+    const params = { q, category, price, rating, sort, page, vectorSearch };
 
     if (c !== undefined) params.category = c;
     if (p !== undefined) params.price = p;
     if (s !== undefined) params.sort = s;
     if (r !== undefined) params.rating = r;
     if (pg !== undefined) params.page = pg;
+    if (vs !== undefined) params.vectorSearch = vs;
 
     return `/search?${new URLSearchParams(params).toString()}`;
   };
@@ -123,7 +130,13 @@ const SearchPage = async (props: {
     rating,
     sort,
     page: currentPage,
-  })) as { data: ProductWithId[]; totalPages: number; [key: string]: any };
+    useVectorSearch,
+  })) as {
+    data: ProductWithId[];
+    totalPages: number;
+    isVectorSearch?: boolean;
+    [key: string]: any;
+  };
 
   const { data: categories = [] } = (await getAllMainCategories()) as any;
 
@@ -246,10 +259,21 @@ const SearchPage = async (props: {
         </div>
       </div>
       <div className="md:col-span-4 space-y-4">
+        {/* Vector Search Toggle */}
+        {/* <VectorSearchToggle /> */}
         <div className="flex-between flex-col md:flex-row my-4">
           {/* Filtered row */}
           <div className="flex items-center">
-            {q !== "all" && q !== "" && "Query: " + q}
+            {q !== "all" && q !== "" && (
+              <span className="flex items-center gap-2">
+                Query: {q}
+                {products.isVectorSearch && (
+                  <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                    AI Enhanced
+                  </span>
+                )}
+              </span>
+            )}
             {category !== "all" && category !== "" && " Category: " + category}
             {price !== "all" && " Price: " + price}
             {rating !== "all" && " Rating: " + rating + " stars & up"}
@@ -263,6 +287,7 @@ const SearchPage = async (props: {
               </Button>
             ) : null}
           </div>
+
           {/* Sorting */}
           <div>
             Sort by{" "}
@@ -283,6 +308,9 @@ const SearchPage = async (props: {
             {products.data.length === 0
               ? "No products found"
               : `Showing page ${currentPage} of ${products.totalPages} (${products.data.length} products)`}
+            {products.isVectorSearch && (
+              <span className="ml-2 text-blue-600">• AI search results</span>
+            )}
           </div>
         </div>
 
@@ -292,12 +320,17 @@ const SearchPage = async (props: {
             <div className="col-span-full text-center py-8">
               <p className="text-lg text-muted-foreground">No products found</p>
               <p className="text-sm text-muted-foreground">
-                Try adjusting your filters
+                Try adjusting your filters or{" "}
+                {!useVectorSearch ? "enable AI search" : "disable AI search"}
               </p>
             </div>
           )}
           {products.data.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard
+              key={product.id}
+              product={product}
+              showVectorScore={products.isVectorSearch} // Pass this prop if you want to show relevance
+            />
           ))}
         </div>
 
@@ -312,6 +345,7 @@ const SearchPage = async (props: {
             price,
             rating,
             sort,
+            vectorSearch, // Include this
           }}
         />
       </div>

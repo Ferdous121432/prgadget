@@ -1,3 +1,4 @@
+import Navigation from "@/components/header/navigation";
 import Footer from "@/components/shared/footer/Footer";
 import Header from "@/components/shared/header/Header";
 import { Navbar } from "@/components/shared/header/Navbar";
@@ -20,7 +21,8 @@ export default async function RootLayout({
   return (
     <div className="flex h-screen flex-col ">
       <Header />
-      <Navbar categories={navCategories} />
+      {/* <Navbar categories={navCategories} /> */}
+      <Navigation />
 
       <main className="flex-1 wrapper ">{children}</main>
       <Footer />

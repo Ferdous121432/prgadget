@@ -11,6 +11,7 @@ import {
   insertReviewSchema,
   paymentMethodSchema,
   paymentResultSchema,
+  productSchema,
   productSchemaWithID,
   sessionUserSchema,
   shippingAddressSchema,
@@ -33,6 +34,7 @@ export type Product = z.infer<typeof insertProductSchema> & {
   createdAt?: Date;
 };
 
+export type ProductSchemaPublic = z.infer<typeof productSchema>;
 export type ProductSchema = z.infer<typeof insertProductSchema>;
 export type ProductWithId = z.infer<typeof updateProductSchema>;
 export type ProductWithIds = z.infer<typeof productSchemaWithID>;
