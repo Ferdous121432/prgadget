@@ -229,7 +229,7 @@ export async function getSimilarProducts(productId: string, limit = 8) {
     async () => {
       try {
         // Get the product's vector
-        const productVector = await vectorIndex.fetch([productId]);
+        const productVector = (await vectorIndex.fetch([productId])) as any;
 
         if (!productVector || productVector.length === 0) {
           return { data: [] };
