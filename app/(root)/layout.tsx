@@ -4,6 +4,7 @@ import Header from "@/components/shared/header/Header";
 import { Navbar } from "@/components/shared/header/Navbar";
 import { getNavCategories } from "@/lib/actions/category.actions";
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "PRgadget",
@@ -19,13 +20,15 @@ export default async function RootLayout({
   const navCategories = (await getNavCategories()) as any[];
   // console.log("navCategories", navCategories);
   return (
-    <div className="flex h-screen flex-col ">
-      <Header />
-      {/* <Navbar categories={navCategories} /> */}
-      <Navigation />
+    <SessionProvider>
+      <div className="flex h-screen flex-col ">
+        <Header />
+        {/* <Navbar categories={navCategories} /> */}
+        <Navigation />
 
-      <main className="flex-1 wrapper ">{children}</main>
-      <Footer />
-    </div>
+        <main className="flex-1 wrapper ">{children}</main>
+        <Footer />
+      </div>
+    </SessionProvider>
   );
 }

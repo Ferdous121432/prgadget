@@ -29,8 +29,8 @@ export const CACHE_CONFIG = {
   HOME_SLIDERS: { key: "home-sliders", ttl: 86400 }, // 24 hours
 
   // User caches
-  ALL_USERS: { key: "all-users", ttl: 3600 }, // 1 hour
-  USER_BY_ID: { key: "user", ttl: 1800 }, // 30 minutes
+  // ALL_USERS: { key: "all-users", ttl: 3600 }, // 1 hour
+  // USER_BY_ID: { key: "user", ttl: 1800 }, // 30 minutes
 
   // Order caches
   ALL_ORDERS: { key: "all-orders", ttl: 1800 }, // 30 minutes
@@ -54,7 +54,7 @@ export async function getCachedData<T>(
     // Try to get from cache first
     const cached = await redis.get(cacheKey);
     if (cached) {
-      console.log(`✅ Cache HIT for key: ${cacheKey}`);
+      // console.log(`✅ Cache HIT for key: ${cacheKey}`);
       return cached as T;
     }
 
@@ -140,12 +140,12 @@ export async function invalidateCategoryCaches() {
   ]);
 }
 
-export async function invalidateUserCaches() {
-  await Promise.all([
-    clearCachePattern(`${CACHE_CONFIG.ALL_USERS.key}-*`),
-    clearCachePattern(`${CACHE_CONFIG.USER_BY_ID.key}-*`),
-  ]);
-}
+// export async function invalidateUserCaches() {
+//   await Promise.all([
+//     clearCachePattern(`${CACHE_CONFIG.ALL_USERS.key}-*`),
+//     clearCachePattern(`${CACHE_CONFIG.USER_BY_ID.key}-*`),
+//   ]);
+// }
 
 export async function invalidateOrderCaches(userId?: string) {
   await Promise.all(

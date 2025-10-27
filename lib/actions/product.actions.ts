@@ -495,3 +495,46 @@ export async function getLatestProducts() {
     CACHE_CONFIG.LATEST_PRODUCTS.ttl
   );
 }
+
+// Get related products by IDs
+export async function getRelatedProducts(
+  productId: string,
+  mainCategory?: string,
+  subCategory?: string,
+  brand?: string
+) {
+  try {
+    const items = (await prisma.product
+      .findMany({
+        where: {
+          id: { not: productId },
+          ...(brand ? { brand } : {}),
+        },
+        orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+        take: 5,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          price: true,
+          images: true,
+          rating: true,
+        },
+      })
+      .then((rows) =>
+        rows.map((p) => ({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          price: p.price,
+          image: Array.isArray(p.images)
+            ? p.images[0]
+            : (p.images as any) || "",
+          rating: p.rating ?? 0,
+        }))
+      )) as any[];
+    return items;
+  } catch (error) {
+    console.error(error);
+  }
+}
