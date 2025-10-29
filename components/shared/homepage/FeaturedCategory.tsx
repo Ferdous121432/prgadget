@@ -1,38 +1,32 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { DollarSign, Headset, ShoppingBag, WalletCards } from "lucide-react";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import React from "react";
-import apple from "./../../../assets/icons/apple.png";
-import tablet from "./../../../assets/icons/tablet.png";
-import { getFeaturedCategories } from "@/lib/actions/category.actions";
+// import { getFeaturedCategories } from "@/lib/actions/category.actions";
 import Link from "next/link";
-import { Feature } from "next/dist/build/webpack/plugins/telemetry-plugin/telemetry-plugin";
-import { FeaturedCategories } from "@/types";
 
-// const categories = [
-//   {
-//     name: "Laptop",
-//     icon: apple,
-//   },
-//   {
-//     name: "Tablet",
-//     icon: tablet,
-//   }
-// ];
+type FeaturedCategories = {
+  id: number;
+  name: string;
+  link?: string;
+  image: StaticImageData;
+};
 
-async function FeaturedCategory() {
-  const { data: categories } = (await getFeaturedCategories()) as any;
-  // console.log("Categories:", categories);
+async function FeaturedCategory({
+  categories,
+}: {
+  categories: FeaturedCategories[];
+}) {
+  // const { data: categories } = (await getFeaturedCategories()) as any;
 
   return (
-    <div>
-      <Card>
-        <CardTitle className="text-xl w-full text-center font-bold p-4">
+    <div className="bg-slate-100 dark:bg-gray-800">
+      <div className="border rounded-lg">
+        <div className="text-xl w-full text-center font-bold p-4">
           Featured Categories
-        </CardTitle>
-        <CardContent className="grid grid-cols-2 md:grid-cols-8 gap-4 p-4 justify-center items-center">
-          {categories.map((category: FeaturedCategories) => (
-            <Link key={category.id} href={`/category/${category.slug}`}>
+        </div>
+        <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4 justify-center items-center">
+          {categories.map((category) => (
+            <Link key={category.id} href={`/category/${category.link}`}>
               <div className="space-y-2 justify-center items-center flex flex-col">
                 <div className="p-3 bg-primary/10 rounded-full text-primary">
                   <Image
@@ -49,8 +43,8 @@ async function FeaturedCategory() {
               </div>
             </Link>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

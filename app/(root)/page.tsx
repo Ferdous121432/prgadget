@@ -1,17 +1,23 @@
+import { Metadata } from "next";
 import { Suspense } from "react";
+
 import DealCountdown from "@/components/DealCountdown";
 import IconBoxes from "@/components/IconBoxes";
 import FeaturedCategory from "@/components/shared/homepage/FeaturedCategory";
 import ProductList from "@/components/shared/product/product-list";
 import ProductCarousel from "@/components/shared/product/ProductCarousel";
+
+import { ProductWithId } from "@/types";
+
 import { getAllHomeSliders } from "@/lib/actions/homepage.actions";
 import {
   getFeaturedProducts,
   getLatestProducts,
 } from "@/lib/actions/product.actions";
+
 import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
-import { ProductWithId } from "@/types";
-import { Metadata } from "next";
+import { featuredCategoryLogos as categories } from "@/lib/constants";
+import { featuredBrands as brands } from "@/lib/constants";
 
 type HomeSlider = {
   id: string;
@@ -120,14 +126,19 @@ const Page = async () => {
         <FeaturedProductList />
       </Suspense>
 
+      {/* Categories - fourth priority */}
+      <Suspense fallback={<CategorySkeleton />}>
+        <FeaturedCategory categories={categories} />
+      </Suspense>
+
       {/* Latest products - third priority */}
       <Suspense fallback={<ProductListSkeleton />}>
         <LatestProductList />
       </Suspense>
 
-      {/* Categories - fourth priority */}
+      {/* Brands - fourth priority */}
       <Suspense fallback={<CategorySkeleton />}>
-        <FeaturedCategory />
+        <FeaturedCategory categories={brands} />
       </Suspense>
 
       {/* Static content at bottom */}

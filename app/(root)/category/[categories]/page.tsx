@@ -24,20 +24,11 @@ async function page(props: {
   const searchParamsObj = await props.searchParams; // Await the promise
   const { data: category } = (await getCategoryBySlug(categories)) as any;
 
-  console.log({
-    "categories param": categories,
-    searchParams: searchParamsObj,
-  });
+  // console.log({
+  //   "categories param": categories,
+  //   searchParams: searchParamsObj,
+  // });
   // console.log("category by slug", category);
-
-  const initialFilters = {
-    q: searchParamsObj.q ?? "all",
-    category: searchParamsObj.category ?? "all",
-    price: searchParamsObj.price ?? "all",
-    rating: searchParamsObj.rating ?? "all",
-    sort: searchParamsObj.sort ?? "newest",
-    page: searchParamsObj.page ?? "1",
-  };
 
   if (!category) {
     return <div>Category not found</div>;
