@@ -1,15 +1,12 @@
 import { Metadata } from "next";
 import CategoryForm from "./Category-form";
 import { UpdateMainCategory } from "@/types";
-import {
-  getAllMainCategories,
-  getSubCategoryById,
-} from "@/lib/actions/category.actions";
+import { getAllMainCategories } from "@/lib/actions/category.actions";
 export const metadata: Metadata = {
   title: "Create Category",
 };
 
-const CreateCategoryPage = async () => {
+const CreateSubCategoryPage = async () => {
   const { data } = (await getAllMainCategories()) as {
     data: UpdateMainCategory[];
     totalPages: number;
@@ -17,7 +14,7 @@ const CreateCategoryPage = async () => {
 
   const categories = data.map(({ id, name }) => ({ id, name }));
 
-  console.log("Categories 💥:", categories);
+  // console.log("Categories 💥:", categories);
 
   return (
     <>
@@ -29,4 +26,4 @@ const CreateCategoryPage = async () => {
   );
 };
 
-export default CreateCategoryPage;
+export default CreateSubCategoryPage;

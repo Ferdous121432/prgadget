@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { raw } from "@prisma/client/runtime/library";
 import { Order } from "@/types";
 import { requireAuth } from "@/lib/auth-guard";
 import Pagination from "@/components/shared/Pagination";

@@ -8,10 +8,8 @@ export const metadata: Metadata = {
 };
 
 const Profile = async () => {
-  const session = await requireAuth("/user/profile");
-
   return (
-    <SessionProvider session={session}>
+    <SessionProvider>
       <div className="max-w-md mx-auto space-y-4">
         <h2 className="h2-bold">Profile</h2>
         <ProfileForm />

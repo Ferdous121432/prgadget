@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { unstable_noStore as noStore } from "next/cache";
-import { prisma } from "@/db/prisma";
+
 import { getSimilarProducts } from "@/lib/actions/vector-search.actions";
 import { getRelatedProducts } from "@/lib/actions/product.actions";
 
@@ -16,8 +15,6 @@ export default async function RelativeProducts({
   productId,
   brand,
 }: RelativeProductsProps) {
-  noStore();
-
   // 1) Try vector-based similar products
   const { data: vectorSimilar = [] } = await getSimilarProducts(productId, 5);
 
