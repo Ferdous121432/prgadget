@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: "Customer Profile",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const Profile = async () => {
   return (
     <SessionProvider>
