@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import ProfileForm from "./profile-form";
-import { requireAuth } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "Customer Profile",

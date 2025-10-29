@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: "My Orders",
 };
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const OrdersPage = async (props: {
   searchParams: Promise<{ page: string }>;
 }) => {
