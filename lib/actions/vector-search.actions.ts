@@ -231,13 +231,17 @@ export async function getSimilarProducts(productId: string, limit = 8) {
         // Get the product's vector
         const productVector = (await vectorIndex.fetch([productId])) as any;
 
-        if (!productVector || productVector.length === 0) {
+        if (
+          !productVector ||
+          productVector.length === 0 ||
+          !productVector[0]?.vector
+        ) {
           return { data: [] };
         }
 
         // Search for similar products
         const results = await vectorIndex.query({
-          vector: productVector[0].vector!,
+          vector: productVector[0].vector,
           topK: limit + 1, // +1 to exclude the product itself
           includeMetadata: true,
         });
