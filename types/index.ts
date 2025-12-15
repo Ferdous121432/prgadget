@@ -1,5 +1,6 @@
 import {
   cartItemSchema,
+  CreateCategoryTagSchema,
   createMainCategorySchema,
   createSubCategorySchema,
   createSubSubCategorySchema,
@@ -11,6 +12,7 @@ import {
   insertReviewSchema,
   paymentMethodSchema,
   paymentResultSchema,
+  productSchema,
   productSchemaWithID,
   sessionUserSchema,
   shippingAddressSchema,
@@ -33,6 +35,7 @@ export type Product = z.infer<typeof insertProductSchema> & {
   createdAt?: Date;
 };
 
+export type ProductSchemaPublic = z.infer<typeof productSchema>;
 export type ProductSchema = z.infer<typeof insertProductSchema>;
 export type ProductWithId = z.infer<typeof updateProductSchema>;
 export type ProductWithIds = z.infer<typeof productSchemaWithID>;
@@ -58,6 +61,7 @@ export type UpdateSubCategory = z.infer<typeof updateSubCategorySchema>;
 export type CreateSubSubCategory = z.infer<typeof createSubSubCategorySchema>;
 export type UpdateSubSubCategory = z.infer<typeof updateSubSubCategorySchema>;
 export type FeaturedCategories = z.infer<typeof FeaturedCategoriesSchema>;
+export type CreateCategoryTag = z.infer<typeof CreateCategoryTagSchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;

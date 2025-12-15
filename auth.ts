@@ -1,18 +1,19 @@
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
+import type { Adapter } from "next-auth/adapters";
 // import { cookies } from "next/headers";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcrypt-ts-edge";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma) as Adapter,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -57,53 +58,61 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/login",
   },
   callbacks: {
-    async session({ session, user, trigger, token }) {
-      session.user.id = token.sub;
-      session.user.role = token.role;
-      session.user.name = token.name;
-      if (trigger === "update") {
-        session.user.name = user.name;
-      }
-      return session;
-    },
+    // auth.ts
     async jwt({ token, user, trigger, session }) {
+      console.log("🎫 JWT callback:", {
+        hasToken: !!token,
+        hasUser: !!user,
+        trigger,
+        tokenSub: token?.sub,
+      });
+
+      // Initial sign in
       if (user) {
         token.id = user.id;
         token.role = user.role;
-        if (user.name === "NO_NAME") {
-          token.name = user.email!.split("@")[0];
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { name: token.name },
-          });
-        }
+        token.email = user.email;
+        token.name = user.name ?? "";
+        console.log("✅ JWT token created for:", user.email);
+      }
 
-        // TODO: Merge carts after sign in/sign up
-        // This is commented out because `cookies` cannot be used in middleware in Next.js 13+
-        // A different approach is needed to handle cart merging
-        // if (trigger === "signIn" || trigger === "signUp") {
-        //   const cookiesObject = await cookies();
-        //   const sessionCartId = cookiesObject.get("sessionCartId")?.value;
-        //   if (sessionCartId) {
-        //     const sessionCart = await prisma.cart.findFirst({
-        //       where: { sessionCartId },
-        //     });
-        //     if (sessionCart) {
-        //       await prisma.cart.deleteMany({
-        //         where: { userId: user.id },
-        //       });
-        //       await prisma.cart.update({
-        //         where: { id: sessionCart.id },
-        //         data: { userId: user.id },
-        //       });
-        //     }
-        //   }
-        // }
+      // Session update
+      if (trigger === "update" && session) {
+        token = { ...token, ...session.user };
+        console.log("🔄 JWT token updated");
       }
-      if (session?.user.name && trigger === "update") {
-        token.name = session.user.name;
-      }
+
       return token;
+    },
+
+    async session({ session, token, trigger }) {
+      console.log("👤 Session callback:", {
+        hasSession: !!session,
+        hasToken: !!token,
+        trigger,
+        tokenSub: token?.sub,
+      });
+
+      // Make sure session exists
+      if (!session?.user) {
+        console.log("⚠️ No session user object");
+        return session;
+      }
+
+      if (!token) {
+        console.log("⚠️ No token available");
+        return session;
+      }
+
+      // Populate session from token
+      session.user.id = token.sub as string;
+      session.user.role = (token.role as string) || "user";
+      session.user.name = token.name as string;
+      session.user.email = token.email as string;
+
+      console.log("✅ Session created for:", session.user.email);
+
+      return session;
     },
     async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;

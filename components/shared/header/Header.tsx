@@ -8,7 +8,9 @@ const Header = () => {
     <header className="w-full border-b">
       <div className="wrapper flex-between">
         <div className="flex-start">
-          <CategoryDrawer />
+          <div className="lg:hidden">
+            <CategoryDrawer />
+          </div>
           <AppLogo />
         </div>
 

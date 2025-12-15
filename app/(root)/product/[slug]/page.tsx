@@ -11,6 +11,7 @@ import Rating from "@/components/shared/product/rating";
 import Link from "next/link";
 import AddToCart from "@/components/shared/product/add-to-cart";
 import { Cart } from "@/types";
+import RelativeProducts from "@/components/shared/product/relative-products";
 
 // Force dynamic rendering since we use cookies and session data
 export const dynamic = "force-dynamic";
@@ -22,6 +23,7 @@ const ProductDetailsPage = async (props: {
 
   const product = await getProductBySlug(slug);
   if (!product) notFound();
+  console.log("product", product);
 
   const session = await auth();
   const userId = session?.user?.id;
@@ -101,6 +103,7 @@ const ProductDetailsPage = async (props: {
           productId={product.id}
           productSlug={product.slug}
         />
+        <RelativeProducts productId={product.id} brand={product.brand} />
         <Badge variant="outline" className="mt-4 ml-2" asChild>
           <Link href="/">Back To Home</Link>
         </Badge>

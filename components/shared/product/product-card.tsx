@@ -5,7 +5,15 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Rating from "./rating";
 import ProductPrice from "./product-price";
 
-const ProductCard = ({ product }: { product: Product }) => {
+interface ProductCardProps {
+  product: Product & { vectorScore?: number };
+  showVectorScore?: boolean;
+}
+
+const ProductCard = ({
+  product,
+  showVectorScore = false,
+}: ProductCardProps) => {
   return (
     <Card className="w-full overflow-hidden max-w-sm">
       <CardHeader className="p-0 items-center">
@@ -31,6 +39,14 @@ const ProductCard = ({ product }: { product: Product }) => {
             <ProductPrice value={Number(product.price)} />
           ) : (
             <p className="text-destructive">Out Of Stock</p>
+          )}
+          {showVectorScore && product.vectorScore && (
+            <div className="mt-2 flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-xs text-gray-500">
+                Relevance: {(product.vectorScore * 100).toFixed(0)}%
+              </span>
+            </div>
           )}
         </div>
       </CardContent>

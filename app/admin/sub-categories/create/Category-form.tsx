@@ -21,7 +21,6 @@ import {
   updateSubCategory,
 } from "@/lib/actions/category.actions";
 import {
-  createMainCategorySchema,
   createSubCategorySchema,
   updateSubCategorySchema,
 } from "@/lib/validators";

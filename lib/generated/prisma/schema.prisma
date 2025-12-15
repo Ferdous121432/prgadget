@@ -15,6 +15,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model CategoryTag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+}
+
 model MainCategory {
   id            String        @id @default(uuid())
   name          String        @unique
@@ -67,6 +76,8 @@ model Product {
   subCategoryId    String?
   SubSubCategory   SubSubCategory? @relation(fields: [subSubCategoryId], references: [id])
   subSubCategoryId String?
+  categoryTag      CategoryTag?    @relation(fields: [categoryTagId], references: [id])
+  categoryTagId    String?
 }
 
 model User {

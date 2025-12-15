@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { formatNumberWithDecimal } from "./utils";
 import { PAYMENT_METHODS } from "./constants";
+import { formatNumberWithDecimal } from "./utils";
 
 const currency = z
   .string()
@@ -41,6 +41,27 @@ export const createSubSubCategorySchema = z.object({
 
 export const updateSubSubCategorySchema = createSubSubCategorySchema.extend({
   id: z.string(),
+});
+
+// Schema of Products for public use
+export const productSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  slug: z.string(),
+  mainCategory: z.string(),
+  subCategory: z.string().optional().nullable(),
+  subSubCategory: z.string().optional().nullable(),
+  brand: z.string(),
+  description: z.string(),
+  price: currency,
+  stock: z.number(),
+  rating: z.string().optional().nullable(),
+  numReviews: z.number().optional().nullable(),
+  images: z.array(z.string()),
+  isFeatured: z.boolean(),
+  banner: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
 });
 
 // Schema for inserting products
@@ -251,4 +272,14 @@ export const FeaturedCategoriesSchema = z.object({
   name: z.string(),
   slug: z.string(),
   image: z.string(),
+});
+
+// Category tag type
+export const CreateCategoryTagSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string(),
+  subCategoryId: z.string().optional(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+  id: z.string().optional().nullable(),
 });
