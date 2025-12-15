@@ -1,7 +1,6 @@
 "use server";
 
 import { InferenceClient } from "@huggingface/inference";
-import OpenAI from "openai";
 import { vectorIndex, VECTOR_CONFIG } from "@/lib/vector/config";
 import { getCachedData } from "@/lib/cache/redis";
 import { prisma } from "@/db/prisma";
