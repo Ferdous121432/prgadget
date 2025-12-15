@@ -1,5 +1,6 @@
 import {
   cartItemSchema,
+  CreateCategoryTagSchema,
   createMainCategorySchema,
   createSubCategorySchema,
   createSubSubCategorySchema,
@@ -60,6 +61,7 @@ export type UpdateSubCategory = z.infer<typeof updateSubCategorySchema>;
 export type CreateSubSubCategory = z.infer<typeof createSubSubCategorySchema>;
 export type UpdateSubSubCategory = z.infer<typeof updateSubSubCategorySchema>;
 export type FeaturedCategories = z.infer<typeof FeaturedCategoriesSchema>;
+export type CreateCategoryTag = z.infer<typeof CreateCategoryTagSchema>;
 
 // User
 export type UpdateUserProfile = z.infer<typeof updateProfileSchema>;

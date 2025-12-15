@@ -1,22 +1,21 @@
 import logo from "@/public/assets/images/logo.png";
 
-import phones from "@/public/assets/category-logo/phone.png";
-import tablet from "@/public/assets/category-logo/tablet.png";
-import watch from "@/public/assets/category-logo/watch.png";
-import earphone from "@/public/assets/category-logo/earphone.png";
 import accessories from "@/public/assets/category-logo/accessories.png";
+import earphone from "@/public/assets/category-logo/earphone.png";
+import laptop from "@/public/assets/category-logo/mackbook.png";
+import phones from "@/public/assets/category-logo/phone.png";
 import powerbank from "@/public/assets/category-logo/powerbank.png";
 import speaker from "@/public/assets/category-logo/speaker.png";
-import laptop from "@/public/assets/category-logo/mackbook.png";
+import tablet from "@/public/assets/category-logo/tablet.png";
+import watch from "@/public/assets/category-logo/watch.png";
 
 import apple from "@/public/assets/brand-logo/apple.png";
-import samsung from "@/public/assets/brand-logo/samsung-aas.png";
 import honor from "@/public/assets/brand-logo/honor-aas.png";
+import infinix from "@/public/assets/brand-logo/infinix434.png";
 import oneplus from "@/public/assets/brand-logo/oneplus-aas.png";
 import oppo from "@/public/assets/brand-logo/oppo-aas.png";
 import realme from "@/public/assets/brand-logo/realme-aas.png";
-import infinix from "@/public/assets/brand-logo/infinix434.png";
-import techno from "@/public/assets/brand-logo/techno-aas.png";
+import samsung from "@/public/assets/brand-logo/samsung-aas.png";
 import vivo from "@/public/assets/brand-logo/vivo-aas.png";
 
 export const APP_Name = "PRGadget";
@@ -87,6 +86,11 @@ export const mainCategoryDefaultValues = {
   slug: "",
   image: "",
   image_key: "<image_key>",
+};
+
+export const categoryTagDefaultValues = {
+  name: "Casual",
+  slug: "",
 };
 
 export const USER_ROLES = process.env.USER_ROLES

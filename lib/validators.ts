@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { formatNumberWithDecimal } from "./utils";
 import { PAYMENT_METHODS } from "./constants";
+import { formatNumberWithDecimal } from "./utils";
 
 const currency = z
   .string()
@@ -272,4 +272,14 @@ export const FeaturedCategoriesSchema = z.object({
   name: z.string(),
   slug: z.string(),
   image: z.string(),
+});
+
+// Category tag type
+export const CreateCategoryTagSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string(),
+  subCategoryId: z.string().optional(),
+  createdAt: z.date().optional().nullable(),
+  updatedAt: z.date().optional().nullable(),
+  id: z.string().optional().nullable(),
 });
