@@ -64,7 +64,6 @@ const AdminProductsPage = async (props: {
             <TableHead>ID</TableHead>
             <TableHead>NAME</TableHead>
             <TableHead>LIST OF SUB</TableHead>
-            <TableHead>IMAGE</TableHead>
             <TableHead className="w-[100px]">ACTIONS</TableHead>
           </TableRow>
         </TableHeader>
@@ -76,16 +75,7 @@ const AdminProductsPage = async (props: {
               </TableCell>
               <TableCell>{category.name}</TableCell>
               <TableCell>{category.name}</TableCell>
-              <TableCell>
-                {category.image && (
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={30}
-                    height={30}
-                  />
-                )}
-              </TableCell>
+
               <TableCell className="flex gap-1">
                 <Button asChild variant="outline" size="sm">
                   <Link href={`/admin/category-tags/${category.slug}`}>
