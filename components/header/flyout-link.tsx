@@ -2,7 +2,6 @@
 "use client";
 import React, { useState } from "react";
 import Projects from "./nav-page";
-import { AnimatePresence, delay, motion, stagger } from "framer-motion";
 
 const flyoutVariants = {
   hidden: {

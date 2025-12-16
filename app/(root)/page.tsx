@@ -1,11 +1,10 @@
 import { Metadata } from "next";
+import nextDynamic from "next/dynamic";
 import { Suspense } from "react";
 
-import DealCountdown from "@/components/DealCountdown";
 import IconBoxes from "@/components/IconBoxes";
 import FeaturedCategory from "@/components/shared/homepage/FeaturedCategory";
 import ProductList from "@/components/shared/product/product-list";
-import ProductCarousel from "@/components/shared/product/ProductCarousel";
 
 import { ProductWithId } from "@/types";
 
@@ -15,9 +14,27 @@ import {
   getLatestProducts,
 } from "@/lib/actions/product.actions";
 
-import { LATEST_PRODUCTS_LIMIT } from "@/lib/constants";
-import { featuredCategoryLogos as categories } from "@/lib/constants";
-import { featuredBrands as brands } from "@/lib/constants";
+import {
+  featuredBrands as brands,
+  featuredCategoryLogos as categories,
+  LATEST_PRODUCTS_LIMIT,
+} from "@/lib/constants";
+
+// Dynamic imports for heavy client components (SSR enabled for Server Components)
+const DealCountdown = nextDynamic(() => import("@/components/DealCountdown"), {
+  loading: () => (
+    <div className="h-64 bg-gray-100 animate-pulse rounded-lg my-20" />
+  ),
+});
+
+const ProductCarousel = nextDynamic(
+  () => import("@/components/shared/product/ProductCarousel"),
+  {
+    loading: () => (
+      <div className="w-full h-64 md:h-96 bg-gray-200 animate-pulse rounded-lg" />
+    ),
+  }
+);
 
 type HomeSlider = {
   id: string;
