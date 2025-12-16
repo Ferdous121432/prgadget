@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "tailwindcss";
 
 @import "uploadthing/tw/v4";
 @source "../node_modules/@uploadthing/react/dist"; /** <-- depends on your project structure */
@@ -279,6 +278,14 @@ html.dark .upload-field .text-white {
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Performance: Content visibility for below-fold content */
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 500px;
   }
 }
 

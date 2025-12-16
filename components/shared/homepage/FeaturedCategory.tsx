@@ -1,6 +1,4 @@
-import { DollarSign, Headset, ShoppingBag, WalletCards } from "lucide-react";
 import Image, { StaticImageData } from "next/image";
-import React from "react";
 // import { getFeaturedCategories } from "@/lib/actions/category.actions";
 import Link from "next/link";
 
@@ -34,7 +32,8 @@ async function FeaturedCategory({
                     alt={category.name}
                     width={50}
                     height={50}
-                    priority
+                    loading="lazy"
+                    sizes="50px"
                   />
                 </div>
                 <div className="text-sm capitalize font-bold">

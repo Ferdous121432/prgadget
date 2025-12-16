@@ -1,6 +1,5 @@
-import Image from "next/image";
-import React from "react";
 import loader from "@/public/assets/loader.gif";
+import Image from "next/image";
 
 const Loading = () => {
   return (
@@ -12,7 +11,14 @@ const Loading = () => {
         height: "100vh",
         width: "100vw",
       }}>
-      <Image src={loader} alt="Loading..." width={150} height={150} />
+      <Image
+        src={loader}
+        alt="Loading..."
+        width={150}
+        height={150}
+        priority
+        unoptimized // GIFs should not be optimized
+      />
     </div>
   );
 };

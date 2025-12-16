@@ -1,9 +1,9 @@
-import Link from "next/link";
-import Image from "next/image";
-import { Product } from "@/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import Rating from "./rating";
+import { Product } from "@/types";
+import Image from "next/image";
+import Link from "next/link";
 import ProductPrice from "./product-price";
+import Rating from "./rating";
 
 interface ProductCardProps {
   product: Product & { vectorScore?: number };
@@ -23,7 +23,8 @@ const ProductCard = ({
             alt={product.name}
             height={300}
             width={300}
-            priority={true}
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 25vw, 16vw"
             className="w-full h-full object-cover"
           />
         </Link>

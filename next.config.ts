@@ -4,12 +4,20 @@ let nextConfig: NextConfig = {
   // Enable compression
   compress: true,
 
+  // Enable React strict mode for better debugging
+  reactStrictMode: true,
+
+  // PoweredBy header removal for security and slight bandwidth saving
+  poweredByHeader: false,
+
   // Optimize images
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
     minimumCacheTTL: 60 * 60 * 24 * 30,
+    // Enable unoptimized for static export if needed, otherwise keep false
+    unoptimized: false,
     remotePatterns: [
       {
         protocol: "https",
@@ -35,6 +43,7 @@ let nextConfig: NextConfig = {
   },
 
   experimental: {
+    // Enable optimized package imports
     optimizePackageImports: [
       "lucide-react",
       "@tabler/icons-react",

@@ -20,7 +20,7 @@ import {
   LATEST_PRODUCTS_LIMIT,
 } from "@/lib/constants";
 
-// Dynamic imports for heavy client components (SSR enabled for Server Components)
+// Dynamic imports for heavy client components
 const DealCountdown = nextDynamic(() => import("@/components/DealCountdown"), {
   loading: () => (
     <div className="h-64 bg-gray-100 animate-pulse rounded-lg my-20" />

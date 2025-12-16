@@ -1,7 +1,6 @@
 import { APP_LOGO, APP_Name } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 function AppLogo() {
   return (
@@ -12,7 +11,8 @@ function AppLogo() {
           alt={`${APP_Name} logo`}
           height={36}
           width={144}
-          priority={true}
+          priority
+          fetchPriority="high"
         />
         {/* <span className="hidden lg:block font-bold text-2xl ml-3">
               {APP_Name}
