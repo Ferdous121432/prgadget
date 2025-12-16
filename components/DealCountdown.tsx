@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "./ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 // import AppLogo from "./shared/header/AppLogo";
 
 // Static target date (replace with desired date)
@@ -117,6 +117,8 @@ const DealCountdown = () => {
           alt="promotion"
           width={300}
           height={200}
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, 300px"
         />
       </div>
     </section>

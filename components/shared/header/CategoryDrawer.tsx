@@ -23,8 +23,8 @@ const CategoryDrawer = async () => {
   return (
     <Drawer direction="left">
       <DrawerTrigger asChild>
-        <Button variant="outline">
-          <MenuIcon />
+        <Button variant="outline" aria-label="Open category menu">
+          <MenuIcon className="size-5" aria-hidden="true" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-full max-w-sm ">

@@ -27,9 +27,11 @@ const DealCountdown = nextDynamic(() => import("@/components/DealCountdown"), {
   ),
 });
 
+// ProductCarousel uses client-side carousel, but SSR the initial content for SEO
 const ProductCarousel = nextDynamic(
   () => import("@/components/shared/product/ProductCarousel"),
   {
+    ssr: true, // Keep SSR for LCP - first slide should be server rendered
     loading: () => (
       <div className="w-full h-64 md:h-96 bg-gray-200 animate-pulse rounded-lg" />
     ),
