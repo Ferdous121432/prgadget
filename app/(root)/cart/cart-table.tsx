@@ -1,23 +1,23 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
-import { ArrowRight, Loader, Minus, Plus } from "lucide-react";
-import { Cart, CartItem } from "@/types";
-import Link from "next/link";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
 import { jsxToasts } from "@/lib/customToaster";
+import { formatCurrency } from "@/lib/utils";
+import { Cart, CartItem } from "@/types";
+import { ArrowRight, Loader, Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 // NOTE: The code here has changed from the original course code so that the
 // Buttons no longer share the same state and show the loader independently from

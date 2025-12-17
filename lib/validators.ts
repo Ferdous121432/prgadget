@@ -43,6 +43,12 @@ export const updateSubSubCategorySchema = createSubSubCategorySchema.extend({
   id: z.string(),
 });
 
+// category tag schema
+export const categoryTagSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string(),
+});
+
 // Schema of Products for public use
 export const productSchema = z.object({
   id: z.string(),
@@ -52,6 +58,7 @@ export const productSchema = z.object({
   subCategory: z.string().optional().nullable(),
   subSubCategory: z.string().optional().nullable(),
   brand: z.string(),
+  categoryTags: categoryTagSchema.array().optional(),
   description: z.string(),
   price: currency,
   stock: z.number(),
@@ -74,6 +81,7 @@ export const insertProductSchema = z.object({
   subCategoryId: z.string().optional(),
   subSubCategoryId: z.string().optional(),
   brand: z.string().min(3, "Brand must be at least 3 characters"),
+  categoryTags: z.array(z.string()).optional(),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
   images: z.array(z.string()).min(1, "Product must have at least one image"),

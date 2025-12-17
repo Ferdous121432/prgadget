@@ -1,7 +1,7 @@
+import { getAllMainCategories } from "@/lib/actions/category.actions";
+import { UpdateMainCategory } from "@/types";
 import { Metadata } from "next";
 import CategoryForm from "./Category-form";
-import { UpdateMainCategory } from "@/types";
-import { getAllMainCategories } from "@/lib/actions/category.actions";
 export const metadata: Metadata = {
   title: "Create Category",
 };

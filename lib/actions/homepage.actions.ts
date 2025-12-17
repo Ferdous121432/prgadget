@@ -1,15 +1,15 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { prisma } from "@/db/prisma";
 import { utapi } from "@/app/api/uploadthing/uploadthing";
-import { convertPrismaObjectToJSObject } from "../utils";
+import { prisma } from "@/db/prisma";
+import { revalidatePath } from "next/cache";
 import {
-  getCachedData,
-  generateCacheKey,
   CACHE_CONFIG,
+  generateCacheKey,
+  getCachedData,
   invalidateHomepageCaches,
 } from "../cache/redis";
+import { convertPrismaObjectToJSObject } from "../utils";
 
 // Create a new homepage slider
 export async function createHomeSlider(data: any) {

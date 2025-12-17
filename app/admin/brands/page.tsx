@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { formatCurrency, formatId } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -17,10 +16,6 @@ import {
   deleteMainCategory,
   getAllMainCategories,
 } from "@/lib/actions/category.actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BadgeDollarSign, Barcode, CreditCard } from "lucide-react";
-import { DataTable } from "@/components/data-table";
-import Data from "./../orders/data.json";
 import Image from "next/image";
 
 const AdminProductsPage = async (props: {

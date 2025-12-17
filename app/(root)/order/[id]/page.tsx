@@ -1,10 +1,10 @@
-import { Metadata } from "next";
-import { getOrderById } from "@/lib/actions/order.actions";
-import { notFound, redirect } from "next/navigation";
-import OrderDetailsTable from "./order-details-table";
 import { auth } from "@/auth";
+import { getOrderById } from "@/lib/actions/order.actions";
 import { convertPrismaObjectToJSObject } from "@/lib/utils";
+import { Metadata } from "next";
+import { notFound, redirect } from "next/navigation";
 import Stripe from "stripe";
+import OrderDetailsTable from "./order-details-table";
 
 export const metadata: Metadata = {
   title: "Order Details",

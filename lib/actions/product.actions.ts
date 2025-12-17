@@ -4,29 +4,72 @@ import { prisma } from "@/db/prisma";
 import { DB_ADMIN_PRODUCT_TAKE, LATEST_PRODUCTS_LIMIT } from "../constants";
 // import { PrismaClient } from "../generated/prisma";
 
-import { convertPrismaObjectToJSObject } from "../utils";
-import { revalidatePath } from "next/cache";
-import { Product, ProductWithId, ProductWithIds } from "@/types";
-import { Prisma } from "../generated/prisma";
 import { utapi } from "@/app/api/uploadthing/uploadthing";
+import { Product, ProductWithId } from "@/types";
+import { revalidatePath } from "next/cache";
 import {
+  CACHE_CONFIG,
+  generateCacheKey,
   getCachedData,
   invalidateProductCaches,
-  generateCacheKey,
-  CACHE_CONFIG,
 } from "../cache/redis";
+import { Prisma } from "../generated/prisma";
+import { convertPrismaObjectToJSObject } from "../utils";
 import {
-  upsertProductVector,
   deleteProductVector,
+  upsertProductVector,
   vectorSearchProducts,
 } from "./vector-search.actions";
 
 //Create a new product
 export async function createProduct(data: Product) {
   try {
+    // Extract category tags and prepare the create data
+    const {
+      categoryTags,
+      mainCategoryId,
+      subCategoryId,
+      subSubCategoryId,
+      ...restData
+    } = data as any;
+
+    const createData: any = {
+      ...restData,
+    };
+
+    // Handle category relations
+    if (mainCategoryId) {
+      createData.MainCategory = { connect: { id: mainCategoryId } };
+    }
+
+    if (subCategoryId) {
+      createData.SubCategory = { connect: { id: subCategoryId } };
+    }
+
+    if (subSubCategoryId) {
+      createData.SubSubCategory = { connect: { id: subSubCategoryId } };
+    }
+
+    // Handle category tags relation (many-to-many via junction table)
+    if (Array.isArray(categoryTags) && categoryTags.length > 0) {
+      // categoryTags is now an array of IDs directly
+      const validTagIds = categoryTags.filter(
+        (id): id is string => typeof id === "string" && id.length > 0
+      );
+      if (validTagIds.length > 0) {
+        createData.categoryTags = {
+          create: validTagIds.map((categoryTagId) => ({
+            categoryTagId,
+          })),
+        };
+      }
+    }
+
     const product = await prisma.product.create({
-      data,
+      data: createData,
     });
+
+    console.log("ProductData 😍😍😍💥", createData);
 
     revalidatePath("/admin/products");
 
@@ -38,6 +81,7 @@ export async function createProduct(data: Product) {
 
     return { success: true, message: "Product created successfully." };
   } catch (error) {
+    console.log("error 💥💥💥💥", error);
     return {
       success: false,
       message: "Failed to create product.",
@@ -55,10 +99,67 @@ export async function updateProduct(data: ProductWithId) {
       return { success: false, message: "Product not found." };
     }
 
+    // Extract category tags and prepare the update data
+    const {
+      categoryTags,
+      mainCategoryId,
+      subCategoryId,
+      subSubCategoryId,
+      ...restData
+    } = data as any;
+
+    const updateData: any = {
+      ...restData,
+    };
+
+    // Handle category relations
+    if (mainCategoryId) {
+      updateData.MainCategory = { connect: { id: mainCategoryId } };
+    } else if (mainCategoryId === null) {
+      updateData.MainCategory = { disconnect: true };
+    }
+
+    if (subCategoryId) {
+      updateData.SubCategory = { connect: { id: subCategoryId } };
+    } else if (subCategoryId === null) {
+      updateData.SubCategory = { disconnect: true };
+    }
+
+    if (subSubCategoryId) {
+      updateData.SubSubCategory = { connect: { id: subSubCategoryId } };
+    } else if (subSubCategoryId === null) {
+      updateData.SubSubCategory = { disconnect: true };
+    }
+
+    // Handle category tags relation (many-to-many via junction table)
+    if (Array.isArray(categoryTags)) {
+      // First, delete existing category tag relations
+      await prisma.productCategoryTag.deleteMany({
+        where: { productId: data.id },
+      });
+
+      // Then create new relations if there are tags
+      if (categoryTags.length > 0) {
+        // categoryTags is now an array of IDs directly
+        const validTagIds = categoryTags.filter(
+          (id): id is string => typeof id === "string" && id.length > 0
+        );
+        if (validTagIds.length > 0) {
+          updateData.categoryTags = {
+            create: validTagIds.map((categoryTagId) => ({
+              categoryTagId,
+            })),
+          };
+        }
+      }
+    }
+
     const updatedProduct = await prisma.product.update({
       where: { id: data.id },
-      data,
+      data: updateData,
     });
+
+    // console.log("ProductData 😍😍😍💥", updateData);
 
     revalidatePath("/admin/products");
 
@@ -70,6 +171,7 @@ export async function updateProduct(data: ProductWithId) {
 
     return { success: true, message: "Product updated successfully." };
   } catch (error) {
+    console.log("Product Update Error ❌❌❌❌", error);
     return { success: false, message: "Failed to update product." };
   }
 }
@@ -146,8 +248,6 @@ export async function getAllProducts({
 }) {
   // If query exists and vector search is enabled, use vector search
   if (query && query !== "all" && query.trim() !== "" && useVectorSearch) {
-    console.log("🔍 Using vector search for:", query);
-
     // Parse price range
     let minPrice, maxPrice;
     if (price && price !== "all") {
@@ -423,6 +523,13 @@ export async function getProductByIdNoCache(id: string) {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        categoryTags: {
+          include: {
+            categoryTag: true,
+          },
+        },
+      },
     });
 
     if (!product) {

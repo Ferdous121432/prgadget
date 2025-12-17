@@ -1,15 +1,14 @@
+import { auth } from "@/auth";
+import AppLogo from "@/components/shared/header/AppLogo";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Metadata } from "next";
-import CredentialsSignInForm from "./credentials-signin-form";
-import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import AppLogo from "@/components/shared/header/AppLogo";
+import CredentialsSignInForm from "./credentials-signin-form";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -26,7 +25,7 @@ const SignInPage = async (props: {
   const { callbackUrl } = await props.searchParams;
 
   const session = await auth();
-  console.log("Session in SignInPage:", session);
+  // console.log("Session in SignInPage:", session);
 
   if (session) {
     return redirect(callbackUrl || "/");

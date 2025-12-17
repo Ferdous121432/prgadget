@@ -1,7 +1,6 @@
 import Navigation from "@/components/header/navigation";
 import Footer from "@/components/shared/footer/Footer";
 import Header from "@/components/shared/header/Header";
-import { Navbar } from "@/components/shared/header/Navbar";
 import { getNavCategories } from "@/lib/actions/category.actions";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";

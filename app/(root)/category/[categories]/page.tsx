@@ -1,7 +1,6 @@
-import React from "react";
 import CategoryProducts from "@/components/shared/category/CategoryProducts";
-import { getCategoryBySlug } from "@/lib/actions/category.actions";
 import FilterSidebar from "@/components/sidebar/filter-sidebar-layout";
+import { getCategoryBySlug } from "@/lib/actions/category.actions";
 
 export const metadata = {
   title: "Categories",

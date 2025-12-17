@@ -92,3 +92,17 @@ export async function getCategoryTagBySlug(slug: string) {
     return null;
   }
 }
+
+// get category tags for select options
+export async function getCategoryTagsForSelect() {
+  try {
+    const categoryTags = await prisma.categoryTag.findMany({
+      select: { name: true, slug: true, id: true },
+      orderBy: { name: "asc" },
+    });
+    return categoryTags;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}

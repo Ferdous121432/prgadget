@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
 import { syncAllProductsToVector } from "@/lib/actions/vector-search.actions";
+import { NextResponse } from "next/server";
 
 export async function GET() {
   try {

@@ -1,6 +1,7 @@
-import { Metadata } from "next";
 import ProductForm from "@/components/admin/product-form";
+import { getCategoryTagsForSelect } from "@/lib/actions/category-tag.actions";
 import { getCategoriesForProductForm } from "@/lib/actions/category.actions";
+import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Create Product",
 };
@@ -8,6 +9,11 @@ export const metadata: Metadata = {
 const CreateProductPage = async () => {
   const { mainCategories, subCategories, subSubCategories } =
     await getCategoriesForProductForm();
+
+  // Fetch category tags
+  const categoryTags = await getCategoryTagsForSelect();
+
+  // console.log("categoryTags 💥💥💥", categoryTags);
 
   // console.log("mainCategories:", mainCategories);
   // console.log("subCategories:", subCategories);
@@ -22,6 +28,7 @@ const CreateProductPage = async () => {
           mainCategories={mainCategories}
           subCategories={subCategories}
           subSubCategories={subSubCategories}
+          categoryTags={categoryTags}
         />
       </div>
     </>

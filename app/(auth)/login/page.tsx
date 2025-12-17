@@ -1,8 +1,6 @@
-import { GalleryVerticalEnd } from "lucide-react";
-
+import { auth } from "@/auth";
 import { LoginForm } from "@/components/login-form";
 import AppLogo from "@/components/shared/header/AppLogo";
-import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage(props: {
@@ -13,7 +11,7 @@ export default async function LoginPage(props: {
   const { callbackUrl } = await props.searchParams;
 
   const session = await auth();
-  console.log("Session in SignInPage:", session);
+  // console.log("Session in SignInPage:", session);
 
   if (session) {
     return redirect(callbackUrl || "/");

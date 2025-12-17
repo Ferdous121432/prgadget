@@ -1,3 +1,6 @@
+import DeleteDialog from "@/components/shared/DeteleDialog";
+import Pagination from "@/components/shared/Pagination";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,14 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { deleteOrder, getAllOrders } from "@/lib/actions/order.actions";
+import { requireAdmin } from "@/lib/auth-guard";
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Metadata } from "next";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Pagination from "@/components/shared/Pagination";
-import { requireAdmin } from "@/lib/auth-guard";
-import DeleteDialog from "@/components/shared/DeteleDialog";
-import { Order } from "@/types";
 
 export const metadata: Metadata = {
   title: "Admin Orders",

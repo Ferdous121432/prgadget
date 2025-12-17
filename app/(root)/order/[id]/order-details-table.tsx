@@ -1,5 +1,6 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -9,19 +10,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import {
+  updateOrderToDelivered,
+  updateOrderToPaidCOD,
+} from "@/lib/actions/order.actions";
+import { jsxToasts } from "@/lib/customToaster";
 import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Order } from "@/types";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { useTransition } from "react";
-import {
-  updateOrderToPaidCOD,
-  updateOrderToDelivered,
-} from "@/lib/actions/order.actions";
 import StripePayment from "./stripe-payment";
-import { jsxToasts } from "@/lib/customToaster";
-import { jsx } from "react/jsx-runtime";
 
 const OrderDetailsTable = ({
   order,
@@ -48,7 +47,7 @@ const OrderDetailsTable = ({
     paidAt,
     deliveredAt,
   } = order;
-  console.log("Order Details:", orderItems);
+  // console.log("Order Details:", orderItems);
   const PrintLoadingState = () => {
     // const [{ isPending, isRejected }] = usePayPalScriptReducer();
     let status = "";

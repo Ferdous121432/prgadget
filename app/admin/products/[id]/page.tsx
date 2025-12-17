@@ -1,9 +1,9 @@
 import ProductForm from "@/components/admin/product-form";
+import { getCategoryTagsForSelect } from "@/lib/actions/category-tag.actions";
+import { getCategoriesForProductForm } from "@/lib/actions/category.actions";
 import { getProductByIdNoCache } from "@/lib/actions/product.actions";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ProductWithId } from "@/types";
-import { getCategoriesForProductForm } from "@/lib/actions/category.actions";
 
 export const metadata: Metadata = {
   title: "Update Product",
@@ -16,11 +16,14 @@ const AdminProductUpdatePage = async (props: {
 }) => {
   const { id } = await props.params;
 
-  const product = (await getProductByIdNoCache(id)) as ProductWithId;
-  console.log("product to update:", product);
+  const product = (await getProductByIdNoCache(id)) as any;
+  console.log("product to update: 💥💥💥", product);
 
   const { mainCategories, subCategories, subSubCategories } =
     await getCategoriesForProductForm();
+
+  // Fetch category tags
+  const categoryTags = (await getCategoryTagsForSelect()) as any[];
 
   if (!product) return notFound();
 
@@ -35,6 +38,7 @@ const AdminProductUpdatePage = async (props: {
         mainCategories={mainCategories}
         subCategories={subCategories}
         subSubCategories={subSubCategories}
+        categoryTags={categoryTags}
       />
     </div>
   );

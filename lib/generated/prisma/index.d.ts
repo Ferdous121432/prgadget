@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type CategoryTag = $Result.DefaultSelection<Prisma.$CategoryTagPayload>
 /**
+ * Model ProductCategoryTag
+ * 
+ */
+export type ProductCategoryTag = $Result.DefaultSelection<Prisma.$ProductCategoryTagPayload>
+/**
  * Model MainCategory
  * 
  */
@@ -216,6 +221,16 @@ export class PrismaClient<
     * ```
     */
   get categoryTag(): Prisma.CategoryTagDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.productCategoryTag`: Exposes CRUD operations for the **ProductCategoryTag** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ProductCategoryTags
+    * const productCategoryTags = await prisma.productCategoryTag.findMany()
+    * ```
+    */
+  get productCategoryTag(): Prisma.ProductCategoryTagDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.mainCategory`: Exposes CRUD operations for the **MainCategory** model.
@@ -798,6 +813,7 @@ export namespace Prisma {
 
   export const ModelName: {
     CategoryTag: 'CategoryTag',
+    ProductCategoryTag: 'ProductCategoryTag',
     MainCategory: 'MainCategory',
     SubCategory: 'SubCategory',
     SubSubCategory: 'SubSubCategory',
@@ -830,7 +846,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "categoryTag" | "mainCategory" | "subCategory" | "subSubCategory" | "product" | "user" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "orderItem" | "review" | "homePageSlider"
+      modelProps: "categoryTag" | "productCategoryTag" | "mainCategory" | "subCategory" | "subSubCategory" | "product" | "user" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "orderItem" | "review" | "homePageSlider"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -905,6 +921,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CategoryTagCountArgs<ExtArgs>
             result: $Utils.Optional<CategoryTagCountAggregateOutputType> | number
+          }
+        }
+      }
+      ProductCategoryTag: {
+        payload: Prisma.$ProductCategoryTagPayload<ExtArgs>
+        fields: Prisma.ProductCategoryTagFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ProductCategoryTagFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ProductCategoryTagFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          findFirst: {
+            args: Prisma.ProductCategoryTagFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ProductCategoryTagFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          findMany: {
+            args: Prisma.ProductCategoryTagFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>[]
+          }
+          create: {
+            args: Prisma.ProductCategoryTagCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          createMany: {
+            args: Prisma.ProductCategoryTagCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ProductCategoryTagCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>[]
+          }
+          delete: {
+            args: Prisma.ProductCategoryTagDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          update: {
+            args: Prisma.ProductCategoryTagUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          deleteMany: {
+            args: Prisma.ProductCategoryTagDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ProductCategoryTagUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ProductCategoryTagUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>[]
+          }
+          upsert: {
+            args: Prisma.ProductCategoryTagUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ProductCategoryTagPayload>
+          }
+          aggregate: {
+            args: Prisma.ProductCategoryTagAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateProductCategoryTag>
+          }
+          groupBy: {
+            args: Prisma.ProductCategoryTagGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ProductCategoryTagGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ProductCategoryTagCountArgs<ExtArgs>
+            result: $Utils.Optional<ProductCategoryTagCountAggregateOutputType> | number
           }
         }
       }
@@ -2041,6 +2131,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     categoryTag?: CategoryTagOmit
+    productCategoryTag?: ProductCategoryTagOmit
     mainCategory?: MainCategoryOmit
     subCategory?: SubCategoryOmit
     subSubCategory?: SubSubCategoryOmit
@@ -2157,7 +2248,7 @@ export namespace Prisma {
    * CategoryTagCountOutputType without action
    */
   export type CategoryTagCountOutputTypeCountProductsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProductWhereInput
+    where?: ProductCategoryTagWhereInput
   }
 
 
@@ -2279,11 +2370,13 @@ export namespace Prisma {
   export type ProductCountOutputType = {
     OrderItem: number
     Review: number
+    categoryTags: number
   }
 
   export type ProductCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     OrderItem?: boolean | ProductCountOutputTypeCountOrderItemArgs
     Review?: boolean | ProductCountOutputTypeCountReviewArgs
+    categoryTags?: boolean | ProductCountOutputTypeCountCategoryTagsArgs
   }
 
   // Custom InputTypes
@@ -2309,6 +2402,13 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountReviewArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReviewWhereInput
+  }
+
+  /**
+   * ProductCountOutputType without action
+   */
+  export type ProductCountOutputTypeCountCategoryTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductCategoryTagWhereInput
   }
 
 
@@ -2626,7 +2726,7 @@ export namespace Prisma {
   export type $CategoryTagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CategoryTag"
     objects: {
-      products: Prisma.$ProductPayload<ExtArgs>[]
+      products: Prisma.$ProductCategoryTagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3028,7 +3128,7 @@ export namespace Prisma {
    */
   export interface Prisma__CategoryTagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    products<T extends CategoryTag$productsArgs<ExtArgs> = {}>(args?: Subset<T, CategoryTag$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    products<T extends CategoryTag$productsArgs<ExtArgs> = {}>(args?: Subset<T, CategoryTag$productsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3455,23 +3555,23 @@ export namespace Prisma {
    */
   export type CategoryTag$productsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Product
+     * Select specific fields to fetch from the ProductCategoryTag
      */
-    select?: ProductSelect<ExtArgs> | null
+    select?: ProductCategoryTagSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Product
+     * Omit specific fields from the ProductCategoryTag
      */
-    omit?: ProductOmit<ExtArgs> | null
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ProductInclude<ExtArgs> | null
-    where?: ProductWhereInput
-    orderBy?: ProductOrderByWithRelationInput | ProductOrderByWithRelationInput[]
-    cursor?: ProductWhereUniqueInput
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    where?: ProductCategoryTagWhereInput
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    cursor?: ProductCategoryTagWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: ProductScalarFieldEnum | ProductScalarFieldEnum[]
+    distinct?: ProductCategoryTagScalarFieldEnum | ProductCategoryTagScalarFieldEnum[]
   }
 
   /**
@@ -3490,6 +3590,1033 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CategoryTagInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ProductCategoryTag
+   */
+
+  export type AggregateProductCategoryTag = {
+    _count: ProductCategoryTagCountAggregateOutputType | null
+    _min: ProductCategoryTagMinAggregateOutputType | null
+    _max: ProductCategoryTagMaxAggregateOutputType | null
+  }
+
+  export type ProductCategoryTagMinAggregateOutputType = {
+    productId: string | null
+    categoryTagId: string | null
+  }
+
+  export type ProductCategoryTagMaxAggregateOutputType = {
+    productId: string | null
+    categoryTagId: string | null
+  }
+
+  export type ProductCategoryTagCountAggregateOutputType = {
+    productId: number
+    categoryTagId: number
+    _all: number
+  }
+
+
+  export type ProductCategoryTagMinAggregateInputType = {
+    productId?: true
+    categoryTagId?: true
+  }
+
+  export type ProductCategoryTagMaxAggregateInputType = {
+    productId?: true
+    categoryTagId?: true
+  }
+
+  export type ProductCategoryTagCountAggregateInputType = {
+    productId?: true
+    categoryTagId?: true
+    _all?: true
+  }
+
+  export type ProductCategoryTagAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductCategoryTag to aggregate.
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductCategoryTags to fetch.
+     */
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ProductCategoryTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductCategoryTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductCategoryTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ProductCategoryTags
+    **/
+    _count?: true | ProductCategoryTagCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ProductCategoryTagMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ProductCategoryTagMaxAggregateInputType
+  }
+
+  export type GetProductCategoryTagAggregateType<T extends ProductCategoryTagAggregateArgs> = {
+        [P in keyof T & keyof AggregateProductCategoryTag]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateProductCategoryTag[P]>
+      : GetScalarType<T[P], AggregateProductCategoryTag[P]>
+  }
+
+
+
+
+  export type ProductCategoryTagGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProductCategoryTagWhereInput
+    orderBy?: ProductCategoryTagOrderByWithAggregationInput | ProductCategoryTagOrderByWithAggregationInput[]
+    by: ProductCategoryTagScalarFieldEnum[] | ProductCategoryTagScalarFieldEnum
+    having?: ProductCategoryTagScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ProductCategoryTagCountAggregateInputType | true
+    _min?: ProductCategoryTagMinAggregateInputType
+    _max?: ProductCategoryTagMaxAggregateInputType
+  }
+
+  export type ProductCategoryTagGroupByOutputType = {
+    productId: string
+    categoryTagId: string
+    _count: ProductCategoryTagCountAggregateOutputType | null
+    _min: ProductCategoryTagMinAggregateOutputType | null
+    _max: ProductCategoryTagMaxAggregateOutputType | null
+  }
+
+  type GetProductCategoryTagGroupByPayload<T extends ProductCategoryTagGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ProductCategoryTagGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ProductCategoryTagGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ProductCategoryTagGroupByOutputType[P]>
+            : GetScalarType<T[P], ProductCategoryTagGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ProductCategoryTagSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    productId?: boolean
+    categoryTagId?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productCategoryTag"]>
+
+  export type ProductCategoryTagSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    productId?: boolean
+    categoryTagId?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productCategoryTag"]>
+
+  export type ProductCategoryTagSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    productId?: boolean
+    categoryTagId?: boolean
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["productCategoryTag"]>
+
+  export type ProductCategoryTagSelectScalar = {
+    productId?: boolean
+    categoryTagId?: boolean
+  }
+
+  export type ProductCategoryTagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"productId" | "categoryTagId", ExtArgs["result"]["productCategoryTag"]>
+  export type ProductCategoryTagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }
+  export type ProductCategoryTagIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }
+  export type ProductCategoryTagIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    product?: boolean | ProductDefaultArgs<ExtArgs>
+    categoryTag?: boolean | CategoryTagDefaultArgs<ExtArgs>
+  }
+
+  export type $ProductCategoryTagPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ProductCategoryTag"
+    objects: {
+      product: Prisma.$ProductPayload<ExtArgs>
+      categoryTag: Prisma.$CategoryTagPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      productId: string
+      categoryTagId: string
+    }, ExtArgs["result"]["productCategoryTag"]>
+    composites: {}
+  }
+
+  type ProductCategoryTagGetPayload<S extends boolean | null | undefined | ProductCategoryTagDefaultArgs> = $Result.GetResult<Prisma.$ProductCategoryTagPayload, S>
+
+  type ProductCategoryTagCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ProductCategoryTagFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ProductCategoryTagCountAggregateInputType | true
+    }
+
+  export interface ProductCategoryTagDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ProductCategoryTag'], meta: { name: 'ProductCategoryTag' } }
+    /**
+     * Find zero or one ProductCategoryTag that matches the filter.
+     * @param {ProductCategoryTagFindUniqueArgs} args - Arguments to find a ProductCategoryTag
+     * @example
+     * // Get one ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ProductCategoryTagFindUniqueArgs>(args: SelectSubset<T, ProductCategoryTagFindUniqueArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ProductCategoryTag that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ProductCategoryTagFindUniqueOrThrowArgs} args - Arguments to find a ProductCategoryTag
+     * @example
+     * // Get one ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ProductCategoryTagFindUniqueOrThrowArgs>(args: SelectSubset<T, ProductCategoryTagFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductCategoryTag that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagFindFirstArgs} args - Arguments to find a ProductCategoryTag
+     * @example
+     * // Get one ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ProductCategoryTagFindFirstArgs>(args?: SelectSubset<T, ProductCategoryTagFindFirstArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ProductCategoryTag that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagFindFirstOrThrowArgs} args - Arguments to find a ProductCategoryTag
+     * @example
+     * // Get one ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ProductCategoryTagFindFirstOrThrowArgs>(args?: SelectSubset<T, ProductCategoryTagFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ProductCategoryTags that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ProductCategoryTags
+     * const productCategoryTags = await prisma.productCategoryTag.findMany()
+     * 
+     * // Get first 10 ProductCategoryTags
+     * const productCategoryTags = await prisma.productCategoryTag.findMany({ take: 10 })
+     * 
+     * // Only select the `productId`
+     * const productCategoryTagWithProductIdOnly = await prisma.productCategoryTag.findMany({ select: { productId: true } })
+     * 
+     */
+    findMany<T extends ProductCategoryTagFindManyArgs>(args?: SelectSubset<T, ProductCategoryTagFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ProductCategoryTag.
+     * @param {ProductCategoryTagCreateArgs} args - Arguments to create a ProductCategoryTag.
+     * @example
+     * // Create one ProductCategoryTag
+     * const ProductCategoryTag = await prisma.productCategoryTag.create({
+     *   data: {
+     *     // ... data to create a ProductCategoryTag
+     *   }
+     * })
+     * 
+     */
+    create<T extends ProductCategoryTagCreateArgs>(args: SelectSubset<T, ProductCategoryTagCreateArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ProductCategoryTags.
+     * @param {ProductCategoryTagCreateManyArgs} args - Arguments to create many ProductCategoryTags.
+     * @example
+     * // Create many ProductCategoryTags
+     * const productCategoryTag = await prisma.productCategoryTag.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ProductCategoryTagCreateManyArgs>(args?: SelectSubset<T, ProductCategoryTagCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ProductCategoryTags and returns the data saved in the database.
+     * @param {ProductCategoryTagCreateManyAndReturnArgs} args - Arguments to create many ProductCategoryTags.
+     * @example
+     * // Create many ProductCategoryTags
+     * const productCategoryTag = await prisma.productCategoryTag.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ProductCategoryTags and only return the `productId`
+     * const productCategoryTagWithProductIdOnly = await prisma.productCategoryTag.createManyAndReturn({
+     *   select: { productId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ProductCategoryTagCreateManyAndReturnArgs>(args?: SelectSubset<T, ProductCategoryTagCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ProductCategoryTag.
+     * @param {ProductCategoryTagDeleteArgs} args - Arguments to delete one ProductCategoryTag.
+     * @example
+     * // Delete one ProductCategoryTag
+     * const ProductCategoryTag = await prisma.productCategoryTag.delete({
+     *   where: {
+     *     // ... filter to delete one ProductCategoryTag
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ProductCategoryTagDeleteArgs>(args: SelectSubset<T, ProductCategoryTagDeleteArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ProductCategoryTag.
+     * @param {ProductCategoryTagUpdateArgs} args - Arguments to update one ProductCategoryTag.
+     * @example
+     * // Update one ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ProductCategoryTagUpdateArgs>(args: SelectSubset<T, ProductCategoryTagUpdateArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ProductCategoryTags.
+     * @param {ProductCategoryTagDeleteManyArgs} args - Arguments to filter ProductCategoryTags to delete.
+     * @example
+     * // Delete a few ProductCategoryTags
+     * const { count } = await prisma.productCategoryTag.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ProductCategoryTagDeleteManyArgs>(args?: SelectSubset<T, ProductCategoryTagDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductCategoryTags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ProductCategoryTags
+     * const productCategoryTag = await prisma.productCategoryTag.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ProductCategoryTagUpdateManyArgs>(args: SelectSubset<T, ProductCategoryTagUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ProductCategoryTags and returns the data updated in the database.
+     * @param {ProductCategoryTagUpdateManyAndReturnArgs} args - Arguments to update many ProductCategoryTags.
+     * @example
+     * // Update many ProductCategoryTags
+     * const productCategoryTag = await prisma.productCategoryTag.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ProductCategoryTags and only return the `productId`
+     * const productCategoryTagWithProductIdOnly = await prisma.productCategoryTag.updateManyAndReturn({
+     *   select: { productId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ProductCategoryTagUpdateManyAndReturnArgs>(args: SelectSubset<T, ProductCategoryTagUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ProductCategoryTag.
+     * @param {ProductCategoryTagUpsertArgs} args - Arguments to update or create a ProductCategoryTag.
+     * @example
+     * // Update or create a ProductCategoryTag
+     * const productCategoryTag = await prisma.productCategoryTag.upsert({
+     *   create: {
+     *     // ... data to create a ProductCategoryTag
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ProductCategoryTag we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ProductCategoryTagUpsertArgs>(args: SelectSubset<T, ProductCategoryTagUpsertArgs<ExtArgs>>): Prisma__ProductCategoryTagClient<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ProductCategoryTags.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagCountArgs} args - Arguments to filter ProductCategoryTags to count.
+     * @example
+     * // Count the number of ProductCategoryTags
+     * const count = await prisma.productCategoryTag.count({
+     *   where: {
+     *     // ... the filter for the ProductCategoryTags we want to count
+     *   }
+     * })
+    **/
+    count<T extends ProductCategoryTagCountArgs>(
+      args?: Subset<T, ProductCategoryTagCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ProductCategoryTagCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ProductCategoryTag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ProductCategoryTagAggregateArgs>(args: Subset<T, ProductCategoryTagAggregateArgs>): Prisma.PrismaPromise<GetProductCategoryTagAggregateType<T>>
+
+    /**
+     * Group by ProductCategoryTag.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ProductCategoryTagGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ProductCategoryTagGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ProductCategoryTagGroupByArgs['orderBy'] }
+        : { orderBy?: ProductCategoryTagGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ProductCategoryTagGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProductCategoryTagGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ProductCategoryTag model
+   */
+  readonly fields: ProductCategoryTagFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ProductCategoryTag.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ProductCategoryTagClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    categoryTag<T extends CategoryTagDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CategoryTagDefaultArgs<ExtArgs>>): Prisma__CategoryTagClient<$Result.GetResult<Prisma.$CategoryTagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ProductCategoryTag model
+   */
+  interface ProductCategoryTagFieldRefs {
+    readonly productId: FieldRef<"ProductCategoryTag", 'String'>
+    readonly categoryTagId: FieldRef<"ProductCategoryTag", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ProductCategoryTag findUnique
+   */
+  export type ProductCategoryTagFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductCategoryTag to fetch.
+     */
+    where: ProductCategoryTagWhereUniqueInput
+  }
+
+  /**
+   * ProductCategoryTag findUniqueOrThrow
+   */
+  export type ProductCategoryTagFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductCategoryTag to fetch.
+     */
+    where: ProductCategoryTagWhereUniqueInput
+  }
+
+  /**
+   * ProductCategoryTag findFirst
+   */
+  export type ProductCategoryTagFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductCategoryTag to fetch.
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductCategoryTags to fetch.
+     */
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductCategoryTags.
+     */
+    cursor?: ProductCategoryTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductCategoryTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductCategoryTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductCategoryTags.
+     */
+    distinct?: ProductCategoryTagScalarFieldEnum | ProductCategoryTagScalarFieldEnum[]
+  }
+
+  /**
+   * ProductCategoryTag findFirstOrThrow
+   */
+  export type ProductCategoryTagFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductCategoryTag to fetch.
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductCategoryTags to fetch.
+     */
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ProductCategoryTags.
+     */
+    cursor?: ProductCategoryTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductCategoryTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductCategoryTags.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ProductCategoryTags.
+     */
+    distinct?: ProductCategoryTagScalarFieldEnum | ProductCategoryTagScalarFieldEnum[]
+  }
+
+  /**
+   * ProductCategoryTag findMany
+   */
+  export type ProductCategoryTagFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter, which ProductCategoryTags to fetch.
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ProductCategoryTags to fetch.
+     */
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ProductCategoryTags.
+     */
+    cursor?: ProductCategoryTagWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ProductCategoryTags from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ProductCategoryTags.
+     */
+    skip?: number
+    distinct?: ProductCategoryTagScalarFieldEnum | ProductCategoryTagScalarFieldEnum[]
+  }
+
+  /**
+   * ProductCategoryTag create
+   */
+  export type ProductCategoryTagCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ProductCategoryTag.
+     */
+    data: XOR<ProductCategoryTagCreateInput, ProductCategoryTagUncheckedCreateInput>
+  }
+
+  /**
+   * ProductCategoryTag createMany
+   */
+  export type ProductCategoryTagCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ProductCategoryTags.
+     */
+    data: ProductCategoryTagCreateManyInput | ProductCategoryTagCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ProductCategoryTag createManyAndReturn
+   */
+  export type ProductCategoryTagCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * The data used to create many ProductCategoryTags.
+     */
+    data: ProductCategoryTagCreateManyInput | ProductCategoryTagCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductCategoryTag update
+   */
+  export type ProductCategoryTagUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ProductCategoryTag.
+     */
+    data: XOR<ProductCategoryTagUpdateInput, ProductCategoryTagUncheckedUpdateInput>
+    /**
+     * Choose, which ProductCategoryTag to update.
+     */
+    where: ProductCategoryTagWhereUniqueInput
+  }
+
+  /**
+   * ProductCategoryTag updateMany
+   */
+  export type ProductCategoryTagUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ProductCategoryTags.
+     */
+    data: XOR<ProductCategoryTagUpdateManyMutationInput, ProductCategoryTagUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductCategoryTags to update
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * Limit how many ProductCategoryTags to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductCategoryTag updateManyAndReturn
+   */
+  export type ProductCategoryTagUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * The data used to update ProductCategoryTags.
+     */
+    data: XOR<ProductCategoryTagUpdateManyMutationInput, ProductCategoryTagUncheckedUpdateManyInput>
+    /**
+     * Filter which ProductCategoryTags to update
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * Limit how many ProductCategoryTags to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ProductCategoryTag upsert
+   */
+  export type ProductCategoryTagUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ProductCategoryTag to update in case it exists.
+     */
+    where: ProductCategoryTagWhereUniqueInput
+    /**
+     * In case the ProductCategoryTag found by the `where` argument doesn't exist, create a new ProductCategoryTag with this data.
+     */
+    create: XOR<ProductCategoryTagCreateInput, ProductCategoryTagUncheckedCreateInput>
+    /**
+     * In case the ProductCategoryTag was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ProductCategoryTagUpdateInput, ProductCategoryTagUncheckedUpdateInput>
+  }
+
+  /**
+   * ProductCategoryTag delete
+   */
+  export type ProductCategoryTagDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    /**
+     * Filter which ProductCategoryTag to delete.
+     */
+    where: ProductCategoryTagWhereUniqueInput
+  }
+
+  /**
+   * ProductCategoryTag deleteMany
+   */
+  export type ProductCategoryTagDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ProductCategoryTags to delete
+     */
+    where?: ProductCategoryTagWhereInput
+    /**
+     * Limit how many ProductCategoryTags to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ProductCategoryTag without action
+   */
+  export type ProductCategoryTagDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProductCategoryTag
+     */
+    select?: ProductCategoryTagSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProductCategoryTag
+     */
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProductCategoryTagInclude<ExtArgs> | null
   }
 
 
@@ -6811,7 +7938,6 @@ export namespace Prisma {
     mainCategoryId: string | null
     subCategoryId: string | null
     subSubCategoryId: string | null
-    categoryTagId: string | null
   }
 
   export type ProductMaxAggregateOutputType = {
@@ -6830,7 +7956,6 @@ export namespace Prisma {
     mainCategoryId: string | null
     subCategoryId: string | null
     subSubCategoryId: string | null
-    categoryTagId: string | null
   }
 
   export type ProductCountAggregateOutputType = {
@@ -6851,7 +7976,6 @@ export namespace Prisma {
     mainCategoryId: number
     subCategoryId: number
     subSubCategoryId: number
-    categoryTagId: number
     _all: number
   }
 
@@ -6886,7 +8010,6 @@ export namespace Prisma {
     mainCategoryId?: true
     subCategoryId?: true
     subSubCategoryId?: true
-    categoryTagId?: true
   }
 
   export type ProductMaxAggregateInputType = {
@@ -6905,7 +8028,6 @@ export namespace Prisma {
     mainCategoryId?: true
     subCategoryId?: true
     subSubCategoryId?: true
-    categoryTagId?: true
   }
 
   export type ProductCountAggregateInputType = {
@@ -6926,7 +8048,6 @@ export namespace Prisma {
     mainCategoryId?: true
     subCategoryId?: true
     subSubCategoryId?: true
-    categoryTagId?: true
     _all?: true
   }
 
@@ -7034,7 +8155,6 @@ export namespace Prisma {
     mainCategoryId: string | null
     subCategoryId: string | null
     subSubCategoryId: string | null
-    categoryTagId: string | null
     _count: ProductCountAggregateOutputType | null
     _avg: ProductAvgAggregateOutputType | null
     _sum: ProductSumAggregateOutputType | null
@@ -7074,13 +8194,12 @@ export namespace Prisma {
     mainCategoryId?: boolean
     subCategoryId?: boolean
     subSubCategoryId?: boolean
-    categoryTagId?: boolean
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
+    categoryTags?: boolean | Product$categoryTagsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
@@ -7102,11 +8221,9 @@ export namespace Prisma {
     mainCategoryId?: boolean
     subCategoryId?: boolean
     subSubCategoryId?: boolean
-    categoryTagId?: boolean
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7127,11 +8244,9 @@ export namespace Prisma {
     mainCategoryId?: boolean
     subCategoryId?: boolean
     subSubCategoryId?: boolean
-    categoryTagId?: boolean
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
   }, ExtArgs["result"]["product"]>
 
   export type ProductSelectScalar = {
@@ -7152,30 +8267,27 @@ export namespace Prisma {
     mainCategoryId?: boolean
     subCategoryId?: boolean
     subSubCategoryId?: boolean
-    categoryTagId?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "images" | "image_keys" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt" | "mainCategoryId" | "subCategoryId" | "subSubCategoryId" | "categoryTagId", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "images" | "image_keys" | "brand" | "description" | "stock" | "price" | "rating" | "numReviews" | "isFeatured" | "banner" | "createdAt" | "mainCategoryId" | "subCategoryId" | "subSubCategoryId", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     OrderItem?: boolean | Product$OrderItemArgs<ExtArgs>
     Review?: boolean | Product$ReviewArgs<ExtArgs>
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
+    categoryTags?: boolean | Product$categoryTagsArgs<ExtArgs>
     _count?: boolean | ProductCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProductIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
   }
   export type ProductIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     MainCategory?: boolean | Product$MainCategoryArgs<ExtArgs>
     SubCategory?: boolean | Product$SubCategoryArgs<ExtArgs>
     SubSubCategory?: boolean | Product$SubSubCategoryArgs<ExtArgs>
-    categoryTag?: boolean | Product$categoryTagArgs<ExtArgs>
   }
 
   export type $ProductPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7186,7 +8298,7 @@ export namespace Prisma {
       MainCategory: Prisma.$MainCategoryPayload<ExtArgs> | null
       SubCategory: Prisma.$SubCategoryPayload<ExtArgs> | null
       SubSubCategory: Prisma.$SubSubCategoryPayload<ExtArgs> | null
-      categoryTag: Prisma.$CategoryTagPayload<ExtArgs> | null
+      categoryTags: Prisma.$ProductCategoryTagPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7206,7 +8318,6 @@ export namespace Prisma {
       mainCategoryId: string | null
       subCategoryId: string | null
       subSubCategoryId: string | null
-      categoryTagId: string | null
     }, ExtArgs["result"]["product"]>
     composites: {}
   }
@@ -7606,7 +8717,7 @@ export namespace Prisma {
     MainCategory<T extends Product$MainCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Product$MainCategoryArgs<ExtArgs>>): Prisma__MainCategoryClient<$Result.GetResult<Prisma.$MainCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     SubCategory<T extends Product$SubCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Product$SubCategoryArgs<ExtArgs>>): Prisma__SubCategoryClient<$Result.GetResult<Prisma.$SubCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     SubSubCategory<T extends Product$SubSubCategoryArgs<ExtArgs> = {}>(args?: Subset<T, Product$SubSubCategoryArgs<ExtArgs>>): Prisma__SubSubCategoryClient<$Result.GetResult<Prisma.$SubSubCategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    categoryTag<T extends Product$categoryTagArgs<ExtArgs> = {}>(args?: Subset<T, Product$categoryTagArgs<ExtArgs>>): Prisma__CategoryTagClient<$Result.GetResult<Prisma.$CategoryTagPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    categoryTags<T extends Product$categoryTagsArgs<ExtArgs> = {}>(args?: Subset<T, Product$categoryTagsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProductCategoryTagPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7653,7 +8764,6 @@ export namespace Prisma {
     readonly mainCategoryId: FieldRef<"Product", 'String'>
     readonly subCategoryId: FieldRef<"Product", 'String'>
     readonly subSubCategoryId: FieldRef<"Product", 'String'>
-    readonly categoryTagId: FieldRef<"Product", 'String'>
   }
     
 
@@ -8155,22 +9265,27 @@ export namespace Prisma {
   }
 
   /**
-   * Product.categoryTag
+   * Product.categoryTags
    */
-  export type Product$categoryTagArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Product$categoryTagsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CategoryTag
+     * Select specific fields to fetch from the ProductCategoryTag
      */
-    select?: CategoryTagSelect<ExtArgs> | null
+    select?: ProductCategoryTagSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CategoryTag
+     * Omit specific fields from the ProductCategoryTag
      */
-    omit?: CategoryTagOmit<ExtArgs> | null
+    omit?: ProductCategoryTagOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CategoryTagInclude<ExtArgs> | null
-    where?: CategoryTagWhereInput
+    include?: ProductCategoryTagInclude<ExtArgs> | null
+    where?: ProductCategoryTagWhereInput
+    orderBy?: ProductCategoryTagOrderByWithRelationInput | ProductCategoryTagOrderByWithRelationInput[]
+    cursor?: ProductCategoryTagWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProductCategoryTagScalarFieldEnum | ProductCategoryTagScalarFieldEnum[]
   }
 
   /**
@@ -19624,6 +20739,14 @@ export namespace Prisma {
   export type CategoryTagScalarFieldEnum = (typeof CategoryTagScalarFieldEnum)[keyof typeof CategoryTagScalarFieldEnum]
 
 
+  export const ProductCategoryTagScalarFieldEnum: {
+    productId: 'productId',
+    categoryTagId: 'categoryTagId'
+  };
+
+  export type ProductCategoryTagScalarFieldEnum = (typeof ProductCategoryTagScalarFieldEnum)[keyof typeof ProductCategoryTagScalarFieldEnum]
+
+
   export const MainCategoryScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -19672,8 +20795,7 @@ export namespace Prisma {
     createdAt: 'createdAt',
     mainCategoryId: 'mainCategoryId',
     subCategoryId: 'subCategoryId',
-    subSubCategoryId: 'subSubCategoryId',
-    categoryTagId: 'categoryTagId'
+    subSubCategoryId: 'subSubCategoryId'
   };
 
   export type ProductScalarFieldEnum = (typeof ProductScalarFieldEnum)[keyof typeof ProductScalarFieldEnum]
@@ -19992,7 +21114,7 @@ export namespace Prisma {
     slug?: StringFilter<"CategoryTag"> | string
     createdAt?: DateTimeFilter<"CategoryTag"> | Date | string
     updatedAt?: DateTimeFilter<"CategoryTag"> | Date | string
-    products?: ProductListRelationFilter
+    products?: ProductCategoryTagListRelationFilter
   }
 
   export type CategoryTagOrderByWithRelationInput = {
@@ -20001,7 +21123,7 @@ export namespace Prisma {
     slug?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    products?: ProductOrderByRelationAggregateInput
+    products?: ProductCategoryTagOrderByRelationAggregateInput
   }
 
   export type CategoryTagWhereUniqueInput = Prisma.AtLeast<{
@@ -20013,7 +21135,7 @@ export namespace Prisma {
     NOT?: CategoryTagWhereInput | CategoryTagWhereInput[]
     createdAt?: DateTimeFilter<"CategoryTag"> | Date | string
     updatedAt?: DateTimeFilter<"CategoryTag"> | Date | string
-    products?: ProductListRelationFilter
+    products?: ProductCategoryTagListRelationFilter
   }, "id" | "name" | "slug">
 
   export type CategoryTagOrderByWithAggregationInput = {
@@ -20036,6 +21158,50 @@ export namespace Prisma {
     slug?: StringWithAggregatesFilter<"CategoryTag"> | string
     createdAt?: DateTimeWithAggregatesFilter<"CategoryTag"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"CategoryTag"> | Date | string
+  }
+
+  export type ProductCategoryTagWhereInput = {
+    AND?: ProductCategoryTagWhereInput | ProductCategoryTagWhereInput[]
+    OR?: ProductCategoryTagWhereInput[]
+    NOT?: ProductCategoryTagWhereInput | ProductCategoryTagWhereInput[]
+    productId?: UuidFilter<"ProductCategoryTag"> | string
+    categoryTagId?: StringFilter<"ProductCategoryTag"> | string
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    categoryTag?: XOR<CategoryTagScalarRelationFilter, CategoryTagWhereInput>
+  }
+
+  export type ProductCategoryTagOrderByWithRelationInput = {
+    productId?: SortOrder
+    categoryTagId?: SortOrder
+    product?: ProductOrderByWithRelationInput
+    categoryTag?: CategoryTagOrderByWithRelationInput
+  }
+
+  export type ProductCategoryTagWhereUniqueInput = Prisma.AtLeast<{
+    productId_categoryTagId?: ProductCategoryTagProductIdCategoryTagIdCompoundUniqueInput
+    AND?: ProductCategoryTagWhereInput | ProductCategoryTagWhereInput[]
+    OR?: ProductCategoryTagWhereInput[]
+    NOT?: ProductCategoryTagWhereInput | ProductCategoryTagWhereInput[]
+    productId?: UuidFilter<"ProductCategoryTag"> | string
+    categoryTagId?: StringFilter<"ProductCategoryTag"> | string
+    product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
+    categoryTag?: XOR<CategoryTagScalarRelationFilter, CategoryTagWhereInput>
+  }, "productId_categoryTagId">
+
+  export type ProductCategoryTagOrderByWithAggregationInput = {
+    productId?: SortOrder
+    categoryTagId?: SortOrder
+    _count?: ProductCategoryTagCountOrderByAggregateInput
+    _max?: ProductCategoryTagMaxOrderByAggregateInput
+    _min?: ProductCategoryTagMinOrderByAggregateInput
+  }
+
+  export type ProductCategoryTagScalarWhereWithAggregatesInput = {
+    AND?: ProductCategoryTagScalarWhereWithAggregatesInput | ProductCategoryTagScalarWhereWithAggregatesInput[]
+    OR?: ProductCategoryTagScalarWhereWithAggregatesInput[]
+    NOT?: ProductCategoryTagScalarWhereWithAggregatesInput | ProductCategoryTagScalarWhereWithAggregatesInput[]
+    productId?: UuidWithAggregatesFilter<"ProductCategoryTag"> | string
+    categoryTagId?: StringWithAggregatesFilter<"ProductCategoryTag"> | string
   }
 
   export type MainCategoryWhereInput = {
@@ -20226,13 +21392,12 @@ export namespace Prisma {
     mainCategoryId?: StringNullableFilter<"Product"> | string | null
     subCategoryId?: StringNullableFilter<"Product"> | string | null
     subSubCategoryId?: StringNullableFilter<"Product"> | string | null
-    categoryTagId?: StringNullableFilter<"Product"> | string | null
     OrderItem?: OrderItemListRelationFilter
     Review?: ReviewListRelationFilter
     MainCategory?: XOR<MainCategoryNullableScalarRelationFilter, MainCategoryWhereInput> | null
     SubCategory?: XOR<SubCategoryNullableScalarRelationFilter, SubCategoryWhereInput> | null
     SubSubCategory?: XOR<SubSubCategoryNullableScalarRelationFilter, SubSubCategoryWhereInput> | null
-    categoryTag?: XOR<CategoryTagNullableScalarRelationFilter, CategoryTagWhereInput> | null
+    categoryTags?: ProductCategoryTagListRelationFilter
   }
 
   export type ProductOrderByWithRelationInput = {
@@ -20253,13 +21418,12 @@ export namespace Prisma {
     mainCategoryId?: SortOrderInput | SortOrder
     subCategoryId?: SortOrderInput | SortOrder
     subSubCategoryId?: SortOrderInput | SortOrder
-    categoryTagId?: SortOrderInput | SortOrder
     OrderItem?: OrderItemOrderByRelationAggregateInput
     Review?: ReviewOrderByRelationAggregateInput
     MainCategory?: MainCategoryOrderByWithRelationInput
     SubCategory?: SubCategoryOrderByWithRelationInput
     SubSubCategory?: SubSubCategoryOrderByWithRelationInput
-    categoryTag?: CategoryTagOrderByWithRelationInput
+    categoryTags?: ProductCategoryTagOrderByRelationAggregateInput
   }
 
   export type ProductWhereUniqueInput = Prisma.AtLeast<{
@@ -20283,13 +21447,12 @@ export namespace Prisma {
     mainCategoryId?: StringNullableFilter<"Product"> | string | null
     subCategoryId?: StringNullableFilter<"Product"> | string | null
     subSubCategoryId?: StringNullableFilter<"Product"> | string | null
-    categoryTagId?: StringNullableFilter<"Product"> | string | null
     OrderItem?: OrderItemListRelationFilter
     Review?: ReviewListRelationFilter
     MainCategory?: XOR<MainCategoryNullableScalarRelationFilter, MainCategoryWhereInput> | null
     SubCategory?: XOR<SubCategoryNullableScalarRelationFilter, SubCategoryWhereInput> | null
     SubSubCategory?: XOR<SubSubCategoryNullableScalarRelationFilter, SubSubCategoryWhereInput> | null
-    categoryTag?: XOR<CategoryTagNullableScalarRelationFilter, CategoryTagWhereInput> | null
+    categoryTags?: ProductCategoryTagListRelationFilter
   }, "id" | "slug">
 
   export type ProductOrderByWithAggregationInput = {
@@ -20310,7 +21473,6 @@ export namespace Prisma {
     mainCategoryId?: SortOrderInput | SortOrder
     subCategoryId?: SortOrderInput | SortOrder
     subSubCategoryId?: SortOrderInput | SortOrder
-    categoryTagId?: SortOrderInput | SortOrder
     _count?: ProductCountOrderByAggregateInput
     _avg?: ProductAvgOrderByAggregateInput
     _max?: ProductMaxOrderByAggregateInput
@@ -20339,7 +21501,6 @@ export namespace Prisma {
     mainCategoryId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     subCategoryId?: StringNullableWithAggregatesFilter<"Product"> | string | null
     subSubCategoryId?: StringNullableWithAggregatesFilter<"Product"> | string | null
-    categoryTagId?: StringNullableWithAggregatesFilter<"Product"> | string | null
   }
 
   export type UserWhereInput = {
@@ -21132,7 +22293,7 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    products?: ProductCreateNestedManyWithoutCategoryTagInput
+    products?: ProductCategoryTagCreateNestedManyWithoutCategoryTagInput
   }
 
   export type CategoryTagUncheckedCreateInput = {
@@ -21141,7 +22302,7 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    products?: ProductUncheckedCreateNestedManyWithoutCategoryTagInput
+    products?: ProductCategoryTagUncheckedCreateNestedManyWithoutCategoryTagInput
   }
 
   export type CategoryTagUpdateInput = {
@@ -21150,7 +22311,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    products?: ProductUpdateManyWithoutCategoryTagNestedInput
+    products?: ProductCategoryTagUpdateManyWithoutCategoryTagNestedInput
   }
 
   export type CategoryTagUncheckedUpdateInput = {
@@ -21159,7 +22320,7 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    products?: ProductUncheckedUpdateManyWithoutCategoryTagNestedInput
+    products?: ProductCategoryTagUncheckedUpdateManyWithoutCategoryTagNestedInput
   }
 
   export type CategoryTagCreateManyInput = {
@@ -21184,6 +22345,40 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductCategoryTagCreateInput = {
+    product: ProductCreateNestedOneWithoutCategoryTagsInput
+    categoryTag: CategoryTagCreateNestedOneWithoutProductsInput
+  }
+
+  export type ProductCategoryTagUncheckedCreateInput = {
+    productId: string
+    categoryTagId: string
+  }
+
+  export type ProductCategoryTagUpdateInput = {
+    product?: ProductUpdateOneRequiredWithoutCategoryTagsNestedInput
+    categoryTag?: CategoryTagUpdateOneRequiredWithoutProductsNestedInput
+  }
+
+  export type ProductCategoryTagUncheckedUpdateInput = {
+    productId?: StringFieldUpdateOperationsInput | string
+    categoryTagId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProductCategoryTagCreateManyInput = {
+    productId: string
+    categoryTagId: string
+  }
+
+  export type ProductCategoryTagUpdateManyMutationInput = {
+
+  }
+
+  export type ProductCategoryTagUncheckedUpdateManyInput = {
+    productId?: StringFieldUpdateOperationsInput | string
+    categoryTagId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MainCategoryCreateInput = {
@@ -21378,7 +22573,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryCreateNestedOneWithoutProductsInput
     SubCategory?: SubCategoryCreateNestedOneWithoutProductsInput
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateInput = {
@@ -21399,9 +22594,9 @@ export namespace Prisma {
     mainCategoryId?: string | null
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductUpdateInput = {
@@ -21424,7 +22619,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
     SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
     SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateInput = {
@@ -21445,9 +22640,9 @@ export namespace Prisma {
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateManyInput = {
@@ -21468,7 +22663,6 @@ export namespace Prisma {
     mainCategoryId?: string | null
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
   }
 
   export type ProductUpdateManyMutationInput = {
@@ -21506,7 +22700,6 @@ export namespace Prisma {
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserCreateInput = {
@@ -22394,13 +23587,13 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type ProductListRelationFilter = {
-    every?: ProductWhereInput
-    some?: ProductWhereInput
-    none?: ProductWhereInput
+  export type ProductCategoryTagListRelationFilter = {
+    every?: ProductCategoryTagWhereInput
+    some?: ProductCategoryTagWhereInput
+    none?: ProductCategoryTagWhereInput
   }
 
-  export type ProductOrderByRelationAggregateInput = {
+  export type ProductCategoryTagOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22460,13 +23653,80 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type UuidFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidFilter<$PrismaModel> | string
+  }
+
+  export type ProductScalarRelationFilter = {
+    is?: ProductWhereInput
+    isNot?: ProductWhereInput
+  }
+
+  export type CategoryTagScalarRelationFilter = {
+    is?: CategoryTagWhereInput
+    isNot?: CategoryTagWhereInput
+  }
+
+  export type ProductCategoryTagProductIdCategoryTagIdCompoundUniqueInput = {
+    productId: string
+    categoryTagId: string
+  }
+
+  export type ProductCategoryTagCountOrderByAggregateInput = {
+    productId?: SortOrder
+    categoryTagId?: SortOrder
+  }
+
+  export type ProductCategoryTagMaxOrderByAggregateInput = {
+    productId?: SortOrder
+    categoryTagId?: SortOrder
+  }
+
+  export type ProductCategoryTagMinOrderByAggregateInput = {
+    productId?: SortOrder
+    categoryTagId?: SortOrder
+  }
+
+  export type UuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
   export type SubCategoryListRelationFilter = {
     every?: SubCategoryWhereInput
     some?: SubCategoryWhereInput
     none?: SubCategoryWhereInput
   }
 
+  export type ProductListRelationFilter = {
+    every?: ProductWhereInput
+    some?: ProductWhereInput
+    none?: ProductWhereInput
+  }
+
   export type SubCategoryOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProductOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -22556,18 +23816,6 @@ export namespace Prisma {
     subCategoryId?: SortOrder
   }
 
-  export type UuidFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidFilter<$PrismaModel> | string
-  }
-
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -22645,11 +23893,6 @@ export namespace Prisma {
     isNot?: SubSubCategoryWhereInput | null
   }
 
-  export type CategoryTagNullableScalarRelationFilter = {
-    is?: CategoryTagWhereInput | null
-    isNot?: CategoryTagWhereInput | null
-  }
-
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -22681,7 +23924,6 @@ export namespace Prisma {
     mainCategoryId?: SortOrder
     subCategoryId?: SortOrder
     subSubCategoryId?: SortOrder
-    categoryTagId?: SortOrder
   }
 
   export type ProductAvgOrderByAggregateInput = {
@@ -22707,7 +23949,6 @@ export namespace Prisma {
     mainCategoryId?: SortOrder
     subCategoryId?: SortOrder
     subSubCategoryId?: SortOrder
-    categoryTagId?: SortOrder
   }
 
   export type ProductMinOrderByAggregateInput = {
@@ -22726,7 +23967,6 @@ export namespace Prisma {
     mainCategoryId?: SortOrder
     subCategoryId?: SortOrder
     subSubCategoryId?: SortOrder
-    categoryTagId?: SortOrder
   }
 
   export type ProductSumOrderByAggregateInput = {
@@ -22734,21 +23974,6 @@ export namespace Prisma {
     price?: SortOrder
     rating?: SortOrder
     numReviews?: SortOrder
-  }
-
-  export type UuidWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -23377,11 +24602,6 @@ export namespace Prisma {
     isNot?: OrderWhereInput
   }
 
-  export type ProductScalarRelationFilter = {
-    is?: ProductWhereInput
-    isNot?: ProductWhereInput
-  }
-
   export type OrderItemOrderIdProductIdCompoundUniqueInput = {
     orderId: string
     productId: string
@@ -23504,18 +24724,18 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type ProductCreateNestedManyWithoutCategoryTagInput = {
-    create?: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput> | ProductCreateWithoutCategoryTagInput[] | ProductUncheckedCreateWithoutCategoryTagInput[]
-    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagInput | ProductCreateOrConnectWithoutCategoryTagInput[]
-    createMany?: ProductCreateManyCategoryTagInputEnvelope
-    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+  export type ProductCategoryTagCreateNestedManyWithoutCategoryTagInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput> | ProductCategoryTagCreateWithoutCategoryTagInput[] | ProductCategoryTagUncheckedCreateWithoutCategoryTagInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutCategoryTagInput | ProductCategoryTagCreateOrConnectWithoutCategoryTagInput[]
+    createMany?: ProductCategoryTagCreateManyCategoryTagInputEnvelope
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
   }
 
-  export type ProductUncheckedCreateNestedManyWithoutCategoryTagInput = {
-    create?: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput> | ProductCreateWithoutCategoryTagInput[] | ProductUncheckedCreateWithoutCategoryTagInput[]
-    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagInput | ProductCreateOrConnectWithoutCategoryTagInput[]
-    createMany?: ProductCreateManyCategoryTagInputEnvelope
-    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
+  export type ProductCategoryTagUncheckedCreateNestedManyWithoutCategoryTagInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput> | ProductCategoryTagCreateWithoutCategoryTagInput[] | ProductCategoryTagUncheckedCreateWithoutCategoryTagInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutCategoryTagInput | ProductCategoryTagCreateOrConnectWithoutCategoryTagInput[]
+    createMany?: ProductCategoryTagCreateManyCategoryTagInputEnvelope
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -23526,32 +24746,60 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type ProductUpdateManyWithoutCategoryTagNestedInput = {
-    create?: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput> | ProductCreateWithoutCategoryTagInput[] | ProductUncheckedCreateWithoutCategoryTagInput[]
-    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagInput | ProductCreateOrConnectWithoutCategoryTagInput[]
-    upsert?: ProductUpsertWithWhereUniqueWithoutCategoryTagInput | ProductUpsertWithWhereUniqueWithoutCategoryTagInput[]
-    createMany?: ProductCreateManyCategoryTagInputEnvelope
-    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    update?: ProductUpdateWithWhereUniqueWithoutCategoryTagInput | ProductUpdateWithWhereUniqueWithoutCategoryTagInput[]
-    updateMany?: ProductUpdateManyWithWhereWithoutCategoryTagInput | ProductUpdateManyWithWhereWithoutCategoryTagInput[]
-    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  export type ProductCategoryTagUpdateManyWithoutCategoryTagNestedInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput> | ProductCategoryTagCreateWithoutCategoryTagInput[] | ProductCategoryTagUncheckedCreateWithoutCategoryTagInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutCategoryTagInput | ProductCategoryTagCreateOrConnectWithoutCategoryTagInput[]
+    upsert?: ProductCategoryTagUpsertWithWhereUniqueWithoutCategoryTagInput | ProductCategoryTagUpsertWithWhereUniqueWithoutCategoryTagInput[]
+    createMany?: ProductCategoryTagCreateManyCategoryTagInputEnvelope
+    set?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    disconnect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    delete?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    update?: ProductCategoryTagUpdateWithWhereUniqueWithoutCategoryTagInput | ProductCategoryTagUpdateWithWhereUniqueWithoutCategoryTagInput[]
+    updateMany?: ProductCategoryTagUpdateManyWithWhereWithoutCategoryTagInput | ProductCategoryTagUpdateManyWithWhereWithoutCategoryTagInput[]
+    deleteMany?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
   }
 
-  export type ProductUncheckedUpdateManyWithoutCategoryTagNestedInput = {
-    create?: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput> | ProductCreateWithoutCategoryTagInput[] | ProductUncheckedCreateWithoutCategoryTagInput[]
-    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagInput | ProductCreateOrConnectWithoutCategoryTagInput[]
-    upsert?: ProductUpsertWithWhereUniqueWithoutCategoryTagInput | ProductUpsertWithWhereUniqueWithoutCategoryTagInput[]
-    createMany?: ProductCreateManyCategoryTagInputEnvelope
-    set?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    disconnect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    delete?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    connect?: ProductWhereUniqueInput | ProductWhereUniqueInput[]
-    update?: ProductUpdateWithWhereUniqueWithoutCategoryTagInput | ProductUpdateWithWhereUniqueWithoutCategoryTagInput[]
-    updateMany?: ProductUpdateManyWithWhereWithoutCategoryTagInput | ProductUpdateManyWithWhereWithoutCategoryTagInput[]
-    deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
+  export type ProductCategoryTagUncheckedUpdateManyWithoutCategoryTagNestedInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput> | ProductCategoryTagCreateWithoutCategoryTagInput[] | ProductCategoryTagUncheckedCreateWithoutCategoryTagInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutCategoryTagInput | ProductCategoryTagCreateOrConnectWithoutCategoryTagInput[]
+    upsert?: ProductCategoryTagUpsertWithWhereUniqueWithoutCategoryTagInput | ProductCategoryTagUpsertWithWhereUniqueWithoutCategoryTagInput[]
+    createMany?: ProductCategoryTagCreateManyCategoryTagInputEnvelope
+    set?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    disconnect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    delete?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    update?: ProductCategoryTagUpdateWithWhereUniqueWithoutCategoryTagInput | ProductCategoryTagUpdateWithWhereUniqueWithoutCategoryTagInput[]
+    updateMany?: ProductCategoryTagUpdateManyWithWhereWithoutCategoryTagInput | ProductCategoryTagUpdateManyWithWhereWithoutCategoryTagInput[]
+    deleteMany?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
+  }
+
+  export type ProductCreateNestedOneWithoutCategoryTagsInput = {
+    create?: XOR<ProductCreateWithoutCategoryTagsInput, ProductUncheckedCreateWithoutCategoryTagsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagsInput
+    connect?: ProductWhereUniqueInput
+  }
+
+  export type CategoryTagCreateNestedOneWithoutProductsInput = {
+    create?: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: CategoryTagCreateOrConnectWithoutProductsInput
+    connect?: CategoryTagWhereUniqueInput
+  }
+
+  export type ProductUpdateOneRequiredWithoutCategoryTagsNestedInput = {
+    create?: XOR<ProductCreateWithoutCategoryTagsInput, ProductUncheckedCreateWithoutCategoryTagsInput>
+    connectOrCreate?: ProductCreateOrConnectWithoutCategoryTagsInput
+    upsert?: ProductUpsertWithoutCategoryTagsInput
+    connect?: ProductWhereUniqueInput
+    update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutCategoryTagsInput, ProductUpdateWithoutCategoryTagsInput>, ProductUncheckedUpdateWithoutCategoryTagsInput>
+  }
+
+  export type CategoryTagUpdateOneRequiredWithoutProductsNestedInput = {
+    create?: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
+    connectOrCreate?: CategoryTagCreateOrConnectWithoutProductsInput
+    upsert?: CategoryTagUpsertWithoutProductsInput
+    connect?: CategoryTagWhereUniqueInput
+    update?: XOR<XOR<CategoryTagUpdateToOneWithWhereWithoutProductsInput, CategoryTagUpdateWithoutProductsInput>, CategoryTagUncheckedUpdateWithoutProductsInput>
   }
 
   export type SubCategoryCreateNestedManyWithoutMainCategoryInput = {
@@ -23832,10 +25080,11 @@ export namespace Prisma {
     connect?: SubSubCategoryWhereUniqueInput
   }
 
-  export type CategoryTagCreateNestedOneWithoutProductsInput = {
-    create?: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
-    connectOrCreate?: CategoryTagCreateOrConnectWithoutProductsInput
-    connect?: CategoryTagWhereUniqueInput
+  export type ProductCategoryTagCreateNestedManyWithoutProductInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput> | ProductCategoryTagCreateWithoutProductInput[] | ProductCategoryTagUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutProductInput | ProductCategoryTagCreateOrConnectWithoutProductInput[]
+    createMany?: ProductCategoryTagCreateManyProductInputEnvelope
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
   }
 
   export type OrderItemUncheckedCreateNestedManyWithoutProductInput = {
@@ -23850,6 +25099,13 @@ export namespace Prisma {
     connectOrCreate?: ReviewCreateOrConnectWithoutProductInput | ReviewCreateOrConnectWithoutProductInput[]
     createMany?: ReviewCreateManyProductInputEnvelope
     connect?: ReviewWhereUniqueInput | ReviewWhereUniqueInput[]
+  }
+
+  export type ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput> | ProductCategoryTagCreateWithoutProductInput[] | ProductCategoryTagUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutProductInput | ProductCategoryTagCreateOrConnectWithoutProductInput[]
+    createMany?: ProductCategoryTagCreateManyProductInputEnvelope
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
   }
 
   export type ProductUpdateimagesInput = {
@@ -23944,14 +25200,18 @@ export namespace Prisma {
     update?: XOR<XOR<SubSubCategoryUpdateToOneWithWhereWithoutProductsInput, SubSubCategoryUpdateWithoutProductsInput>, SubSubCategoryUncheckedUpdateWithoutProductsInput>
   }
 
-  export type CategoryTagUpdateOneWithoutProductsNestedInput = {
-    create?: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
-    connectOrCreate?: CategoryTagCreateOrConnectWithoutProductsInput
-    upsert?: CategoryTagUpsertWithoutProductsInput
-    disconnect?: CategoryTagWhereInput | boolean
-    delete?: CategoryTagWhereInput | boolean
-    connect?: CategoryTagWhereUniqueInput
-    update?: XOR<XOR<CategoryTagUpdateToOneWithWhereWithoutProductsInput, CategoryTagUpdateWithoutProductsInput>, CategoryTagUncheckedUpdateWithoutProductsInput>
+  export type ProductCategoryTagUpdateManyWithoutProductNestedInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput> | ProductCategoryTagCreateWithoutProductInput[] | ProductCategoryTagUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutProductInput | ProductCategoryTagCreateOrConnectWithoutProductInput[]
+    upsert?: ProductCategoryTagUpsertWithWhereUniqueWithoutProductInput | ProductCategoryTagUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: ProductCategoryTagCreateManyProductInputEnvelope
+    set?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    disconnect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    delete?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    update?: ProductCategoryTagUpdateWithWhereUniqueWithoutProductInput | ProductCategoryTagUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: ProductCategoryTagUpdateManyWithWhereWithoutProductInput | ProductCategoryTagUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
   }
 
   export type OrderItemUncheckedUpdateManyWithoutProductNestedInput = {
@@ -23980,6 +25240,20 @@ export namespace Prisma {
     update?: ReviewUpdateWithWhereUniqueWithoutProductInput | ReviewUpdateWithWhereUniqueWithoutProductInput[]
     updateMany?: ReviewUpdateManyWithWhereWithoutProductInput | ReviewUpdateManyWithWhereWithoutProductInput[]
     deleteMany?: ReviewScalarWhereInput | ReviewScalarWhereInput[]
+  }
+
+  export type ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput = {
+    create?: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput> | ProductCategoryTagCreateWithoutProductInput[] | ProductCategoryTagUncheckedCreateWithoutProductInput[]
+    connectOrCreate?: ProductCategoryTagCreateOrConnectWithoutProductInput | ProductCategoryTagCreateOrConnectWithoutProductInput[]
+    upsert?: ProductCategoryTagUpsertWithWhereUniqueWithoutProductInput | ProductCategoryTagUpsertWithWhereUniqueWithoutProductInput[]
+    createMany?: ProductCategoryTagCreateManyProductInputEnvelope
+    set?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    disconnect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    delete?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    connect?: ProductCategoryTagWhereUniqueInput | ProductCategoryTagWhereUniqueInput[]
+    update?: ProductCategoryTagUpdateWithWhereUniqueWithoutProductInput | ProductCategoryTagUpdateWithWhereUniqueWithoutProductInput[]
+    updateMany?: ProductCategoryTagUpdateManyWithWhereWithoutProductInput | ProductCategoryTagUpdateManyWithWhereWithoutProductInput[]
+    deleteMany?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -24503,6 +25777,20 @@ export namespace Prisma {
     not?: NestedUuidFilter<$PrismaModel> | string
   }
 
+  export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel>
+    in?: string[] | ListStringFieldRefInput<$PrismaModel>
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedStringFilter<$PrismaModel>
+    _max?: NestedStringFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -24531,20 +25819,6 @@ export namespace Prisma {
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedUuidWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedUuidWithAggregatesFilter<$PrismaModel> | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedStringFilter<$PrismaModel>
-    _max?: NestedStringFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -24749,7 +26023,49 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type ProductCreateWithoutCategoryTagInput = {
+  export type ProductCategoryTagCreateWithoutCategoryTagInput = {
+    product: ProductCreateNestedOneWithoutCategoryTagsInput
+  }
+
+  export type ProductCategoryTagUncheckedCreateWithoutCategoryTagInput = {
+    productId: string
+  }
+
+  export type ProductCategoryTagCreateOrConnectWithoutCategoryTagInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    create: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput>
+  }
+
+  export type ProductCategoryTagCreateManyCategoryTagInputEnvelope = {
+    data: ProductCategoryTagCreateManyCategoryTagInput | ProductCategoryTagCreateManyCategoryTagInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProductCategoryTagUpsertWithWhereUniqueWithoutCategoryTagInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    update: XOR<ProductCategoryTagUpdateWithoutCategoryTagInput, ProductCategoryTagUncheckedUpdateWithoutCategoryTagInput>
+    create: XOR<ProductCategoryTagCreateWithoutCategoryTagInput, ProductCategoryTagUncheckedCreateWithoutCategoryTagInput>
+  }
+
+  export type ProductCategoryTagUpdateWithWhereUniqueWithoutCategoryTagInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    data: XOR<ProductCategoryTagUpdateWithoutCategoryTagInput, ProductCategoryTagUncheckedUpdateWithoutCategoryTagInput>
+  }
+
+  export type ProductCategoryTagUpdateManyWithWhereWithoutCategoryTagInput = {
+    where: ProductCategoryTagScalarWhereInput
+    data: XOR<ProductCategoryTagUpdateManyMutationInput, ProductCategoryTagUncheckedUpdateManyWithoutCategoryTagInput>
+  }
+
+  export type ProductCategoryTagScalarWhereInput = {
+    AND?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
+    OR?: ProductCategoryTagScalarWhereInput[]
+    NOT?: ProductCategoryTagScalarWhereInput | ProductCategoryTagScalarWhereInput[]
+    productId?: UuidFilter<"ProductCategoryTag"> | string
+    categoryTagId?: StringFilter<"ProductCategoryTag"> | string
+  }
+
+  export type ProductCreateWithoutCategoryTagsInput = {
     id?: string
     name: string
     slug: string
@@ -24771,7 +26087,7 @@ export namespace Prisma {
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
   }
 
-  export type ProductUncheckedCreateWithoutCategoryTagInput = {
+  export type ProductUncheckedCreateWithoutCategoryTagsInput = {
     id?: string
     name: string
     slug: string
@@ -24793,54 +26109,112 @@ export namespace Prisma {
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
   }
 
-  export type ProductCreateOrConnectWithoutCategoryTagInput = {
+  export type ProductCreateOrConnectWithoutCategoryTagsInput = {
     where: ProductWhereUniqueInput
-    create: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput>
+    create: XOR<ProductCreateWithoutCategoryTagsInput, ProductUncheckedCreateWithoutCategoryTagsInput>
   }
 
-  export type ProductCreateManyCategoryTagInputEnvelope = {
-    data: ProductCreateManyCategoryTagInput | ProductCreateManyCategoryTagInput[]
-    skipDuplicates?: boolean
+  export type CategoryTagCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ProductUpsertWithWhereUniqueWithoutCategoryTagInput = {
-    where: ProductWhereUniqueInput
-    update: XOR<ProductUpdateWithoutCategoryTagInput, ProductUncheckedUpdateWithoutCategoryTagInput>
-    create: XOR<ProductCreateWithoutCategoryTagInput, ProductUncheckedCreateWithoutCategoryTagInput>
+  export type CategoryTagUncheckedCreateWithoutProductsInput = {
+    id?: string
+    name: string
+    slug: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
-  export type ProductUpdateWithWhereUniqueWithoutCategoryTagInput = {
-    where: ProductWhereUniqueInput
-    data: XOR<ProductUpdateWithoutCategoryTagInput, ProductUncheckedUpdateWithoutCategoryTagInput>
+  export type CategoryTagCreateOrConnectWithoutProductsInput = {
+    where: CategoryTagWhereUniqueInput
+    create: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
   }
 
-  export type ProductUpdateManyWithWhereWithoutCategoryTagInput = {
-    where: ProductScalarWhereInput
-    data: XOR<ProductUpdateManyMutationInput, ProductUncheckedUpdateManyWithoutCategoryTagInput>
+  export type ProductUpsertWithoutCategoryTagsInput = {
+    update: XOR<ProductUpdateWithoutCategoryTagsInput, ProductUncheckedUpdateWithoutCategoryTagsInput>
+    create: XOR<ProductCreateWithoutCategoryTagsInput, ProductUncheckedCreateWithoutCategoryTagsInput>
+    where?: ProductWhereInput
   }
 
-  export type ProductScalarWhereInput = {
-    AND?: ProductScalarWhereInput | ProductScalarWhereInput[]
-    OR?: ProductScalarWhereInput[]
-    NOT?: ProductScalarWhereInput | ProductScalarWhereInput[]
-    id?: UuidFilter<"Product"> | string
-    name?: StringFilter<"Product"> | string
-    slug?: StringFilter<"Product"> | string
-    images?: StringNullableListFilter<"Product">
-    image_keys?: StringNullableListFilter<"Product">
-    brand?: StringNullableFilter<"Product"> | string | null
-    description?: StringFilter<"Product"> | string
-    stock?: IntFilter<"Product"> | number
-    price?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
-    rating?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
-    numReviews?: IntFilter<"Product"> | number
-    isFeatured?: BoolFilter<"Product"> | boolean
-    banner?: StringNullableFilter<"Product"> | string | null
-    createdAt?: DateTimeFilter<"Product"> | Date | string
-    mainCategoryId?: StringNullableFilter<"Product"> | string | null
-    subCategoryId?: StringNullableFilter<"Product"> | string | null
-    subSubCategoryId?: StringNullableFilter<"Product"> | string | null
-    categoryTagId?: StringNullableFilter<"Product"> | string | null
+  export type ProductUpdateToOneWithWhereWithoutCategoryTagsInput = {
+    where?: ProductWhereInput
+    data: XOR<ProductUpdateWithoutCategoryTagsInput, ProductUncheckedUpdateWithoutCategoryTagsInput>
+  }
+
+  export type ProductUpdateWithoutCategoryTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    stock?: IntFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    numReviews?: IntFieldUpdateOperationsInput | number
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    OrderItem?: OrderItemUpdateManyWithoutProductNestedInput
+    Review?: ReviewUpdateManyWithoutProductNestedInput
+    MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
+    SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
+    SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
+  }
+
+  export type ProductUncheckedUpdateWithoutCategoryTagsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
+    image_keys?: ProductUpdateimage_keysInput | string[]
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: StringFieldUpdateOperationsInput | string
+    stock?: IntFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    numReviews?: IntFieldUpdateOperationsInput | number
+    isFeatured?: BoolFieldUpdateOperationsInput | boolean
+    banner?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type CategoryTagUpsertWithoutProductsInput = {
+    update: XOR<CategoryTagUpdateWithoutProductsInput, CategoryTagUncheckedUpdateWithoutProductsInput>
+    create: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
+    where?: CategoryTagWhereInput
+  }
+
+  export type CategoryTagUpdateToOneWithWhereWithoutProductsInput = {
+    where?: CategoryTagWhereInput
+    data: XOR<CategoryTagUpdateWithoutProductsInput, CategoryTagUncheckedUpdateWithoutProductsInput>
+  }
+
+  export type CategoryTagUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CategoryTagUncheckedUpdateWithoutProductsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SubCategoryCreateWithoutMainCategoryInput = {
@@ -24888,7 +26262,7 @@ export namespace Prisma {
     Review?: ReviewCreateNestedManyWithoutProductInput
     SubCategory?: SubCategoryCreateNestedOneWithoutProductsInput
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutMainCategoryInput = {
@@ -24908,9 +26282,9 @@ export namespace Prisma {
     createdAt?: Date | string
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutMainCategoryInput = {
@@ -24963,6 +26337,29 @@ export namespace Prisma {
   export type ProductUpdateManyWithWhereWithoutMainCategoryInput = {
     where: ProductScalarWhereInput
     data: XOR<ProductUpdateManyMutationInput, ProductUncheckedUpdateManyWithoutMainCategoryInput>
+  }
+
+  export type ProductScalarWhereInput = {
+    AND?: ProductScalarWhereInput | ProductScalarWhereInput[]
+    OR?: ProductScalarWhereInput[]
+    NOT?: ProductScalarWhereInput | ProductScalarWhereInput[]
+    id?: UuidFilter<"Product"> | string
+    name?: StringFilter<"Product"> | string
+    slug?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
+    image_keys?: StringNullableListFilter<"Product">
+    brand?: StringNullableFilter<"Product"> | string | null
+    description?: StringFilter<"Product"> | string
+    stock?: IntFilter<"Product"> | number
+    price?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
+    rating?: DecimalFilter<"Product"> | Decimal | DecimalJsLike | number | string
+    numReviews?: IntFilter<"Product"> | number
+    isFeatured?: BoolFilter<"Product"> | boolean
+    banner?: StringNullableFilter<"Product"> | string | null
+    createdAt?: DateTimeFilter<"Product"> | Date | string
+    mainCategoryId?: StringNullableFilter<"Product"> | string | null
+    subCategoryId?: StringNullableFilter<"Product"> | string | null
+    subSubCategoryId?: StringNullableFilter<"Product"> | string | null
   }
 
   export type MainCategoryCreateWithoutSubcategoriesInput = {
@@ -25031,7 +26428,7 @@ export namespace Prisma {
     Review?: ReviewCreateNestedManyWithoutProductInput
     MainCategory?: MainCategoryCreateNestedOneWithoutProductsInput
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutSubCategoryInput = {
@@ -25051,9 +26448,9 @@ export namespace Prisma {
     createdAt?: Date | string
     mainCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutSubCategoryInput = {
@@ -25177,7 +26574,7 @@ export namespace Prisma {
     Review?: ReviewCreateNestedManyWithoutProductInput
     MainCategory?: MainCategoryCreateNestedOneWithoutProductsInput
     SubCategory?: SubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutSubSubCategoryInput = {
@@ -25197,9 +26594,9 @@ export namespace Prisma {
     createdAt?: Date | string
     mainCategoryId?: string | null
     subCategoryId?: string | null
-    categoryTagId?: string | null
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutSubSubCategoryInput = {
@@ -25380,25 +26777,22 @@ export namespace Prisma {
     create: XOR<SubSubCategoryCreateWithoutProductsInput, SubSubCategoryUncheckedCreateWithoutProductsInput>
   }
 
-  export type CategoryTagCreateWithoutProductsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type ProductCategoryTagCreateWithoutProductInput = {
+    categoryTag: CategoryTagCreateNestedOneWithoutProductsInput
   }
 
-  export type CategoryTagUncheckedCreateWithoutProductsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
+  export type ProductCategoryTagUncheckedCreateWithoutProductInput = {
+    categoryTagId: string
   }
 
-  export type CategoryTagCreateOrConnectWithoutProductsInput = {
-    where: CategoryTagWhereUniqueInput
-    create: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
+  export type ProductCategoryTagCreateOrConnectWithoutProductInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    create: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput>
+  }
+
+  export type ProductCategoryTagCreateManyProductInputEnvelope = {
+    data: ProductCategoryTagCreateManyProductInput | ProductCategoryTagCreateManyProductInput[]
+    skipDuplicates?: boolean
   }
 
   export type OrderItemUpsertWithWhereUniqueWithoutProductInput = {
@@ -25543,31 +26937,20 @@ export namespace Prisma {
     subCategoryId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type CategoryTagUpsertWithoutProductsInput = {
-    update: XOR<CategoryTagUpdateWithoutProductsInput, CategoryTagUncheckedUpdateWithoutProductsInput>
-    create: XOR<CategoryTagCreateWithoutProductsInput, CategoryTagUncheckedCreateWithoutProductsInput>
-    where?: CategoryTagWhereInput
+  export type ProductCategoryTagUpsertWithWhereUniqueWithoutProductInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    update: XOR<ProductCategoryTagUpdateWithoutProductInput, ProductCategoryTagUncheckedUpdateWithoutProductInput>
+    create: XOR<ProductCategoryTagCreateWithoutProductInput, ProductCategoryTagUncheckedCreateWithoutProductInput>
   }
 
-  export type CategoryTagUpdateToOneWithWhereWithoutProductsInput = {
-    where?: CategoryTagWhereInput
-    data: XOR<CategoryTagUpdateWithoutProductsInput, CategoryTagUncheckedUpdateWithoutProductsInput>
+  export type ProductCategoryTagUpdateWithWhereUniqueWithoutProductInput = {
+    where: ProductCategoryTagWhereUniqueInput
+    data: XOR<ProductCategoryTagUpdateWithoutProductInput, ProductCategoryTagUncheckedUpdateWithoutProductInput>
   }
 
-  export type CategoryTagUpdateWithoutProductsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CategoryTagUncheckedUpdateWithoutProductsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type ProductCategoryTagUpdateManyWithWhereWithoutProductInput = {
+    where: ProductCategoryTagScalarWhereInput
+    data: XOR<ProductCategoryTagUpdateManyMutationInput, ProductCategoryTagUncheckedUpdateManyWithoutProductInput>
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -26539,7 +27922,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryCreateNestedOneWithoutProductsInput
     SubCategory?: SubCategoryCreateNestedOneWithoutProductsInput
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutOrderItemInput = {
@@ -26560,8 +27943,8 @@ export namespace Prisma {
     mainCategoryId?: string | null
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
     Review?: ReviewUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutOrderItemInput = {
@@ -26646,7 +28029,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
     SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
     SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutOrderItemInput = {
@@ -26667,8 +28050,8 @@ export namespace Prisma {
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductCreateWithoutReviewInput = {
@@ -26690,7 +28073,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryCreateNestedOneWithoutProductsInput
     SubCategory?: SubCategoryCreateNestedOneWithoutProductsInput
     SubSubCategory?: SubSubCategoryCreateNestedOneWithoutProductsInput
-    categoryTag?: CategoryTagCreateNestedOneWithoutProductsInput
+    categoryTags?: ProductCategoryTagCreateNestedManyWithoutProductInput
   }
 
   export type ProductUncheckedCreateWithoutReviewInput = {
@@ -26711,8 +28094,8 @@ export namespace Prisma {
     mainCategoryId?: string | null
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
     OrderItem?: OrderItemUncheckedCreateNestedManyWithoutProductInput
+    categoryTags?: ProductCategoryTagUncheckedCreateNestedManyWithoutProductInput
   }
 
   export type ProductCreateOrConnectWithoutReviewInput = {
@@ -26795,7 +28178,7 @@ export namespace Prisma {
     MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
     SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
     SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutReviewInput = {
@@ -26816,8 +28199,8 @@ export namespace Prisma {
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type UserUpsertWithoutReviewInput = {
@@ -26871,88 +28254,20 @@ export namespace Prisma {
     Order?: OrderUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type ProductCreateManyCategoryTagInput = {
-    id?: string
-    name: string
-    slug: string
-    images?: ProductCreateimagesInput | string[]
-    image_keys?: ProductCreateimage_keysInput | string[]
-    brand?: string | null
-    description: string
-    stock: number
-    price?: Decimal | DecimalJsLike | number | string
-    rating?: Decimal | DecimalJsLike | number | string
-    numReviews?: number
-    isFeatured?: boolean
-    banner?: string | null
-    createdAt?: Date | string
-    mainCategoryId?: string | null
-    subCategoryId?: string | null
-    subSubCategoryId?: string | null
+  export type ProductCategoryTagCreateManyCategoryTagInput = {
+    productId: string
   }
 
-  export type ProductUpdateWithoutCategoryTagInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    images?: ProductUpdateimagesInput | string[]
-    image_keys?: ProductUpdateimage_keysInput | string[]
-    brand?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    stock?: IntFieldUpdateOperationsInput | number
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    numReviews?: IntFieldUpdateOperationsInput | number
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    banner?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    OrderItem?: OrderItemUpdateManyWithoutProductNestedInput
-    Review?: ReviewUpdateManyWithoutProductNestedInput
-    MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
-    SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
-    SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
+  export type ProductCategoryTagUpdateWithoutCategoryTagInput = {
+    product?: ProductUpdateOneRequiredWithoutCategoryTagsNestedInput
   }
 
-  export type ProductUncheckedUpdateWithoutCategoryTagInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    images?: ProductUpdateimagesInput | string[]
-    image_keys?: ProductUpdateimage_keysInput | string[]
-    brand?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    stock?: IntFieldUpdateOperationsInput | number
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    numReviews?: IntFieldUpdateOperationsInput | number
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    banner?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
-    Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+  export type ProductCategoryTagUncheckedUpdateWithoutCategoryTagInput = {
+    productId?: StringFieldUpdateOperationsInput | string
   }
 
-  export type ProductUncheckedUpdateManyWithoutCategoryTagInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    images?: ProductUpdateimagesInput | string[]
-    image_keys?: ProductUpdateimage_keysInput | string[]
-    brand?: NullableStringFieldUpdateOperationsInput | string | null
-    description?: StringFieldUpdateOperationsInput | string
-    stock?: IntFieldUpdateOperationsInput | number
-    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    rating?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    numReviews?: IntFieldUpdateOperationsInput | number
-    isFeatured?: BoolFieldUpdateOperationsInput | boolean
-    banner?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
+  export type ProductCategoryTagUncheckedUpdateManyWithoutCategoryTagInput = {
+    productId?: StringFieldUpdateOperationsInput | string
   }
 
   export type SubCategoryCreateManyMainCategoryInput = {
@@ -26978,7 +28293,6 @@ export namespace Prisma {
     createdAt?: Date | string
     subCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
   }
 
   export type SubCategoryUpdateWithoutMainCategoryInput = {
@@ -27022,7 +28336,7 @@ export namespace Prisma {
     Review?: ReviewUpdateManyWithoutProductNestedInput
     SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
     SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutMainCategoryInput = {
@@ -27042,9 +28356,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutMainCategoryInput = {
@@ -27064,7 +28378,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SubSubCategoryCreateManySubCategoryInput = {
@@ -27090,7 +28403,6 @@ export namespace Prisma {
     createdAt?: Date | string
     mainCategoryId?: string | null
     subSubCategoryId?: string | null
-    categoryTagId?: string | null
   }
 
   export type SubSubCategoryUpdateWithoutSubCategoryInput = {
@@ -27132,7 +28444,7 @@ export namespace Prisma {
     Review?: ReviewUpdateManyWithoutProductNestedInput
     MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
     SubSubCategory?: SubSubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSubCategoryInput = {
@@ -27152,9 +28464,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutSubCategoryInput = {
@@ -27174,7 +28486,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductCreateManySubSubCategoryInput = {
@@ -27194,7 +28505,6 @@ export namespace Prisma {
     createdAt?: Date | string
     mainCategoryId?: string | null
     subCategoryId?: string | null
-    categoryTagId?: string | null
   }
 
   export type ProductUpdateWithoutSubSubCategoryInput = {
@@ -27216,7 +28526,7 @@ export namespace Prisma {
     Review?: ReviewUpdateManyWithoutProductNestedInput
     MainCategory?: MainCategoryUpdateOneWithoutProductsNestedInput
     SubCategory?: SubCategoryUpdateOneWithoutProductsNestedInput
-    categoryTag?: CategoryTagUpdateOneWithoutProductsNestedInput
+    categoryTags?: ProductCategoryTagUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateWithoutSubSubCategoryInput = {
@@ -27236,9 +28546,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
     OrderItem?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
+    categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
   }
 
   export type ProductUncheckedUpdateManyWithoutSubSubCategoryInput = {
@@ -27258,7 +28568,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mainCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     subCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    categoryTagId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemCreateManyProductInput = {
@@ -27280,6 +28589,10 @@ export namespace Prisma {
     description: string
     isVerifiedPurchase?: boolean
     createdAt?: Date | string
+  }
+
+  export type ProductCategoryTagCreateManyProductInput = {
+    categoryTagId: string
   }
 
   export type OrderItemUpdateWithoutProductInput = {
@@ -27343,6 +28656,18 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     isVerifiedPurchase?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProductCategoryTagUpdateWithoutProductInput = {
+    categoryTag?: CategoryTagUpdateOneRequiredWithoutProductsNestedInput
+  }
+
+  export type ProductCategoryTagUncheckedUpdateWithoutProductInput = {
+    categoryTagId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ProductCategoryTagUncheckedUpdateManyWithoutProductInput = {
+    categoryTagId?: StringFieldUpdateOperationsInput | string
   }
 
   export type AccountCreateManyUserInput = {

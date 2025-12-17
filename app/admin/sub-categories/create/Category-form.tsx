@@ -1,9 +1,6 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,19 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import slugify from "slugify";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { jsxToasts } from "@/lib/customToaster";
-import {
-  createSubCategories,
-  updateSubCategory,
-} from "@/lib/actions/category.actions";
-import {
-  createSubCategorySchema,
-  updateSubCategorySchema,
-} from "@/lib/validators";
-import { CreateSubCategory, UpdateSubCategory } from "@/types";
 import {
   Select,
   SelectContent,
@@ -32,6 +17,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  createSubCategories,
+  updateSubCategory,
+} from "@/lib/actions/category.actions";
+import { jsxToasts } from "@/lib/customToaster";
+import {
+  createSubCategorySchema,
+  updateSubCategorySchema,
+} from "@/lib/validators";
+import { CreateSubCategory, UpdateSubCategory } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
+import slugify from "slugify";
+import { z } from "zod";
 
 const CategoryForm = ({
   type,

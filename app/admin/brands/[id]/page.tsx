@@ -1,13 +1,8 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { getMainCategoryById } from "@/lib/actions/category.actions";
 import { requireAdmin } from "@/lib/auth-guard";
-import { UpdateMainCategory } from "@/types";
-import CategoryForm from "../create/Category-form";
-import {
-  getAllMainCategories,
-  getMainCategoryById,
-} from "@/lib/actions/category.actions";
 import { MainCategory } from "@/lib/generated/prisma";
+import { Metadata } from "next";
+import CategoryForm from "../create/Category-form";
 
 export const metadata: Metadata = {
   title: "Update Sub-Category",

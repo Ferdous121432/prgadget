@@ -1,21 +1,21 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 import { productDefaultValues } from "@/lib/constants";
+import { jsxToasts } from "@/lib/customToaster";
+import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
+import { omitEmptyFields } from "@/lib/hooks/util-functions";
 import { insertProductSchema, updateProductSchema } from "@/lib/validators";
 import { ProductSchema, ProductWithId } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form } from "../ui/form";
-import { Button } from "../ui/button";
-import { createProduct, updateProduct } from "@/lib/actions/product.actions";
-import { jsxToasts } from "@/lib/customToaster";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Button } from "../ui/button";
+import { Form } from "../ui/form";
+import Category from "./product-form/Category";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
-import Category from "./product-form/Category";
-import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
-import { omitEmptyFields } from "@/lib/hooks/util-functions";
 
 const ProductForm = ({
   type,
@@ -24,6 +24,7 @@ const ProductForm = ({
   mainCategories,
   subCategories,
   subSubCategories,
+  categoryTags,
 }: {
   type: "Create" | "Update";
   product?: ProductSchema;
@@ -31,19 +32,40 @@ const ProductForm = ({
   mainCategories?: { id: string; name: string }[];
   subCategories?: { id: string; name: string; mainCategoryId: string }[];
   subSubCategories?: { id: string; name: string; subCategoryId: string }[];
+  categoryTags?: { id: string; slug: string; name: string }[];
 }) => {
   const router = useRouter();
 
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [uploadedImageKeys, setUploadedImageKeys] = useState<string[]>([]);
 
+  // Extract category tags from the junction table structure
+  const existingCategoryTags =
+    product && type === "Update" && product.categoryTags
+      ? (product.categoryTags as any[]).map((item: any) =>
+          item.categoryTag ? item.categoryTag : item
+        )
+      : [];
+  console.log("existingCategoryTags 💥💥💥", existingCategoryTags);
+
+  // Transform product's categoryTags to array of IDs for form defaultValues
+  const getDefaultValues = () => {
+    if (product && type === "Update") {
+      const categoryTagIds = existingCategoryTags.map((tag: any) => tag.id);
+      return {
+        ...product,
+        categoryTags: categoryTagIds,
+      };
+    }
+    return productDefaultValues;
+  };
+
   const form = useForm<ProductSchema | ProductWithId>({
     resolver:
       type === "Update"
         ? zodResolver(updateProductSchema as any)
         : zodResolver(insertProductSchema as any),
-    defaultValues:
-      product && type === "Update" ? product : productDefaultValues,
+    defaultValues: getDefaultValues() as any,
   });
 
   const onSubmit: SubmitHandler<ProductSchema | ProductWithId> = async (
@@ -53,8 +75,7 @@ const ProductForm = ({
 
     // On Create
     if (type === "Create") {
-      const res = await createProduct(filteredValues);
-
+      const res = await createProduct(filteredValues as ProductSchema);
       if (!res.success) {
         jsxToasts.errorWithIcon(
           "Failed to create product",
@@ -135,6 +156,8 @@ const ProductForm = ({
               mainCategories={mainCategories}
               subCategories={subCategories}
               subSubCategories={subSubCategories}
+              categoryTags={categoryTags}
+              existingCategoryTags={existingCategoryTags}
             />
           </TabsContent>
         </Tabs>

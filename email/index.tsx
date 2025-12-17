@@ -1,8 +1,6 @@
-import { Resend } from "resend";
 import { render } from "@react-email/render";
-import { SENDER_EMAIL, APP_NAME } from "@/lib/constants";
-import { Order } from "@/types";
 import dotenv from "dotenv";
+import { Resend } from "resend";
 dotenv.config();
 
 import PurchaseReceiptEmail from "./purchase-receipt";

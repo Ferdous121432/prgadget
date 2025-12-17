@@ -1,17 +1,17 @@
+import { auth } from "@/auth";
+import AddToCart from "@/components/shared/product/add-to-cart";
+import ProductImages from "@/components/shared/product/product-images";
+import ProductPrice from "@/components/shared/product/product-price";
+import Rating from "@/components/shared/product/rating";
+import RelativeProducts from "@/components/shared/product/relative-products";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { getProductBySlug } from "@/lib/actions/product.actions";
-import { notFound } from "next/navigation";
-import ProductPrice from "@/components/shared/product/product-price";
-import ProductImages from "@/components/shared/product/product-images";
 import { getMyCart } from "@/lib/actions/cart.actions";
-import ReviewList from "./ReviewList";
-import { auth } from "@/auth";
-import Rating from "@/components/shared/product/rating";
-import Link from "next/link";
-import AddToCart from "@/components/shared/product/add-to-cart";
+import { getProductBySlug } from "@/lib/actions/product.actions";
 import { Cart } from "@/types";
-import RelativeProducts from "@/components/shared/product/relative-products";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import ReviewList from "./ReviewList";
 
 // Force dynamic rendering since we use cookies and session data
 export const dynamic = "force-dynamic";

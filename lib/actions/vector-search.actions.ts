@@ -1,10 +1,10 @@
 "use server";
 
-import { InferenceClient } from "@huggingface/inference";
-import { vectorIndex, VECTOR_CONFIG } from "@/lib/vector/config";
-import { getCachedData } from "@/lib/cache/redis";
 import { prisma } from "@/db/prisma";
-import { Product, ProductSchemaPublic, ProductWithIds } from "@/types";
+import { getCachedData } from "@/lib/cache/redis";
+import { vectorIndex } from "@/lib/vector/config";
+import { ProductSchemaPublic, ProductWithIds } from "@/types";
+import { InferenceClient } from "@huggingface/inference";
 
 // const openai = new OpenAI({
 //   apiKey: process.env.OPENAI_API_KEY!,

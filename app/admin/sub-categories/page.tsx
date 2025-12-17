@@ -1,5 +1,7 @@
-import Link from "next/link";
+import DeleteDialog from "@/components/shared/DeteleDialog";
+import Pagination from "@/components/shared/Pagination";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -8,17 +10,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "@/components/shared/Pagination";
-import DeleteDialog from "@/components/shared/DeteleDialog";
-import { requireAdmin } from "@/lib/auth-guard";
-import { UpdateSubCategory } from "@/types";
 import {
   deleteMainCategory,
   getAllSubCategories,
 } from "@/lib/actions/category.actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { requireAdmin } from "@/lib/auth-guard";
+import { UpdateSubCategory } from "@/types";
 import { BadgeDollarSign, Barcode, CreditCard, Users } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
 
 const AdminSubCategoriesPage = async (props: {
   searchParams: Promise<{

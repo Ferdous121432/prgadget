@@ -1,18 +1,18 @@
 "use server";
-import { CartItem } from "@/types";
-import { cookies } from "next/headers";
-import { convertPrismaObjectToJSObject, formatError, round2 } from "../utils";
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
-import { cartItemSchema, insertCartSchema } from "../validators";
+import { CartItem } from "@/types";
 import { revalidatePath } from "next/cache";
-import { Prisma } from "../generated/prisma";
+import { cookies } from "next/headers";
 import {
+  CACHE_CONFIG,
+  generateCacheKey,
   getCachedData,
   invalidateCartCache,
-  generateCacheKey,
-  CACHE_CONFIG,
 } from "../cache/redis";
+import { Prisma } from "../generated/prisma";
+import { convertPrismaObjectToJSObject, formatError, round2 } from "../utils";
+import { cartItemSchema, insertCartSchema } from "../validators";
 
 // calculate total price of cart items
 export const calculateCartTotal = async (items: CartItem[]) => {

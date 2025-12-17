@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { formatId } from "@/lib/utils";
+import DeleteDialog from "@/components/shared/DeteleDialog";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,13 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import DeleteDialog from "@/components/shared/DeteleDialog";
-import { requireAdmin } from "@/lib/auth-guard";
 import {
   deleteHomeSlider,
   getAllHomeSliders,
 } from "@/lib/actions/homepage.actions";
+import { requireAdmin } from "@/lib/auth-guard";
+import { formatId } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 const AdminSliderPage = async () => {
   await requireAdmin();

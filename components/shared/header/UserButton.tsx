@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 
 import Link from "next/link";
 // import { auth } from "@/auth";
-import { signOutUser } from "@/lib/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOutUser } from "@/lib/actions/user.actions";
 import { UserIcon } from "lucide-react";
 import SignOutButton from "./SignOutButton";
 

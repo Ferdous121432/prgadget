@@ -1,23 +1,22 @@
 "use client";
 
-import * as React from "react";
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconHome,
+  IconAffiliate,
   IconBrandProducthunt,
+  IconCamera,
   IconCategory,
   IconCategoryMinus,
   IconCategoryPlus,
+  IconChartBar,
+  IconDashboard,
+  IconFileAi,
+  IconFileDescription,
+  IconHome,
   IconListDetails,
   IconUsers,
   IconUserStar,
-  IconAffiliate,
 } from "@tabler/icons-react";
+import * as React from "react";
 
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
@@ -32,8 +31,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import AdminSearch from "./admin/admin-search";
-import { Button } from "./ui/button";
 import ToggleButton from "./shared/header/ToggleButton";
+import { Button } from "./ui/button";
 
 const data = {
   user: {
@@ -126,6 +125,11 @@ const data = {
     {
       name: "Brands",
       url: "/admin/brands",
+      icon: IconAffiliate,
+    },
+    {
+      name: "Category Tags",
+      url: "/admin/category-tags",
       icon: IconAffiliate,
     },
     {
