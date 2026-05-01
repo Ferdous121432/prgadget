@@ -53,11 +53,17 @@ export const signUpDefaultValues = {
 };
 
 export const shippingAddressDefaultValues = {
+  label: "Home",
   fullName: "Firdous",
+  phone: "",
   streetAddress: "123 Main St",
+  addressLine2: "",
   city: " Dinajpur",
+  state: "",
   postalCode: "5200",
   country: "Bangladesh",
+  deliveryInstructions: "",
+  isDefault: true,
 };
 
 export const PAYMENT_METHODS = process.env.PAYMENT_METHODS
@@ -71,7 +77,7 @@ export const productDefaultValues = {
   slug: "",
   category: "shirt",
   images: [],
-  brand: "catseye",
+  brandId: "",
   description: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   price: "66.99",
   stock: 10,

@@ -1,4 +1,5 @@
 "use client";
+import Category from "@/components/admin/product-form/Category";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createProduct, updateProduct } from "@/lib/actions/product.actions";
 import { productDefaultValues } from "@/lib/constants";
@@ -13,7 +14,6 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
-import Category from "./product-form/Category";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
 
@@ -24,14 +24,16 @@ const ProductForm = ({
   mainCategories,
   subCategories,
   subSubCategories,
+  brandOptions,
   categoryTags,
 }: {
   type: "Create" | "Update";
-  product?: ProductSchema;
+  product?: ProductSchema & { brand?: string; brandId?: string | null };
   productId?: string;
   mainCategories?: { id: string; name: string }[];
   subCategories?: { id: string; name: string; mainCategoryId: string }[];
   subSubCategories?: { id: string; name: string; subCategoryId: string }[];
+  brandOptions?: { id: string; name: string }[];
   categoryTags?: { id: string; slug: string; name: string }[];
 }) => {
   const router = useRouter();
@@ -43,17 +45,22 @@ const ProductForm = ({
   const existingCategoryTags =
     product && type === "Update" && product.categoryTags
       ? (product.categoryTags as any[]).map((item: any) =>
-          item.categoryTag ? item.categoryTag : item
+          item.categoryTag ? item.categoryTag : item,
         )
       : [];
-  console.log("existingCategoryTags 💥💥💥", existingCategoryTags);
 
   // Transform product's categoryTags to array of IDs for form defaultValues
   const getDefaultValues = () => {
     if (product && type === "Update") {
       const categoryTagIds = existingCategoryTags.map((tag: any) => tag.id);
+      const matchedBrandId =
+        product.brandId ||
+        brandOptions?.find((option) => option.name === product.brand)?.id ||
+        "";
+
       return {
         ...product,
+        brandId: matchedBrandId,
         categoryTags: categoryTagIds,
       };
     }
@@ -69,7 +76,7 @@ const ProductForm = ({
   });
 
   const onSubmit: SubmitHandler<ProductSchema | ProductWithId> = async (
-    values
+    values,
   ) => {
     const filteredValues = omitEmptyFields(values) as ProductSchema;
 
@@ -79,7 +86,7 @@ const ProductForm = ({
       if (!res.success) {
         jsxToasts.errorWithIcon(
           "Failed to create product",
-          res.message || "Something went wrong"
+          res.message || "Something went wrong",
         );
         // Delete uploaded images from UploadThing
         await deleteImagesFromUploadThing(uploadedImageKeys);
@@ -104,7 +111,7 @@ const ProductForm = ({
       if (!res.success) {
         jsxToasts.errorWithIcon(
           "Failed to update product",
-          res.message || "Something went wrong"
+          res.message || "Something went wrong",
         );
         // Delete uploaded images from UploadThing
         await deleteImagesFromUploadThing(uploadedImageKeys);
@@ -156,6 +163,7 @@ const ProductForm = ({
               mainCategories={mainCategories}
               subCategories={subCategories}
               subSubCategories={subSubCategories}
+              brandOptions={brandOptions}
               categoryTags={categoryTags}
               existingCategoryTags={existingCategoryTags}
             />

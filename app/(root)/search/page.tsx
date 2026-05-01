@@ -1,12 +1,20 @@
 import PaginationComponent from "@/components/shared/product/Pagination";
 import ProductCard from "@/components/shared/product/product-card";
+import VectorSearchToggle from "@/components/shared/vector-search-toggle-searchpage";
+import {
+  CategoryFilter,
+  type FilterSection,
+} from "@/components/sidebar/filter";
+import FilterSidebar from "@/components/sidebar/filter-sidebar-layout";
 import { Button } from "@/components/ui/button";
 import { getAllMainCategories } from "@/lib/actions/category.actions";
-import { getAllProducts } from "@/lib/actions/product.actions";
+import {
+  getAllProducts,
+  getProductBrands,
+} from "@/lib/actions/product.actions";
 import { MainCategory } from "@/lib/generated/prisma";
 import { ProductWithId } from "@/types";
 import Link from "next/link";
-import VectorSearchToggle from "@/components/shared/vector-search-toggle-searchpage";
 
 const prices = [
   {
@@ -33,12 +41,29 @@ const prices = [
 
 const ratings = [4, 3, 2, 1];
 
+const stockOptions = [
+  {
+    name: "Any",
+    value: "all",
+  },
+  {
+    name: "In stock",
+    value: "in-stock",
+  },
+  {
+    name: "Out of stock",
+    value: "out-of-stock",
+  },
+];
+
 const sortOrders = ["newest", "lowest", "highest", "rating"];
 
 export async function generateMetadata(props: {
   searchParams: Promise<{
     q: string;
     category: string;
+    brand: string;
+    stock: string;
     price: string;
     rating: string;
   }>;
@@ -46,6 +71,8 @@ export async function generateMetadata(props: {
   const {
     q = "all",
     category = "all",
+    brand = "all",
+    stock = "all",
     price = "all",
     rating = "all",
   } = await props.searchParams;
@@ -53,14 +80,25 @@ export async function generateMetadata(props: {
   const isQuerySet = q && q !== "all" && q.trim() !== "";
   const isCategorySet =
     category && category !== "all" && category.trim() !== "";
+  const isBrandSet = brand && brand !== "all" && brand.trim() !== "";
+  const isStockSet = stock && stock !== "all" && stock.trim() !== "";
   const isPriceSet = price && price !== "all" && price.trim() !== "";
   const isRatingSet = rating && rating !== "all" && rating.trim() !== "";
 
-  if (isQuerySet || isCategorySet || isPriceSet || isRatingSet) {
+  if (
+    isQuerySet ||
+    isCategorySet ||
+    isBrandSet ||
+    isStockSet ||
+    isPriceSet ||
+    isRatingSet
+  ) {
     return {
       title: `
       Search ${isQuerySet ? q : ""} 
       ${isCategorySet ? `: Category ${category}` : ""}
+      ${isBrandSet ? `: Brand ${brand}` : ""}
+      ${isStockSet ? `: Availability ${stock}` : ""}
       ${isPriceSet ? `: Price ${price}` : ""}
       ${isRatingSet ? `: Rating ${rating}` : ""}`,
     };
@@ -75,6 +113,8 @@ const SearchPage = async (props: {
   searchParams: Promise<{
     q?: string;
     category?: string;
+    brand?: string;
+    stock?: string;
     price?: string;
     rating?: string;
     sort?: string;
@@ -85,6 +125,8 @@ const SearchPage = async (props: {
   const {
     q = "all",
     category = "all",
+    brand = "all",
+    stock = "all",
     price = "all",
     rating = "all",
     sort = "newest",
@@ -98,6 +140,8 @@ const SearchPage = async (props: {
   // Construct filter url
   const getFilterUrl = ({
     c,
+    b,
+    st,
     p,
     s,
     r,
@@ -105,15 +149,29 @@ const SearchPage = async (props: {
     vs,
   }: {
     c?: string;
+    b?: string;
+    st?: string;
     p?: string;
     s?: string;
     r?: string;
     pg?: string;
     vs?: string;
   }) => {
-    const params = { q, category, price, rating, sort, page, vectorSearch };
+    const params = {
+      q,
+      category,
+      brand,
+      stock,
+      price,
+      rating,
+      sort,
+      page,
+      vectorSearch,
+    };
 
     if (c !== undefined) params.category = c;
+    if (b !== undefined) params.brand = b;
+    if (st !== undefined) params.stock = st;
     if (p !== undefined) params.price = p;
     if (s !== undefined) params.sort = s;
     if (r !== undefined) params.rating = r;
@@ -126,6 +184,8 @@ const SearchPage = async (props: {
   const products = (await getAllProducts({
     query: q,
     category,
+    brand,
+    stock,
     price,
     rating,
     sort,
@@ -138,132 +198,90 @@ const SearchPage = async (props: {
     [key: string]: any;
   };
 
-  const { data: categories = [] } = (await getAllMainCategories()) as any;
+  const [{ data: categories = [] }, brands] = await Promise.all([
+    getAllMainCategories() as Promise<{ data: MainCategory[] }>,
+    getProductBrands(),
+  ]);
 
-  // Generate pagination range
-  const generatePaginationRange = (current: number, total: number) => {
-    const range: (number | string)[] = [];
-    const showEllipsis = total > 7;
-
-    if (!showEllipsis) {
-      // Show all pages if total <= 7
-      for (let i = 1; i <= total; i++) {
-        range.push(i);
-      }
-    } else {
-      // Always show first page
-      range.push(1);
-
-      if (current <= 4) {
-        // Current page is near the beginning
-        for (let i = 2; i <= 5; i++) {
-          range.push(i);
-        }
-        range.push("...");
-        range.push(total);
-      } else if (current >= total - 3) {
-        // Current page is near the end
-        range.push("...");
-        for (let i = total - 4; i <= total; i++) {
-          range.push(i);
-        }
-      } else {
-        // Current page is in the middle
-        range.push("...");
-        for (let i = current - 1; i <= current + 1; i++) {
-          range.push(i);
-        }
-        range.push("...");
-        range.push(total);
-      }
-    }
-
-    return range;
-  };
-
-  const paginationRange = generatePaginationRange(
-    currentPage,
-    products.totalPages
-  );
+  const filterSections: FilterSection[] = [
+    {
+      title: "Department",
+      options: [
+        {
+          label: "Any",
+          href: getFilterUrl({ c: "all", pg: "1" }),
+          active: category === "all" || category === "",
+        },
+        ...categories.map((item) => ({
+          label: item.name,
+          href: getFilterUrl({ c: item.name, pg: "1" }),
+          active: category === item.name,
+        })),
+      ],
+    },
+    {
+      title: "Brand",
+      options: [
+        {
+          label: "Any",
+          href: getFilterUrl({ b: "all", pg: "1" }),
+          active: brand === "all" || brand === "",
+        },
+        ...brands.map((item) => ({
+          label: item,
+          href: getFilterUrl({ b: item, pg: "1" }),
+          active: brand === item,
+        })),
+      ],
+    },
+    {
+      title: "Availability",
+      options: stockOptions.map((item) => ({
+        label: item.name,
+        href: getFilterUrl({ st: item.value, pg: "1" }),
+        active: stock === item.value,
+      })),
+    },
+    {
+      title: "Price",
+      options: [
+        {
+          label: "Any",
+          href: getFilterUrl({ p: "all", pg: "1" }),
+          active: price === "all",
+        },
+        ...prices.map((item) => ({
+          label: item.name,
+          href: getFilterUrl({ p: item.value, pg: "1" }),
+          active: price === item.value,
+        })),
+      ],
+    },
+    {
+      title: "Customer ratings",
+      options: [
+        {
+          label: "Any",
+          href: getFilterUrl({ r: "all", pg: "1" }),
+          active: rating === "all",
+        },
+        ...ratings.map((item) => ({
+          label: `${item} stars & up`,
+          href: getFilterUrl({ r: `${item}`, pg: "1" }),
+          active: rating === item.toString(),
+        })),
+      ],
+    },
+  ];
 
   return (
-    <div className="grid md:grid-cols-5 md:gap-5">
-      <div className="filter-links">
-        {/* Category Links */}
-        <div className="text-xl mb-2 mt-3">Department</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${
-                  (category === "all" || category === "") && "font-bold"
-                }`}
-                href={getFilterUrl({ c: "all", pg: "1" })}>
-                Any
-              </Link>
-            </li>
-            {categories.map((x: MainCategory) => (
-              <li key={x.id}>
-                <Link
-                  className={`${category === x.name && "font-bold"}`}
-                  href={getFilterUrl({ c: x.name, pg: "1" })}>
-                  {x.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* Price Links */}
-        <div className="text-xl mb-2 mt-8">Price</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${price === "all" && "font-bold"}`}
-                href={getFilterUrl({ p: "all", pg: "1" })}>
-                Any
-              </Link>
-            </li>
-            {prices.map((p) => (
-              <li key={p.value}>
-                <Link
-                  className={`${price === p.value && "font-bold"}`}
-                  href={getFilterUrl({ p: p.value, pg: "1" })}>
-                  {p.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* Rating Links */}
-        <div className="text-xl mb-2 mt-8">Customer Ratings</div>
-        <div>
-          <ul className="space-y-1">
-            <li>
-              <Link
-                className={`${rating === "all" && "font-bold"}`}
-                href={getFilterUrl({ r: "all", pg: "1" })}>
-                Any
-              </Link>
-            </li>
-            {ratings.map((r) => (
-              <li key={r}>
-                <Link
-                  className={`${rating === r.toString() && "font-bold"}`}
-                  href={getFilterUrl({ r: `${r}`, pg: "1" })}>
-                  {`${r} stars & up`}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div className="md:col-span-4 space-y-4">
-        {/* Vector Search Toggle */}
-        {/* <VectorSearchToggle /> */}
-        <div className="flex-between flex-col md:flex-row my-4">
+    <FilterSidebar sidebar={<CategoryFilter sections={filterSections} />}>
+      <div className="space-y-4">
+        <VectorSearchToggle />
+
+        <div className="flex-between my-4 flex-col gap-4 md:flex-row">
           {/* Filtered row */}
-          <div className="flex items-center">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
             {q !== "all" && q !== "" && (
               <span className="flex items-center gap-2">
                 Query: {q}
@@ -274,12 +292,17 @@ const SearchPage = async (props: {
                 )}
               </span>
             )}
-            {category !== "all" && category !== "" && " Category: " + category}
-            {price !== "all" && " Price: " + price}
-            {rating !== "all" && " Rating: " + rating + " stars & up"}
-            &nbsp;
+            {category !== "all" && category !== "" && (
+              <span>Category: {category}</span>
+            )}
+            {brand !== "all" && brand !== "" && <span>Brand: {brand}</span>}
+            {stock !== "all" && <span>Availability: {stock}</span>}
+            {price !== "all" && <span>Price: {price}</span>}
+            {rating !== "all" && <span>Rating: {rating} stars & up</span>}
             {(q !== "all" && q !== "") ||
             (category !== "all" && category !== "") ||
+            (brand !== "all" && brand !== "") ||
+            stock !== "all" ||
             rating !== "all" ||
             price !== "all" ? (
               <Button variant={"link"} asChild>
@@ -342,6 +365,8 @@ const SearchPage = async (props: {
           searchParams={{
             q,
             category,
+            brand,
+            stock,
             price,
             rating,
             sort,
@@ -349,7 +374,7 @@ const SearchPage = async (props: {
           }}
         />
       </div>
-    </div>
+    </FilterSidebar>
   );
 };
 

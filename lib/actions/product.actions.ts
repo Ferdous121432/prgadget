@@ -14,18 +14,180 @@ import {
   invalidateProductCaches,
 } from "../cache/redis";
 import { Prisma } from "../generated/prisma";
-import { convertPrismaObjectToJSObject } from "../utils";
+import { convertPrismaObjectToJSObject, formatError } from "../utils";
 import {
   deleteProductVector,
   upsertProductVector,
   vectorSearchProducts,
 } from "./vector-search.actions";
 
+const productCategoryInclude = {
+  Brand: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+  MainCategory: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+  SubCategory: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+  SubSubCategory: {
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+    },
+  },
+} satisfies Prisma.ProductInclude;
+
+type ProductWithCategoryContext = Prisma.ProductGetPayload<{
+  include: typeof productCategoryInclude;
+}>;
+
+function serializeProductCategoryContext(product: any) {
+  const serializedProduct = convertPrismaObjectToJSObject(product) as any;
+
+  return {
+    ...serializedProduct,
+    brand: serializedProduct.Brand?.name ?? serializedProduct.brand ?? "",
+    brandId: serializedProduct.brandId ?? serializedProduct.Brand?.id ?? null,
+    mainCategory: serializedProduct.MainCategory?.name ?? "",
+    subCategory: serializedProduct.SubCategory?.name ?? null,
+    subSubCategory: serializedProduct.SubSubCategory?.name ?? null,
+  };
+}
+
+function parsePriceRanges(price?: string) {
+  if (!price || price === "all") {
+    return [] as Array<{ min: number; max: number }>;
+  }
+
+  return price
+    .split(",")
+    .map((range) => range.trim())
+    .map((range) => {
+      const [min, max] = range.split("-").map(Number);
+
+      if (Number.isNaN(min) || Number.isNaN(max)) {
+        return null;
+      }
+
+      return { min, max };
+    })
+    .filter((range): range is { min: number; max: number } => Boolean(range));
+}
+
+function buildPriceFilter(price?: string): Prisma.ProductWhereInput {
+  const ranges = parsePriceRanges(price);
+
+  if (ranges.length === 0) {
+    return {};
+  }
+
+  if (ranges.length === 1) {
+    return {
+      price: {
+        gte: ranges[0].min,
+        lte: ranges[0].max,
+      },
+    };
+  }
+
+  return {
+    OR: ranges.map((range) => ({
+      price: {
+        gte: range.min,
+        lte: range.max,
+      },
+    })),
+  };
+}
+
+function buildRatingFilter(rating?: string): Prisma.ProductWhereInput {
+  if (!rating || rating === "all") {
+    return {};
+  }
+
+  return {
+    rating: {
+      gte: Number(rating),
+    },
+  };
+}
+
+function buildCategoryFilter(category?: string): Prisma.ProductWhereInput {
+  if (!category || category === "all") {
+    return {};
+  }
+
+  return {
+    MainCategory: {
+      is: {
+        name: category,
+      },
+    },
+  };
+}
+
+function buildBrandFilter(brand?: string): Prisma.ProductWhereInput {
+  if (!brand || brand === "all") {
+    return {};
+  }
+
+  return {
+    brand: {
+      equals: brand,
+      mode: "insensitive",
+    },
+  };
+}
+
+function buildStockFilter(stock?: string): Prisma.ProductWhereInput {
+  if (!stock || stock === "all") {
+    return {};
+  }
+
+  if (stock === "in-stock") {
+    return {
+      stock: {
+        gt: 0,
+      },
+    };
+  }
+
+  if (stock === "out-of-stock") {
+    return {
+      stock: {
+        lte: 0,
+      },
+    };
+  }
+
+  return {};
+}
+
+function escapeSqlLiteral(value: string) {
+  return value.replace(/'/g, "''");
+}
+
 //Create a new product
 export async function createProduct(data: Product) {
   try {
     // Extract category tags and prepare the create data
     const {
+      brandId,
       categoryTags,
       mainCategoryId,
       subCategoryId,
@@ -33,14 +195,27 @@ export async function createProduct(data: Product) {
       ...restData
     } = data as any;
 
+    const brand = await prisma.brand.findUnique({
+      where: { id: brandId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!brand) {
+      return { success: false, message: "Selected brand not found." };
+    }
+
     const createData: any = {
       ...restData,
+      brand: brand.name,
     };
 
-    // Handle category relations
-    if (mainCategoryId) {
-      createData.MainCategory = { connect: { id: mainCategoryId } };
-    }
+    createData.Brand = { connect: { id: brand.id } };
+
+    // Main category is required for every product.
+    createData.MainCategory = { connect: { id: mainCategoryId } };
 
     if (subCategoryId) {
       createData.SubCategory = { connect: { id: subCategoryId } };
@@ -54,7 +229,7 @@ export async function createProduct(data: Product) {
     if (Array.isArray(categoryTags) && categoryTags.length > 0) {
       // categoryTags is now an array of IDs directly
       const validTagIds = categoryTags.filter(
-        (id): id is string => typeof id === "string" && id.length > 0
+        (id): id is string => typeof id === "string" && id.length > 0,
       );
       if (validTagIds.length > 0) {
         createData.categoryTags = {
@@ -69,12 +244,19 @@ export async function createProduct(data: Product) {
       data: createData,
     });
 
+    const productForVector = await prisma.product.findUnique({
+      where: { id: product.id },
+      include: productCategoryInclude,
+    });
+
     console.log("ProductData 😍😍😍💥", createData);
 
     revalidatePath("/admin/products");
 
     // Add to vector database
-    await upsertProductVector(product as any);
+    if (productForVector) {
+      await upsertProductVector(productForVector);
+    }
 
     // Invalidate all product-related caches
     await invalidateProductCaches();
@@ -84,7 +266,7 @@ export async function createProduct(data: Product) {
     console.log("error 💥💥💥💥", error);
     return {
       success: false,
-      message: "Failed to create product.",
+      message: formatError(error),
     };
   }
 }
@@ -101,6 +283,7 @@ export async function updateProduct(data: ProductWithId) {
 
     // Extract category tags and prepare the update data
     const {
+      brandId,
       categoryTags,
       mainCategoryId,
       subCategoryId,
@@ -108,16 +291,27 @@ export async function updateProduct(data: ProductWithId) {
       ...restData
     } = data as any;
 
+    const brand = await prisma.brand.findUnique({
+      where: { id: brandId },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    if (!brand) {
+      return { success: false, message: "Selected brand not found." };
+    }
+
     const updateData: any = {
       ...restData,
+      brand: brand.name,
     };
 
-    // Handle category relations
-    if (mainCategoryId) {
-      updateData.MainCategory = { connect: { id: mainCategoryId } };
-    } else if (mainCategoryId === null) {
-      updateData.MainCategory = { disconnect: true };
-    }
+    updateData.Brand = { connect: { id: brand.id } };
+
+    // Main category is required for every product.
+    updateData.MainCategory = { connect: { id: mainCategoryId } };
 
     if (subCategoryId) {
       updateData.SubCategory = { connect: { id: subCategoryId } };
@@ -142,7 +336,7 @@ export async function updateProduct(data: ProductWithId) {
       if (categoryTags.length > 0) {
         // categoryTags is now an array of IDs directly
         const validTagIds = categoryTags.filter(
-          (id): id is string => typeof id === "string" && id.length > 0
+          (id): id is string => typeof id === "string" && id.length > 0,
         );
         if (validTagIds.length > 0) {
           updateData.categoryTags = {
@@ -159,12 +353,19 @@ export async function updateProduct(data: ProductWithId) {
       data: updateData,
     });
 
+    const productForVector = await prisma.product.findUnique({
+      where: { id: updatedProduct.id },
+      include: productCategoryInclude,
+    });
+
     // console.log("ProductData 😍😍😍💥", updateData);
 
     revalidatePath("/admin/products");
 
     // Update in vector database
-    await upsertProductVector(updatedProduct as any);
+    if (productForVector) {
+      await upsertProductVector(productForVector);
+    }
 
     // Invalidate all product-related caches
     await invalidateProductCaches();
@@ -172,7 +373,7 @@ export async function updateProduct(data: ProductWithId) {
     return { success: true, message: "Product updated successfully." };
   } catch (error) {
     console.log("Product Update Error ❌❌❌❌", error);
-    return { success: false, message: "Failed to update product." };
+    return { success: false, message: formatError(error) };
   }
 }
 
@@ -191,7 +392,7 @@ export async function deleteProduct(id: string) {
       await utapi.deleteFiles(productExists.image_keys);
     }
 
-    const data = await prisma.product.delete({
+    await prisma.product.delete({
       where: { id },
     });
 
@@ -209,6 +410,116 @@ export async function deleteProduct(id: string) {
   }
 }
 
+export async function getAdminBrandSummaries() {
+  try {
+    const brandedProducts = await prisma.product.findMany({
+      where: {
+        brand: {
+          not: null,
+        },
+        NOT: {
+          brand: "",
+        },
+      },
+      select: {
+        id: true,
+        brand: true,
+        stock: true,
+        price: true,
+        createdAt: true,
+        MainCategory: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: [{ brand: "asc" }, { createdAt: "desc" }],
+    });
+
+    const brandMap = new Map<
+      string,
+      {
+        brand: string;
+        productCount: number;
+        totalStock: number;
+        outOfStockCount: number;
+        totalPrice: number;
+        latestProductAt: Date;
+        categories: Map<string, number>;
+      }
+    >();
+
+    for (const product of brandedProducts) {
+      const brandName = product.brand?.trim();
+
+      if (!brandName) {
+        continue;
+      }
+
+      const existing = brandMap.get(brandName) ?? {
+        brand: brandName,
+        productCount: 0,
+        totalStock: 0,
+        outOfStockCount: 0,
+        totalPrice: 0,
+        latestProductAt: product.createdAt,
+        categories: new Map<string, number>(),
+      };
+
+      existing.productCount += 1;
+      existing.totalStock += product.stock;
+      existing.outOfStockCount += product.stock <= 0 ? 1 : 0;
+      existing.totalPrice += Number(product.price);
+
+      if (product.createdAt > existing.latestProductAt) {
+        existing.latestProductAt = product.createdAt;
+      }
+
+      const categoryName = product.MainCategory?.name ?? "Uncategorized";
+      existing.categories.set(
+        categoryName,
+        (existing.categories.get(categoryName) ?? 0) + 1,
+      );
+
+      brandMap.set(brandName, existing);
+    }
+
+    const brands = Array.from(brandMap.values())
+      .map((brand) => ({
+        brand: brand.brand,
+        productCount: brand.productCount,
+        totalStock: brand.totalStock,
+        outOfStockCount: brand.outOfStockCount,
+        averagePrice:
+          brand.productCount > 0 ? brand.totalPrice / brand.productCount : 0,
+        latestProductAt: brand.latestProductAt,
+        categoryNames: Array.from(brand.categories.entries())
+          .sort((left, right) => right[1] - left[1])
+          .slice(0, 3)
+          .map(([name]) => name),
+      }))
+      .sort((left, right) => {
+        if (right.productCount !== left.productCount) {
+          return right.productCount - left.productCount;
+        }
+
+        return left.brand.localeCompare(right.brand);
+      });
+
+    return {
+      success: true,
+      data: brands,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: "Failed to retrieve brand summaries",
+      data: [],
+    };
+  }
+}
+
 //Get single product by slug with Redis cache
 export async function getProductBySlug(slug: string) {
   const cacheKey = generateCacheKey(CACHE_CONFIG.PRODUCT_BY_SLUG.key, { slug });
@@ -218,11 +529,12 @@ export async function getProductBySlug(slug: string) {
     async () => {
       const data = await prisma.product.findFirst({
         where: { slug },
+        include: productCategoryInclude,
       });
 
-      return convertPrismaObjectToJSObject(data);
+      return data ? serializeProductCategoryContext(data) : null;
     },
-    CACHE_CONFIG.PRODUCT_BY_SLUG.ttl
+    CACHE_CONFIG.PRODUCT_BY_SLUG.ttl,
   );
 }
 
@@ -232,6 +544,8 @@ export async function getAllProducts({
   limit = DB_ADMIN_PRODUCT_TAKE,
   page,
   category,
+  brand,
+  stock,
   price,
   rating,
   sort,
@@ -241,6 +555,8 @@ export async function getAllProducts({
   limit?: number;
   page: number;
   category?: string;
+  brand?: string;
+  stock?: string;
   price?: string;
   rating?: string;
   sort?: string;
@@ -266,6 +582,8 @@ export async function getAllProducts({
       query,
       page,
       category: category !== "all" ? category : undefined,
+      brand: brand !== "all" ? brand : undefined,
+      stock: stock !== "all" ? stock : undefined,
       minPrice,
       maxPrice,
       minRating,
@@ -279,6 +597,8 @@ export async function getAllProducts({
     limit,
     page,
     category,
+    brand,
+    stock,
     price,
     rating,
     sort,
@@ -287,31 +607,18 @@ export async function getAllProducts({
   return getCachedData(
     cacheKey,
     async () => {
+      const whereClause: Prisma.ProductWhereInput = {
+        ...buildCategoryFilter(category),
+        ...buildBrandFilter(brand),
+        ...buildStockFilter(stock),
+        ...buildPriceFilter(price),
+        ...buildRatingFilter(rating),
+      };
+
       // If no query, use simple filtering
       if (!query || query === "all") {
-        const priceFilter: Prisma.ProductWhereInput =
-          price && price !== "all"
-            ? {
-                price: {
-                  gte: Number(price.split("-")[0]),
-                  lte: Number(price.split("-")[1]),
-                },
-              }
-            : {};
-        const ratingFilter =
-          rating && rating !== "all"
-            ? {
-                rating: {
-                  gte: Number(rating),
-                },
-              }
-            : {};
-
         const data = await prisma.product.findMany({
-          where: {
-            ...priceFilter,
-            ...ratingFilter,
-          },
+          where: whereClause,
           orderBy:
             sort === "lowest"
               ? { price: "asc" }
@@ -325,10 +632,7 @@ export async function getAllProducts({
         });
 
         const dataCount = await prisma.product.count({
-          where: {
-            ...priceFilter,
-            ...ratingFilter,
-          },
+          where: whereClause,
         });
 
         return {
@@ -339,35 +643,47 @@ export async function getAllProducts({
 
       // For search queries, use raw SQL with relevance scoring
       const searchTerms = query.split(" ").filter((term) => term.length > 0);
-      const searchPattern = searchTerms.join(" | ");
+      const selectedCategory =
+        category && category !== "all"
+          ? await prisma.mainCategory.findFirst({
+              where: { name: category },
+              select: { id: true },
+            })
+          : null;
 
-      // Category filter
-      // const categoryCondition =
-      //   category && category !== "all" ? `AND category = '${category}'` : "";
+      const categoryCondition = selectedCategory
+        ? `AND "mainCategoryId" = '${escapeSqlLiteral(selectedCategory.id)}'`
+        : category && category !== "all"
+          ? "AND 1 = 0"
+          : "";
+
+      const brandCondition =
+        brand && brand !== "all"
+          ? `AND LOWER(brand) = LOWER('${escapeSqlLiteral(brand)}')`
+          : "";
+
+      const stockCondition =
+        stock === "in-stock"
+          ? "AND stock > 0"
+          : stock === "out-of-stock"
+            ? "AND stock <= 0"
+            : "";
 
       // Price filter
-      // Price filter (supports multiple ranges, e.g. "10-20,30-40")
       let priceCondition = "";
-      if (price && price !== "all") {
-        const ranges = price.split(",").map((range) => range.trim());
+      const ranges = parsePriceRanges(price);
+      if (ranges.length > 0) {
         if (ranges.length > 1) {
           const conditions = ranges
             .map((range) => {
-              const [min, max] = range.split("-").map(Number);
-              if (!isNaN(min) && !isNaN(max)) {
-                return `(price BETWEEN ${min} AND ${max})`;
-              }
-              return "";
+              return `(price BETWEEN ${range.min} AND ${range.max})`;
             })
             .filter(Boolean);
           if (conditions.length > 0) {
             priceCondition = `AND (${conditions.join(" OR ")})`;
           }
         } else {
-          const [min, max] = ranges[0].split("-").map(Number);
-          if (!isNaN(min) && !isNaN(max)) {
-            priceCondition = `AND price BETWEEN ${min} AND ${max}`;
-          }
+          priceCondition = `AND price BETWEEN ${ranges[0].min} AND ${ranges[0].max}`;
         }
       }
 
@@ -410,7 +726,7 @@ export async function getAllProducts({
         CASE WHEN LOWER(description) LIKE LOWER('%' || $${
           index + 2
         } || '%') THEN 1 ELSE 0 END
-        `
+        `,
           )
           .join(" +")}
       ) as relevance_score
@@ -425,10 +741,13 @@ export async function getAllProducts({
       OR LOWER(name) LIKE LOWER('%' || $${index + 2} || '%')
       OR LOWER(brand) LIKE LOWER('%' || $${index + 2} || '%')
       OR LOWER(description) LIKE LOWER('%' || $${index + 2} || '%')
-      `
+      `,
         )
         .join("")}
     )
+    ${categoryCondition}
+    ${brandCondition}
+    ${stockCondition}
     ${priceCondition}
     ${ratingCondition}
     ORDER BY 
@@ -451,7 +770,7 @@ export async function getAllProducts({
         query,
         ...searchTerms,
         limit,
-        (page - 1) * limit
+        (page - 1) * limit,
       );
 
       // Count query for pagination
@@ -468,10 +787,13 @@ export async function getAllProducts({
       OR LOWER(name) LIKE LOWER('%' || $${index + 2} || '%')
       OR LOWER(brand) LIKE LOWER('%' || $${index + 2} || '%')
       OR LOWER(description) LIKE LOWER('%' || $${index + 2} || '%')
-      `
+      `,
         )
         .join("")}
     )
+    ${categoryCondition}
+    ${brandCondition}
+    ${stockCondition}
     ${priceCondition}
     ${ratingCondition}
   `;
@@ -479,7 +801,7 @@ export async function getAllProducts({
       const countResult = (await prisma.$queryRawUnsafe(
         countQuery,
         query,
-        ...searchTerms
+        ...searchTerms,
       )) as Array<{ total: bigint }>;
 
       const dataCount = Number(countResult[0]?.total || 0);
@@ -489,7 +811,30 @@ export async function getAllProducts({
         totalPages: Math.ceil(dataCount / limit),
       };
     },
-    CACHE_CONFIG.ALL_PRODUCTS.ttl
+    CACHE_CONFIG.ALL_PRODUCTS.ttl,
+  );
+}
+
+export async function getProductBrands() {
+  const cacheKey = "product-search-brands";
+
+  return getCachedData(
+    cacheKey,
+    async () => {
+      const brands = await prisma.brand.findMany({
+        select: {
+          name: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+
+      return brands
+        .map((brand) => brand.name)
+        .filter((brand): brand is string => Boolean(brand));
+    },
+    CACHE_CONFIG.ALL_PRODUCTS.ttl,
   );
 }
 
@@ -514,7 +859,7 @@ export async function getProductById(id: string) {
         return { success: false, message: "Failed to fetch product." };
       }
     },
-    CACHE_CONFIG.PRODUCT_BY_ID.ttl
+    CACHE_CONFIG.PRODUCT_BY_ID.ttl,
   );
 }
 
@@ -571,7 +916,7 @@ export async function getFeaturedProducts() {
         };
       }
     },
-    CACHE_CONFIG.FEATURED_PRODUCTS.ttl
+    CACHE_CONFIG.FEATURED_PRODUCTS.ttl,
   );
 }
 
@@ -599,47 +944,110 @@ export async function getLatestProducts() {
         return { success: false, message: "Failed to fetch latest products." };
       }
     },
-    CACHE_CONFIG.LATEST_PRODUCTS.ttl
+    CACHE_CONFIG.LATEST_PRODUCTS.ttl,
   );
 }
 
 // Get related products by IDs
 export async function getRelatedProducts(
   productId: string,
-  mainCategory?: string,
-  subCategory?: string,
-  brand?: string
+  mainCategoryId?: string | null,
+  subCategoryId?: string | null,
+  subSubCategoryId?: string | null,
+  brand?: string | null,
 ) {
   try {
-    const items = (await prisma.product
-      .findMany({
-        where: {
-          id: { not: productId },
-          ...(brand ? { brand } : {}),
-        },
-        orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
-        take: 5,
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          price: true,
-          images: true,
-          rating: true,
-        },
+    const matchClauses: Prisma.ProductWhereInput[] = [];
+
+    if (subSubCategoryId) {
+      matchClauses.push({ subSubCategoryId });
+    }
+
+    if (subCategoryId) {
+      matchClauses.push({ subCategoryId });
+    }
+
+    if (mainCategoryId) {
+      matchClauses.push({ mainCategoryId });
+    }
+
+    if (brand) {
+      matchClauses.push({ brand });
+    }
+
+    const rows = await prisma.product.findMany({
+      where: {
+        id: { not: productId },
+        ...(matchClauses.length > 0 ? { OR: matchClauses } : {}),
+      },
+      orderBy: [{ rating: "desc" }, { createdAt: "desc" }],
+      take: matchClauses.length > 0 ? 24 : 5,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        price: true,
+        images: true,
+        rating: true,
+        brand: true,
+        createdAt: true,
+        mainCategoryId: true,
+        subCategoryId: true,
+        subSubCategoryId: true,
+      },
+    });
+
+    const items = rows
+      .map((product) => {
+        let score = 0;
+
+        if (subSubCategoryId && product.subSubCategoryId === subSubCategoryId) {
+          score += 8;
+        }
+
+        if (subCategoryId && product.subCategoryId === subCategoryId) {
+          score += 4;
+        }
+
+        if (mainCategoryId && product.mainCategoryId === mainCategoryId) {
+          score += 2;
+        }
+
+        if (brand && product.brand === brand) {
+          score += 1;
+        }
+
+        return {
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          price: product.price,
+          image: Array.isArray(product.images)
+            ? product.images[0]
+            : (product.images as any) || "",
+          rating: product.rating ?? 0,
+          score,
+          createdAt: product.createdAt,
+        };
       })
-      .then((rows) =>
-        rows.map((p) => ({
-          id: p.id,
-          name: p.name,
-          slug: p.slug,
-          price: p.price,
-          image: Array.isArray(p.images)
-            ? p.images[0]
-            : (p.images as any) || "",
-          rating: p.rating ?? 0,
-        }))
-      )) as any[];
+      .sort((left, right) => {
+        if (right.score !== left.score) {
+          return right.score - left.score;
+        }
+
+        const ratingDiff = Number(right.rating ?? 0) - Number(left.rating ?? 0);
+        if (ratingDiff !== 0) {
+          return ratingDiff;
+        }
+
+        return (
+          new Date(right.createdAt).getTime() -
+          new Date(left.createdAt).getTime()
+        );
+      })
+      .slice(0, 5)
+      .map(({ createdAt, score, ...product }) => product);
+
     return items;
   } catch (error) {
     console.error(error);

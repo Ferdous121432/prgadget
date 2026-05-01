@@ -1,10 +1,10 @@
+import { Toaster } from "@/components/ui/sonner";
 import { APP_DESCRIPTION, APP_Name, SERVER_URL } from "@/lib/constants";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Toaster } from "sonner";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import "./globals.css";

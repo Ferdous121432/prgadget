@@ -34,7 +34,12 @@ async function page(props: {
   }
 
   return (
-    <FilterSidebar>
+    <FilterSidebar
+      sidebar={
+        <div className="rounded-2xl border border-border bg-background px-4 py-4 text-sm text-muted-foreground">
+          Browse products in {category.name}.
+        </div>
+      }>
       <CategoryProducts products={category.products} />
     </FilterSidebar>
   );

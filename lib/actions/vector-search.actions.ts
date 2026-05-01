@@ -11,6 +11,105 @@ import { InferenceClient } from "@huggingface/inference";
 // });
 
 const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
+const VECTOR_TLS_ERROR_CODES = new Set([
+  "DEPTH_ZERO_SELF_SIGNED_CERT",
+  "SELF_SIGNED_CERT_IN_CHAIN",
+  "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+]);
+const loggedVectorWarnings = new Set<string>();
+
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
+}
+
+function getErrorCode(error: unknown): string | undefined {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+
+  const code = (error as { code?: unknown }).code;
+  return typeof code === "string" ? code : undefined;
+}
+
+function isVectorTlsError(error: unknown): boolean {
+  const message = getErrorMessage(error).toLowerCase();
+  const code = getErrorCode(error);
+
+  if (code && VECTOR_TLS_ERROR_CODES.has(code)) {
+    return true;
+  }
+
+  if (message.includes("self-signed certificate")) {
+    return true;
+  }
+
+  if (error && typeof error === "object" && "cause" in error) {
+    return isVectorTlsError((error as { cause?: unknown }).cause);
+  }
+
+  return false;
+}
+
+function logVectorFailure(context: string, error: unknown) {
+  if (isVectorTlsError(error)) {
+    const warningKey = `${context}:tls`;
+
+    if (!loggedVectorWarnings.has(warningKey)) {
+      loggedVectorWarnings.add(warningKey);
+      console.warn(
+        `${context} unavailable because the Upstash Vector TLS certificate could not be verified. Falling back without vector results.`,
+      );
+    }
+
+    return;
+  }
+
+  console.error(`${context}:`, error);
+}
+
+function getCategoryName(
+  product: Record<string, any>,
+  field: "mainCategory" | "subCategory" | "subSubCategory",
+  relationField: "MainCategory" | "SubCategory" | "SubSubCategory",
+) {
+  const directValue = product[field];
+
+  if (typeof directValue === "string" && directValue.trim()) {
+    return directValue;
+  }
+
+  const relationValue = product[relationField]?.name;
+  return typeof relationValue === "string" ? relationValue : null;
+}
+
+function normalizeVectorProduct(product: Record<string, any>) {
+  const relationBrandName = product.Brand?.name;
+
+  return {
+    ...product,
+    brand:
+      typeof product.brand === "string" && product.brand.trim()
+        ? product.brand
+        : typeof relationBrandName === "string"
+          ? relationBrandName
+          : null,
+    mainCategory: getCategoryName(product, "mainCategory", "MainCategory"),
+    subCategory: getCategoryName(product, "subCategory", "SubCategory"),
+    subSubCategory: getCategoryName(
+      product,
+      "subSubCategory",
+      "SubSubCategory",
+    ),
+  } as Record<string, any> & {
+    mainCategory: string | null;
+    subCategory: string | null;
+    subSubCategory: string | null;
+  };
+}
 
 // Generate embedding for text
 // Free embedding generation with Hugging Face
@@ -43,16 +142,20 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Upsert product to vector database
-export async function upsertProductVector(product: ProductSchemaPublic) {
+export async function upsertProductVector(
+  product: ProductSchemaPublic | Record<string, any>,
+) {
   try {
+    const normalizedProduct = normalizeVectorProduct(product);
+
     // Create searchable text from product data
     const searchText = [
-      product.name,
-      product.description,
-      product.mainCategory,
-      product.subCategory,
-      product.subSubCategory,
-      product.brand,
+      normalizedProduct.name,
+      normalizedProduct.description,
+      normalizedProduct.mainCategory,
+      normalizedProduct.subCategory,
+      normalizedProduct.subSubCategory,
+      normalizedProduct.brand,
       // Add more searchable fields
     ]
       .filter(Boolean)
@@ -64,28 +167,28 @@ export async function upsertProductVector(product: ProductSchemaPublic) {
     // Upsert to vector database
     await vectorIndex.upsert([
       {
-        id: product.id,
+        id: normalizedProduct.id,
         vector: embedding,
         metadata: {
-          id: product.id,
-          name: product.name,
-          description: product.description,
-          price: product.price,
-          mainCategory: product.mainCategory,
-          subCategory: product.subCategory,
-          subSubCategory: product.subSubCategory,
-          brand: product.brand,
-          stock: product.stock,
-          rating: product.rating,
-          images: product.images,
-          slug: product.slug,
-          isFeatured: product.isFeatured,
-          updatedAt: product.updatedAt.toISOString(),
+          id: normalizedProduct.id,
+          name: normalizedProduct.name,
+          description: normalizedProduct.description,
+          price: normalizedProduct.price,
+          mainCategory: normalizedProduct.mainCategory,
+          subCategory: normalizedProduct.subCategory,
+          subSubCategory: normalizedProduct.subSubCategory,
+          brand: normalizedProduct.brand,
+          stock: normalizedProduct.stock,
+          rating: normalizedProduct.rating,
+          images: normalizedProduct.images,
+          slug: normalizedProduct.slug,
+          isFeatured: normalizedProduct.isFeatured,
+          updatedAt: new Date(normalizedProduct.updatedAt).toISOString(),
         },
       },
     ]);
 
-    console.log(`Product ${product.id} added to vector database`);
+    console.log(`Product ${normalizedProduct.id} added to vector database`);
     return { success: true };
   } catch (error) {
     console.error("Error upserting product vector:", error);
@@ -125,7 +228,7 @@ function generateSimpleEmbedding(text: string): number[] {
 
   // Normalize the vector
   const magnitude = Math.sqrt(
-    features.reduce((sum, val) => sum + val * val, 0)
+    features.reduce((sum, val) => sum + val * val, 0),
   );
   return features.map((val) => (magnitude > 0 ? val / magnitude : 0));
 }
@@ -134,10 +237,25 @@ function generateSimpleEmbedding(text: string): number[] {
 export async function syncAllProductsToVector() {
   try {
     console.log("📊 Fetching all products from database...");
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      include: {
+        Brand: {
+          select: { name: true },
+        },
+        MainCategory: {
+          select: { name: true },
+        },
+        SubCategory: {
+          select: { name: true },
+        },
+        SubSubCategory: {
+          select: { name: true },
+        },
+      },
+    });
 
     console.log(
-      `🔄 Syncing ${products.length} products to vector database using free embeddings...`
+      `🔄 Syncing ${products.length} products to vector database using free embeddings...`,
     );
 
     const batchSize = 5; // Smaller batches for free tier
@@ -148,14 +266,16 @@ export async function syncAllProductsToVector() {
 
       const batchPromises = batch.map(async (product: any) => {
         try {
+          const normalizedProduct = normalizeVectorProduct(product);
+
           // Create searchable text
           const searchText = [
-            product.name,
-            product.description,
-            product.mainCategory,
-            product.subCategory,
-            product.subSubCategory,
-            product.brand,
+            normalizedProduct.name,
+            normalizedProduct.description,
+            normalizedProduct.mainCategory,
+            normalizedProduct.subCategory,
+            normalizedProduct.subSubCategory,
+            normalizedProduct.brand,
           ]
             .filter(Boolean)
             .join(" ");
@@ -166,29 +286,29 @@ export async function syncAllProductsToVector() {
           // Upsert to vector database
           await vectorIndex.upsert([
             {
-              id: product.id,
+              id: normalizedProduct.id,
               vector: embedding,
               metadata: {
-                id: product.id,
-                name: product.name,
-                description: product.description,
-                price: product.price,
-                mainCategory: product.mainCategory,
-                subCategory: product.subCategory,
-                subSubCategory: product.subSubCategory,
-                brand: product.brand,
-                stock: product.stock,
-                rating: product.rating,
-                images: product.images,
-                slug: product.slug,
-                isFeatured: product.isFeatured,
-                updatedAt: product.updatedAt,
+                id: normalizedProduct.id,
+                name: normalizedProduct.name,
+                description: normalizedProduct.description,
+                price: normalizedProduct.price,
+                mainCategory: normalizedProduct.mainCategory,
+                subCategory: normalizedProduct.subCategory,
+                subSubCategory: normalizedProduct.subSubCategory,
+                brand: normalizedProduct.brand,
+                stock: normalizedProduct.stock,
+                rating: normalizedProduct.rating,
+                images: normalizedProduct.images,
+                slug: normalizedProduct.slug,
+                isFeatured: normalizedProduct.isFeatured,
+                updatedAt: new Date(normalizedProduct.updatedAt).toISOString(),
               },
             },
           ]);
 
           synced++;
-          return { success: true, id: product.id };
+          return { success: true, id: normalizedProduct.id };
         } catch (error) {
           console.error(`❌ Failed to sync product ${product.id}:`, error);
           return { success: false, id: product.id, error };
@@ -201,12 +321,12 @@ export async function syncAllProductsToVector() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       console.log(
-        `✅ Synced batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(products.length / batchSize)}`
+        `✅ Synced batch ${Math.floor(i / batchSize) + 1}/${Math.ceil(products.length / batchSize)}`,
       );
     }
 
     console.log(
-      `🎉 Successfully synced ${synced}/${products.length} products using free embeddings`
+      `🎉 Successfully synced ${synced}/${products.length} products using free embeddings`,
     );
 
     return { success: true, synced };
@@ -253,11 +373,11 @@ export async function getSimilarProducts(productId: string, limit = 8) {
 
         return { data: similarProducts };
       } catch (error) {
-        console.error("Similar products error:", error);
+        logVectorFailure("Similar products", error);
         return { data: [] };
       }
     },
-    1800 // 30 minutes cache
+    1800, // 30 minutes cache
   );
 }
 
@@ -282,6 +402,8 @@ export async function vectorSearchProducts({
   page = 1,
   limit = 20,
   category,
+  brand,
+  stock,
   minPrice,
   maxPrice,
   minRating,
@@ -291,18 +413,26 @@ export async function vectorSearchProducts({
   page?: number;
   limit?: number;
   category?: string;
+  brand?: string;
+  stock?: string;
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;
   sort?: string;
 }) {
-  const cacheKey = `vector-search-${query}-${page}-${category}-${minPrice}-${maxPrice}-${minRating}-${sort}`;
+  const cacheKey = `vector-search-${query}-${page}-${category}-${brand}-${stock}-${minPrice}-${maxPrice}-${minRating}-${sort}`;
 
   return getCachedData(
     cacheKey,
     async () => {
       try {
-        console.log("🔍 Vector searching for:", { query, category, page });
+        console.log("🔍 Vector searching for:", {
+          query,
+          category,
+          brand,
+          stock,
+          page,
+        });
 
         // Generate query embedding
         const queryEmbedding = await generateEmbedding(query);
@@ -319,6 +449,9 @@ export async function vectorSearchProducts({
         // Apply your existing filtering and sorting logic...
         let filteredResults = searchResults.filter((result) => {
           const metadata = result.metadata as any;
+          const itemPrice = Number(metadata.price ?? 0);
+          const itemRating = Number(metadata.rating ?? 0);
+          const itemStock = Number(metadata.stock ?? 0);
 
           if (
             category &&
@@ -328,15 +461,31 @@ export async function vectorSearchProducts({
             return false;
           }
 
-          if (minPrice && metadata.price < minPrice) {
+          if (
+            brand &&
+            brand !== "all" &&
+            String(metadata.brand ?? "").toLowerCase() !== brand.toLowerCase()
+          ) {
             return false;
           }
 
-          if (maxPrice && metadata.price > maxPrice) {
+          if (stock === "in-stock" && itemStock <= 0) {
             return false;
           }
 
-          if (minRating && metadata.rating < minRating) {
+          if (stock === "out-of-stock" && itemStock > 0) {
+            return false;
+          }
+
+          if (minPrice && itemPrice < minPrice) {
+            return false;
+          }
+
+          if (maxPrice && itemPrice > maxPrice) {
+            return false;
+          }
+
+          if (minRating && itemRating < minRating) {
             return false;
           }
 
@@ -373,7 +522,7 @@ export async function vectorSearchProducts({
         const startIndex = (page - 1) * limit;
         const paginatedResults = filteredResults.slice(
           startIndex,
-          startIndex + limit
+          startIndex + limit,
         );
 
         return {
@@ -386,7 +535,7 @@ export async function vectorSearchProducts({
           isVectorSearch: true,
         };
       } catch (error: any) {
-        console.error("❌ Vector search failed:", error.message);
+        logVectorFailure("Vector search failed", error);
 
         // Fallback to regular database search
         return await fallbackSearch({
@@ -394,6 +543,8 @@ export async function vectorSearchProducts({
           page,
           limit,
           category,
+          brand,
+          stock,
           minPrice,
           maxPrice,
           minRating,
@@ -401,7 +552,7 @@ export async function vectorSearchProducts({
         });
       }
     },
-    300 // 5 minutes cache
+    300, // 5 minutes cache
   );
 }
 
@@ -411,6 +562,8 @@ async function fallbackSearch({
   page,
   limit,
   category,
+  brand,
+  stock,
   minPrice,
   maxPrice,
   minRating,
@@ -420,6 +573,8 @@ async function fallbackSearch({
   page: number;
   limit: number;
   category?: string;
+  brand?: string;
+  stock?: string;
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;
@@ -435,7 +590,24 @@ async function fallbackSearch({
   }
 
   if (category) {
-    whereClause.mainCategory = category;
+    whereClause.MainCategory = {
+      is: {
+        name: category,
+      },
+    };
+  }
+
+  if (brand) {
+    whereClause.brand = {
+      equals: brand,
+      mode: "insensitive",
+    };
+  }
+
+  if (stock === "in-stock") {
+    whereClause.stock = { gt: 0 };
+  } else if (stock === "out-of-stock") {
+    whereClause.stock = { lte: 0 };
   }
 
   if (minPrice || maxPrice) {

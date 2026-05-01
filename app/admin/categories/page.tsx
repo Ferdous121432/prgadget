@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { formatCurrency, formatId } from "@/lib/utils";
+import DeleteDialog from "@/components/shared/DeteleDialog";
+import Pagination from "@/components/shared/Pagination";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,21 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "@/components/shared/Pagination";
-import DeleteDialog from "@/components/shared/DeteleDialog";
-import { requireAdmin } from "@/lib/auth-guard";
-import { UpdateMainCategory } from "@/types";
 import {
   deleteMainCategory,
   getAllMainCategories,
 } from "@/lib/actions/category.actions";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BadgeDollarSign, Barcode, CreditCard } from "lucide-react";
-import { DataTable } from "@/components/data-table";
-import Data from "./../orders/data.json";
+import { requireAdmin } from "@/lib/auth-guard";
+import { UpdateMainCategory } from "@/types";
 import Image from "next/image";
+import Link from "next/link";
 
-const AdminProductsPage = async (props: {
+const AdminCategoriesPage = async (props: {
   searchParams: Promise<{
     page: string;
     query: string;
@@ -39,61 +34,12 @@ const AdminProductsPage = async (props: {
   const category = searchParams.category || "";
 
   const categories = (await getAllMainCategories()) as {
-    data: UpdateMainCategory[];
+    data: (UpdateMainCategory & { subcategories?: { name: string }[] })[];
     totalPages: number;
   };
 
   return (
-    <div className="space-y-2">
-      <div className="py-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <BadgeDollarSign />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {/* {formatCurrency(
-                summary.totalSales._sum.totalPrice?.toString() || 0
-              )} */}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sales</CardTitle>
-            <CreditCard />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {/* {formatNumber(summary.ordersCount)} */}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Customers</CardTitle>
-            {/* <Users /> */}
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {/* {formatNumber(summary.usersCount)} */}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Products</CardTitle>
-            <Barcode />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {/* {formatNumber(summary.productCounts)} */}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <DataTable data={Data} />
+    <div className="space-y-4">
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <h1 className="h2-bold">Categories</h1>
@@ -128,7 +74,10 @@ const AdminProductsPage = async (props: {
             <TableRow key={category.id}>
               <TableCell>...{category.id.split("-").pop()}</TableCell>
               <TableCell>{category.name}</TableCell>
-              <TableCell>{category.name}</TableCell>
+              <TableCell>
+                {category.subcategories?.map((sub) => sub.name).join(", ") ||
+                  "-"}
+              </TableCell>
               <TableCell>
                 {category.image && (
                   <Image
@@ -156,4 +105,4 @@ const AdminProductsPage = async (props: {
   );
 };
 
-export default AdminProductsPage;
+export default AdminCategoriesPage;

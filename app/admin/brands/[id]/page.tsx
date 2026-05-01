@@ -1,14 +1,15 @@
-import { getMainCategoryById } from "@/lib/actions/category.actions";
+import { getBrandById } from "@/lib/actions/brand.actions";
 import { requireAdmin } from "@/lib/auth-guard";
-import { MainCategory } from "@/lib/generated/prisma";
+import { Brand } from "@/lib/generated/prisma";
 import { Metadata } from "next";
-import CategoryForm from "../create/Category-form";
+import { notFound } from "next/navigation";
+import BrandForm from "../create/Brand-form";
 
 export const metadata: Metadata = {
-  title: "Update Sub-Category",
+  title: "Update Brand",
 };
 
-const AdminCategoryUpdatePage = async (props: {
+const AdminBrandUpdatePage = async (props: {
   params: Promise<{
     id: string;
   }>;
@@ -17,25 +18,17 @@ const AdminCategoryUpdatePage = async (props: {
 
   const { id } = await props.params;
 
-  console.log("id param:", id);
+  const brand = (await getBrandById(id)) as Brand | null;
 
-  const category = (await getMainCategoryById(id)) as MainCategory;
-  console.log("Fetched category data:", category);
-
-  // if (!category) return notFound();
-  // console.log("Data:", category);
+  if (!brand) return notFound();
 
   return (
     <div className="space-y-8 md:my-10 max-w-5xl mx-auto">
-      <h1 className="h2-bold">Update Sub-Category</h1>
+      <h1 className="h2-bold">Update Brand</h1>
 
-      <CategoryForm
-        type="Update"
-        category={category}
-        categoryId={category.id}
-      />
+      <BrandForm type="Update" brand={brand} brandId={brand.id} />
     </div>
   );
 };
 
-export default AdminCategoryUpdatePage;
+export default AdminBrandUpdatePage;

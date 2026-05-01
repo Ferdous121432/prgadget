@@ -1,21 +1,43 @@
 "use server";
 
 import { auth } from "@/auth";
-import { CartItem, PaymentResult, SalesData, ShippingAddress } from "@/types";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { getMyCart } from "./cart.actions";
 import { prisma } from "@/db/prisma";
-import { getUserById } from "./user.actions";
-import { insertOrderSchema } from "../validators";
+import { sendPurchaseReceipt } from "@/email";
+import { getMyCart } from "@/lib/cart-data";
+import { resolveSelectedShippingAddress } from "@/lib/shipping-address";
+import { CartItem, PaymentResult, SalesData, ShippingAddress } from "@/types";
+import { revalidatePath } from "next/cache";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import {
   DB_ADMIN_PRODUCT_TAKE,
   DB_LATEST_SALES_TAKE,
   PAGE_SIZE,
 } from "../constants";
 import { Prisma } from "../generated/prisma";
-import { revalidatePath } from "next/cache";
 import { convertPrismaObjectToJSObject } from "../utils";
-import { sendPurchaseReceipt } from "@/email";
+import { insertOrderSchema } from "../validators";
+import { getUserById } from "./user.actions";
+
+export type OrderDateRange = "today" | "7d" | "30d" | "lifetime";
+
+function getDateFromForRange(range: OrderDateRange = "lifetime") {
+  if (range === "lifetime") return undefined;
+
+  const dateFrom = new Date();
+  dateFrom.setHours(0, 0, 0, 0);
+
+  if (range === "today") {
+    return dateFrom;
+  }
+
+  if (range === "7d") {
+    dateFrom.setDate(dateFrom.getDate() - 6);
+    return dateFrom;
+  }
+
+  dateFrom.setDate(dateFrom.getDate() - 29);
+  return dateFrom;
+}
 
 export const createOrder = async () => {
   try {
@@ -31,6 +53,11 @@ export const createOrder = async () => {
     }
 
     const user = await getUserById(userId);
+    const shippingAddress = resolveSelectedShippingAddress({
+      selectedShippingAddress: user.selectedShippingAddress as never,
+      shippingAddresses: user.shippingAddresses as never[],
+      address: user.address,
+    });
 
     if (!cart || cart.items.length === 0) {
       return {
@@ -40,7 +67,7 @@ export const createOrder = async () => {
       };
     }
 
-    if (!user.address) {
+    if (!shippingAddress) {
       return {
         success: false,
         message: "Shipping address not provided",
@@ -58,7 +85,7 @@ export const createOrder = async () => {
     // Create the order
     const order = insertOrderSchema.parse({
       userId: user.id,
-      shippingAddress: user.address,
+      shippingAddress,
       paymentMethod: user.paymentMethod,
       itemsPrice: cart.itemsPrice,
       shippingPrice: cart.shippingPrice,
@@ -90,7 +117,7 @@ export const createOrder = async () => {
               orderId: newOrder.id,
             },
           });
-        })
+        }),
       );
 
       // Clear the cart after successful order creation
@@ -244,15 +271,41 @@ export async function getMyOrders({
 }
 
 //Get sales data and order summary for admin dashboard
-export async function getOrderSummary() {
+export async function getOrderSummary(range: OrderDateRange = "lifetime") {
   try {
+    const dateFrom = getDateFromForRange(range);
+    const orderDateFilter: Prisma.OrderWhereInput = dateFrom
+      ? { createdAt: { gte: dateFrom } }
+      : {};
+    const salesDateFilter = dateFrom
+      ? Prisma.sql`WHERE "createdAt" >= ${dateFrom}`
+      : Prisma.empty;
+    const topProductsDateFilter = dateFrom
+      ? Prisma.sql`WHERE o."createdAt" >= ${dateFrom}`
+      : Prisma.empty;
+
     //Get counts for each resources
-    const ordersCount = await prisma.order.count();
+    const ordersCount = await prisma.order.count({
+      where: orderDateFilter,
+    });
     const productCounts = await prisma.product.count();
     const usersCount = await prisma.user.count();
+    const paidOrdersCount = await prisma.order.count({
+      where: { ...orderDateFilter, isPaid: true },
+    });
+    const unpaidOrdersCount = await prisma.order.count({
+      where: { ...orderDateFilter, isPaid: false },
+    });
+    const deliveredOrdersCount = await prisma.order.count({
+      where: { ...orderDateFilter, isDelivered: true },
+    });
+    const processingOrdersCount = await prisma.order.count({
+      where: { ...orderDateFilter, isDelivered: false },
+    });
 
     //calculate total sales
     const totalSales = await prisma.order.aggregate({
+      where: orderDateFilter,
       _sum: {
         totalPrice: true,
       },
@@ -261,22 +314,26 @@ export async function getOrderSummary() {
     //get monthly sales data
     const salesRawData = await prisma.$queryRaw<
       Array<{ month: string; totalsales: string }>
-    >`SELECT 
-  to_char("createdAt", 'MM-YYYY') as month, 
-  sum("totalPrice") as totalsales 
-FROM "Order" 
-GROUP BY to_char("createdAt", 'MM-YYYY')
-ORDER BY to_char("createdAt", 'MM-YYYY')`;
+    >(
+      Prisma.sql`SELECT 
+        to_char("createdAt", 'MM-YYYY') as month,
+        sum("totalPrice")::text as totalsales
+      FROM "Order"
+      ${salesDateFilter}
+      GROUP BY to_char("createdAt", 'MM-YYYY')
+      ORDER BY min("createdAt")`,
+    );
 
     const salesData: SalesData = salesRawData.map(
       (item: { month: string; totalsales: string }) => ({
         month: item.month,
         totalSales: parseFloat(item.totalsales),
-      })
+      }),
     );
 
     // Latest sales data
     const latestSales = await prisma.order.findMany({
+      where: orderDateFilter,
       orderBy: { createdAt: "desc" },
       include: {
         user: { select: { name: true, email: true } },
@@ -284,13 +341,68 @@ ORDER BY to_char("createdAt", 'MM-YYYY')`;
       take: DB_LATEST_SALES_TAKE,
     });
 
+    const lowStockProducts = await prisma.product.findMany({
+      where: { stock: { lte: 5 } },
+      orderBy: [{ stock: "asc" }, { createdAt: "desc" }],
+      take: 5,
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        stock: true,
+        MainCategory: { select: { name: true } },
+      },
+    });
+
+    const topProducts = await prisma.$queryRaw<
+      Array<{
+        productId: string;
+        name: string;
+        slug: string;
+        unitsSold: string;
+        revenue: string;
+      }>
+    >`SELECT
+        oi."productId" as "productId",
+        oi.name,
+        oi.slug,
+        SUM(oi.quantity)::text AS "unitsSold",
+        SUM(oi.price * oi.quantity)::text AS revenue
+      FROM "OrderItem" oi
+      INNER JOIN "Order" o ON o.id = oi."orderId"
+      ${topProductsDateFilter}
+      GROUP BY oi."productId", oi.name, oi.slug
+      ORDER BY SUM(oi.quantity) DESC, SUM(oi.price * oi.quantity) DESC
+      LIMIT 5`;
+
+    const topCategories = await prisma.$queryRaw<
+      Array<{
+        category: string;
+        productCount: string;
+      }>
+    >`SELECT
+        mc.name AS category,
+        COUNT(p.id)::text AS "productCount"
+      FROM "Product" p
+      INNER JOIN "MainCategory" mc ON mc.id = p."mainCategoryId"
+      GROUP BY mc.name
+      ORDER BY COUNT(p.id) DESC, mc.name ASC
+      LIMIT 5`;
+
     return {
       ordersCount,
       productCounts,
       usersCount,
+      paidOrdersCount,
+      unpaidOrdersCount,
+      deliveredOrdersCount,
+      processingOrdersCount,
       totalSales,
       salesData,
       latestSales,
+      lowStockProducts,
+      topProducts,
+      topCategories,
     };
   } catch (error) {
     console.error(error);
@@ -302,10 +414,12 @@ export async function getAllOrders({
   limit = DB_ADMIN_PRODUCT_TAKE,
   page,
   query,
+  range = "lifetime",
 }: {
   limit?: number;
   page: number;
   query?: string;
+  range?: OrderDateRange;
 }) {
   // Helper function to check if string is a valid UUID
   const isValidUUID = (str: string) => {
@@ -374,8 +488,16 @@ export async function getAllOrders({
         }
       : {};
 
+  const dateFrom = getDateFromForRange(range);
+  const where: Prisma.OrderWhereInput = {
+    AND: [
+      ...(dateFrom ? [{ createdAt: { gte: dateFrom } }] : []),
+      ...(Object.keys(queryFilter).length > 0 ? [queryFilter] : []),
+    ],
+  };
+
   const data = await prisma.order.findMany({
-    where: queryFilter,
+    where,
     orderBy: { createdAt: "desc" },
     include: {
       user: { select: { name: true, email: true } },
@@ -386,7 +508,7 @@ export async function getAllOrders({
   });
 
   const dataCount = await prisma.order.count({
-    where: queryFilter, // Apply same filter to count
+    where,
   });
 
   return {

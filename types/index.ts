@@ -1,5 +1,6 @@
 import {
   cartItemSchema,
+  createBrandSchema,
   CreateCategoryTagSchema,
   createMainCategorySchema,
   createSubCategorySchema,
@@ -7,16 +8,16 @@ import {
   FeaturedCategoriesSchema,
   insertCartSchema,
   insertOrderItemSchema,
-  insertOrderSchema,
   insertProductSchema,
-  insertReviewSchema,
   paymentMethodSchema,
   paymentResultSchema,
   productSchema,
   productSchemaWithID,
+  saveShippingAddressSchema,
   sessionUserSchema,
   shippingAddressSchema,
   sliderFormSchema,
+  updateBrandSchema,
   updateMainCategorySchema,
   updateOrderSchema,
   updateProductSchema,
@@ -47,6 +48,7 @@ export type CartItem = z.infer<typeof cartItemSchema>;
 
 //Order
 export type ShippingAddress = z.infer<typeof shippingAddressSchema>;
+export type SavedShippingAddress = z.infer<typeof saveShippingAddressSchema>;
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
 export type OrderItem = z.infer<typeof insertOrderItemSchema>;
 export type Order = z.infer<typeof updateOrderSchema>;
@@ -56,6 +58,8 @@ export type SliderFormValues = z.infer<typeof sliderFormSchema>;
 // Category
 export type CreateMainCategory = z.infer<typeof createMainCategorySchema>;
 export type UpdateMainCategory = z.infer<typeof updateMainCategorySchema>;
+export type CreateBrand = z.infer<typeof createBrandSchema>;
+export type UpdateBrand = z.infer<typeof updateBrandSchema>;
 export type CreateSubCategory = z.infer<typeof createSubCategorySchema>;
 export type UpdateSubCategory = z.infer<typeof updateSubCategorySchema>;
 export type CreateSubSubCategory = z.infer<typeof createSubSubCategorySchema>;

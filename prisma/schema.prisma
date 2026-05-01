@@ -62,6 +62,15 @@ model SubSubCategory {
   products      Product[]
 }
 
+model Brand {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  slug      String    @unique
+  image     String
+  image_key String
+  products  Product[]
+}
+
 model Product {
   id               String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String
@@ -69,6 +78,8 @@ model Product {
   images           String[]
   image_keys       String[] // Keys for images stored in UploadThing
   brand            String?
+  Brand            Brand?               @relation(fields: [brandId], references: [id])
+  brandId          String?
   description      String
   stock            Int
   price            Decimal              @default(0) @db.Decimal(10, 2)
@@ -79,8 +90,8 @@ model Product {
   createdAt        DateTime             @default(now()) @db.Timestamptz(6)
   OrderItem        OrderItem[]
   Review           Review[]
-  MainCategory     MainCategory?        @relation(fields: [mainCategoryId], references: [id])
-  mainCategoryId   String?
+  MainCategory     MainCategory         @relation(fields: [mainCategoryId], references: [id])
+  mainCategoryId   String
   SubCategory      SubCategory?         @relation(fields: [subCategoryId], references: [id])
   subCategoryId    String?
   SubSubCategory   SubSubCategory?      @relation(fields: [subSubCategoryId], references: [id])
@@ -89,28 +100,55 @@ model Product {
 }
 
 model User {
-  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name          String    @default("No Name")
-  email         String    @unique(map: "user_email_key")
-  emailVerified DateTime? @db.Timestamptz(6)
-  image         String?
-  password      String?
-  role          String    @default("user") // 'user' | 'admin'
-  address       Json?     @db.Json
-  phone         String?
-  paymentMethod String? // 'paypal' | 'stripe' | 'cod'
+  id                        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                      String    @default("No Name")
+  email                     String    @unique(map: "user_email_key")
+  emailVerified             DateTime? @db.Timestamptz(6)
+  image                     String?
+  password                  String?
+  role                      String    @default("user") // 'user' | 'admin'
+  address                   Json?     @db.Json
+  phone                     String?
+  paymentMethod             String? // 'paypal' | 'stripe' | 'cod'
+  selectedShippingAddressId String?   @db.Uuid
   // sessions      Session[]
   // Optional for WebAuthn support
   // Authenticator Authenticator[]
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  Account       Account[]
-  Session       Session[]
-  Authenticator Authenticator[]
-  Cart          Cart[]
-  Order         Order[]
-  Review        Review[]
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  Account                 Account[]
+  Session                 Session[]
+  Authenticator           Authenticator[]
+  Cart                    Cart[]
+  Order                   Order[]
+  Review                  Review[]
+  shippingAddresses       UserShippingAddress[] @relation("UserShippingAddresses")
+  selectedShippingAddress UserShippingAddress?  @relation("SelectedShippingAddress", fields: [selectedShippingAddressId], references: [id], onDelete: SetNull)
+}
+
+model UserShippingAddress {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String   @db.Uuid
+  label                String   @default("Home")
+  fullName             String
+  phone                String?
+  streetAddress        String
+  addressLine2         String?
+  city                 String
+  state                String?
+  postalCode           String
+  country              String
+  deliveryInstructions String?
+  isDefault            Boolean  @default(false)
+  createdAt            DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime @updatedAt @db.Timestamptz(6)
+
+  user            User   @relation("UserShippingAddresses", fields: [userId], references: [id], onDelete: Cascade)
+  selectedByUsers User[] @relation("SelectedShippingAddress")
+
+  @@index([userId, isDefault])
+  @@index([userId, createdAt])
 }
 
 model Account {

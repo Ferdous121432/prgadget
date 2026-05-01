@@ -2,26 +2,38 @@
 
 import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/db/prisma";
+import { getMyCart } from "@/lib/cart-data";
 import {
   paymentMethodSchema,
+  saveShippingAddressSchema,
   shippingAddressSchema,
   signInFormSchema,
   signUpFormSchema,
   updateProfileSchema,
 } from "@/lib/validators";
-import { PaymentMethod, ShippingAddress } from "@/types";
+import { PaymentMethod, SavedShippingAddress, ShippingAddress } from "@/types";
 import { hashSync } from "bcrypt-ts-edge";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { DB_ADMIN_USERS_TAKE } from "../constants";
 import { Prisma } from "../generated/prisma";
 import { formatError } from "../utils";
-import { getMyCart } from "./cart.actions";
+
+const revalidateUserCheckoutPaths = () => {
+  revalidatePath("/shipping-address");
+  revalidatePath("/payment-method");
+  revalidatePath("/place-order");
+};
+
+function toNullableString(value?: string) {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : null;
+}
 
 // Sign in the user with credentials
 export async function signInWithCredentials(
   prevState: unknown,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const user = signInFormSchema.parse({
@@ -104,6 +116,19 @@ export async function getUserById(userId: string) {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        _count: {
+          select: {
+            Order: true,
+            Review: true,
+            Cart: true,
+          },
+        },
+        shippingAddresses: {
+          orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
+        },
+        selectedShippingAddress: true,
+      },
     });
 
     if (!user) {
@@ -118,32 +143,295 @@ export async function getUserById(userId: string) {
 
 // Update user address
 export async function updateUserAddress(address: ShippingAddress) {
+  return saveUserShippingAddress({
+    ...address,
+    label: address.label || "Home",
+    isDefault: true,
+  });
+}
+
+export async function saveUserShippingAddress(address: SavedShippingAddress) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
 
+    if (!userId) {
+      return { success: false, message: "User not found" };
+    }
+
     const currentUser = await prisma.user.findUnique({
       where: { id: userId },
+      include: {
+        shippingAddresses: true,
+      },
     });
 
     if (!currentUser) {
       return { success: false, message: "User not found" };
     }
 
-    const parsedAddress = shippingAddressSchema.parse(address);
+    const parsedAddress = saveShippingAddressSchema.parse(address);
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        address: parsedAddress,
-      },
+    if (parsedAddress.id) {
+      const existingAddress = currentUser.shippingAddresses.find(
+        (item) => item.id === parsedAddress.id,
+      );
+
+      if (!existingAddress) {
+        return { success: false, message: "Address not found" };
+      }
+    }
+
+    const shouldBeDefault =
+      parsedAddress.isDefault || currentUser.shippingAddresses.length === 0;
+
+    const savedAddress = await prisma.$transaction(async (tx) => {
+      if (shouldBeDefault) {
+        await tx.userShippingAddress.updateMany({
+          where: { userId },
+          data: { isDefault: false },
+        });
+      }
+
+      const addressData = {
+        label: parsedAddress.label,
+        fullName: parsedAddress.fullName,
+        phone: toNullableString(parsedAddress.phone),
+        streetAddress: parsedAddress.streetAddress,
+        addressLine2: toNullableString(parsedAddress.addressLine2),
+        city: parsedAddress.city,
+        state: toNullableString(parsedAddress.state),
+        postalCode: parsedAddress.postalCode,
+        country: parsedAddress.country,
+        deliveryInstructions: toNullableString(
+          parsedAddress.deliveryInstructions,
+        ),
+        isDefault: shouldBeDefault,
+      };
+
+      const nextAddress = parsedAddress.id
+        ? await tx.userShippingAddress.update({
+            where: { id: parsedAddress.id },
+            data: addressData,
+          })
+        : await tx.userShippingAddress.create({
+            data: {
+              userId,
+              ...addressData,
+            },
+          });
+
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          selectedShippingAddressId: nextAddress.id,
+          address: shippingAddressSchema.parse({
+            label: nextAddress.label,
+            fullName: nextAddress.fullName,
+            phone: nextAddress.phone ?? "",
+            streetAddress: nextAddress.streetAddress,
+            addressLine2: nextAddress.addressLine2 ?? "",
+            city: nextAddress.city,
+            state: nextAddress.state ?? "",
+            postalCode: nextAddress.postalCode,
+            country: nextAddress.country,
+            deliveryInstructions: nextAddress.deliveryInstructions ?? "",
+          }),
+        },
+      });
+
+      return nextAddress;
     });
+
+    revalidateUserCheckoutPaths();
 
     return {
       success: true,
-      message: "Address updated successfully",
-      user: updatedUser,
+      message: parsedAddress.id
+        ? "Address updated successfully"
+        : "Address saved successfully",
+      address: savedAddress,
     };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function selectUserShippingAddress(addressId: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return { success: false, message: "User not found" };
+    }
+
+    const address = await prisma.userShippingAddress.findFirst({
+      where: { id: addressId, userId },
+    });
+
+    if (!address) {
+      return { success: false, message: "Address not found" };
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        selectedShippingAddressId: address.id,
+        address: shippingAddressSchema.parse({
+          label: address.label,
+          fullName: address.fullName,
+          phone: address.phone ?? "",
+          streetAddress: address.streetAddress,
+          addressLine2: address.addressLine2 ?? "",
+          city: address.city,
+          state: address.state ?? "",
+          postalCode: address.postalCode,
+          country: address.country,
+          deliveryInstructions: address.deliveryInstructions ?? "",
+        }),
+      },
+    });
+
+    revalidateUserCheckoutPaths();
+
+    return { success: true, message: "Shipping address selected" };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function setDefaultUserShippingAddress(addressId: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return { success: false, message: "User not found" };
+    }
+
+    const address = await prisma.userShippingAddress.findFirst({
+      where: { id: addressId, userId },
+    });
+
+    if (!address) {
+      return { success: false, message: "Address not found" };
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.userShippingAddress.updateMany({
+        where: { userId },
+        data: { isDefault: false },
+      });
+
+      await tx.userShippingAddress.update({
+        where: { id: address.id },
+        data: { isDefault: true },
+      });
+
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          selectedShippingAddressId: address.id,
+          address: shippingAddressSchema.parse({
+            label: address.label,
+            fullName: address.fullName,
+            phone: address.phone ?? "",
+            streetAddress: address.streetAddress,
+            addressLine2: address.addressLine2 ?? "",
+            city: address.city,
+            state: address.state ?? "",
+            postalCode: address.postalCode,
+            country: address.country,
+            deliveryInstructions: address.deliveryInstructions ?? "",
+          }),
+        },
+      });
+    });
+
+    revalidateUserCheckoutPaths();
+
+    return { success: true, message: "Default shipping address updated" };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function deleteUserShippingAddress(addressId: string) {
+  try {
+    const session = await auth();
+    const userId = session?.user?.id;
+
+    if (!userId) {
+      return { success: false, message: "User not found" };
+    }
+
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        shippingAddresses: {
+          orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }],
+        },
+      },
+    });
+
+    if (!currentUser) {
+      return { success: false, message: "User not found" };
+    }
+
+    const address = currentUser.shippingAddresses.find(
+      (item) => item.id === addressId,
+    );
+
+    if (!address) {
+      return { success: false, message: "Address not found" };
+    }
+
+    const remainingAddresses = currentUser.shippingAddresses.filter(
+      (item) => item.id !== addressId,
+    );
+    const nextAddress =
+      remainingAddresses.find((item) => item.isDefault) ??
+      remainingAddresses[0] ??
+      null;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.userShippingAddress.delete({
+        where: { id: addressId },
+      });
+
+      if (nextAddress && !nextAddress.isDefault) {
+        await tx.userShippingAddress.update({
+          where: { id: nextAddress.id },
+          data: { isDefault: true },
+        });
+      }
+
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          selectedShippingAddressId: nextAddress?.id ?? null,
+          address: nextAddress
+            ? shippingAddressSchema.parse({
+                label: nextAddress.label,
+                fullName: nextAddress.fullName,
+                phone: nextAddress.phone ?? "",
+                streetAddress: nextAddress.streetAddress,
+                addressLine2: nextAddress.addressLine2 ?? "",
+                city: nextAddress.city,
+                state: nextAddress.state ?? "",
+                postalCode: nextAddress.postalCode,
+                country: nextAddress.country,
+                deliveryInstructions: nextAddress.deliveryInstructions ?? "",
+              })
+            : Prisma.JsonNull,
+        },
+      });
+    });
+
+    revalidateUserCheckoutPaths();
+
+    return { success: true, message: "Address removed" };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }

@@ -1,12 +1,20 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Product } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import ProductPrice from "./product-price";
 import Rating from "./rating";
 
 interface ProductCardProps {
-  product: Product & { vectorScore?: number };
+  product: {
+    slug: string;
+    images: string[];
+    name: string;
+    brand?: string | null;
+    rating?: string | number | null;
+    stock: number;
+    price: string | number;
+    vectorScore?: number;
+  };
   showVectorScore?: boolean;
 }
 

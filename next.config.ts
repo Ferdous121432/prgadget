@@ -73,7 +73,6 @@ let nextConfig: NextConfig = {
       "@tanstack/react-table",
       "@stripe/react-stripe-js",
       "sonner",
-      "react-icons",
     ],
   },
 
@@ -81,13 +80,6 @@ let nextConfig: NextConfig = {
   compiler: {
     // Remove console.log in production
     removeConsole: process.env.NODE_ENV === "production",
-  },
-
-  // Modularize imports for better tree-shaking
-  modularizeImports: {
-    "react-icons/?(((\\w*)?/?)*)": {
-      transform: "react-icons/{{ matches.[1] }}/{{member}}",
-    },
   },
 
   async headers() {

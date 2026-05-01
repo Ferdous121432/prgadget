@@ -48,7 +48,7 @@ export const CACHE_CONFIG = {
 export async function getCachedData<T>(
   cacheKey: string,
   fetchFunction: () => Promise<T>,
-  ttlSeconds: number = 3600
+  ttlSeconds: number = 3600,
 ): Promise<T> {
   try {
     // Try to get from cache first
@@ -93,7 +93,7 @@ export async function clearCachePattern(pattern: string) {
     if (keys.length > 0) {
       await redis.del(...keys);
       console.log(
-        `🧹 Cleared ${keys.length} cache keys matching pattern: ${pattern}`
+        `🧹 Cleared ${keys.length} cache keys matching pattern: ${pattern}`,
       );
     }
   } catch (error) {
@@ -104,7 +104,7 @@ export async function clearCachePattern(pattern: string) {
 // Generate cache key with parameters
 export function generateCacheKey(
   baseKey: string,
-  params?: Record<string, any>
+  params?: Record<string, any>,
 ): string {
   if (!params) return baseKey;
 
@@ -155,7 +155,7 @@ export async function invalidateOrderCaches(userId?: string) {
       userId
         ? clearCachePattern(`${CACHE_CONFIG.MY_ORDERS.key}-${userId}-*`)
         : undefined,
-    ].filter(Boolean)
+    ].filter(Boolean),
   );
 }
 
@@ -166,15 +166,21 @@ export async function invalidateReviewCaches(productId?: string) {
         ? invalidateCache(`${CACHE_CONFIG.PRODUCT_REVIEWS.key}-${productId}`)
         : undefined,
       clearCachePattern(`${CACHE_CONFIG.PRODUCT_REVIEWS.key}-*`),
-    ].filter(Boolean)
+    ].filter(Boolean),
   );
 }
 
 export async function invalidateCartCache(userId?: string, sessionId?: string) {
-  const cacheKey = userId
-    ? `${CACHE_CONFIG.MY_CART.key}-${userId}`
-    : `${CACHE_CONFIG.MY_CART.key}-${sessionId}`;
-  await invalidateCache(cacheKey);
+  const cacheKeys = [
+    userId ? generateCacheKey(CACHE_CONFIG.MY_CART.key, { userId }) : undefined,
+    sessionId
+      ? generateCacheKey(CACHE_CONFIG.MY_CART.key, { sessionCartId: sessionId })
+      : undefined,
+  ].filter((key): key is string => Boolean(key));
+
+  if (cacheKeys.length > 0) {
+    await invalidateCache(...cacheKeys);
+  }
 }
 
 export async function invalidateHomepageCaches() {

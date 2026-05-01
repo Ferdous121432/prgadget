@@ -1,14 +1,84 @@
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import NextAuth, { type NextAuthConfig } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/db/prisma";
+import { invalidateCartCache } from "@/lib/cache/redis";
+import { mergeCartItems } from "@/lib/cart-utils";
+import { round2 } from "@/lib/utils";
+import type { CartItem } from "@/types";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth from "next-auth";
 import type { Adapter } from "next-auth/adapters";
-// import { cookies } from "next/headers";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcrypt-ts-edge";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import { cookies } from "next/headers";
+
+const calculateCartTotals = (items: CartItem[]) => {
+  const itemsPrice = round2(
+    items.reduce(
+      (acc, item) => acc + Number(item.price) * Number(item.quantity),
+      0,
+    ),
+  );
+  const shippingPrice = round2(itemsPrice > 100 ? 0 : 10);
+  const taxPrice = round2(itemsPrice * 0.15);
+  const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
+
+  return {
+    itemsPrice: itemsPrice.toFixed(2),
+    shippingPrice: shippingPrice.toFixed(2),
+    taxPrice: taxPrice.toFixed(2),
+    totalPrice: totalPrice.toFixed(2),
+  };
+};
+
+const mergeGuestCartOnSignIn = async (userId?: string | null) => {
+  if (!userId) return;
+
+  const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+  if (!sessionCartId) return;
+
+  const guestCart = await prisma.cart.findFirst({
+    where: { sessionCartId },
+  });
+
+  if (!guestCart) return;
+
+  const userCart = await prisma.cart.findFirst({
+    where: { userId },
+  });
+
+  if (!userCart) {
+    await prisma.cart.update({
+      where: { id: guestCart.id },
+      data: { userId, sessionCartId: null },
+    });
+
+    await invalidateCartCache(userId, sessionCartId);
+    return;
+  }
+
+  const mergedItems = mergeCartItems(
+    userCart.items as CartItem[],
+    guestCart.items as CartItem[],
+  );
+
+  await prisma.cart.update({
+    where: { id: userCart.id },
+    data: {
+      items: mergedItems,
+      ...calculateCartTotals(mergedItems),
+    },
+  });
+
+  await prisma.cart.delete({
+    where: { id: guestCart.id },
+  });
+
+  await invalidateCartCache(userId, sessionCartId);
+};
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Allow trusting host (helpful for local dev where host may be localhost)
+  trustHost: true,
   adapter: PrismaAdapter(prisma) as Adapter,
   session: {
     strategy: "jwt",
@@ -58,6 +128,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/login",
   },
   callbacks: {
+    async signIn({ user }) {
+      await mergeGuestCartOnSignIn(user.id);
+      return true;
+    },
+
     // auth.ts
     async jwt({ token, user, trigger, session }) {
       console.log("🎫 JWT callback:", {

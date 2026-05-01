@@ -1,4 +1,5 @@
 import ProductForm from "@/components/admin/product-form";
+import { getAllBrands } from "@/lib/actions/brand.actions";
 import { getCategoryTagsForSelect } from "@/lib/actions/category-tag.actions";
 import { getCategoriesForProductForm } from "@/lib/actions/category.actions";
 import { getProductByIdNoCache } from "@/lib/actions/product.actions";
@@ -17,15 +18,20 @@ const AdminProductUpdatePage = async (props: {
   const { id } = await props.params;
 
   const product = (await getProductByIdNoCache(id)) as any;
-  console.log("product to update: 💥💥💥", product);
-
-  const { mainCategories, subCategories, subSubCategories } =
-    await getCategoriesForProductForm();
-
-  // Fetch category tags
-  const categoryTags = (await getCategoryTagsForSelect()) as any[];
 
   if (!product) return notFound();
+
+  const [
+    { mainCategories, subCategories, subSubCategories },
+    categoryTags,
+    brandsResponse,
+  ] = await Promise.all([
+    getCategoriesForProductForm(),
+    getCategoryTagsForSelect(),
+    getAllBrands(),
+  ]);
+
+  const brandOptions = brandsResponse.data ?? [];
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto">
@@ -38,7 +44,8 @@ const AdminProductUpdatePage = async (props: {
         mainCategories={mainCategories}
         subCategories={subCategories}
         subSubCategories={subSubCategories}
-        categoryTags={categoryTags}
+        brandOptions={brandOptions}
+        categoryTags={categoryTags as any[]}
       />
     </div>
   );

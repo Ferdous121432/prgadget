@@ -1,47 +1,34 @@
 "use server";
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
+import { calculateCartTotal, getMyCart } from "@/lib/cart-data";
+import { mergeCartItems } from "@/lib/cart-utils";
 import { CartItem } from "@/types";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import {
-  CACHE_CONFIG,
-  generateCacheKey,
-  getCachedData,
-  invalidateCartCache,
-} from "../cache/redis";
+import { invalidateCartCache } from "../cache/redis";
 import { Prisma } from "../generated/prisma";
-import { convertPrismaObjectToJSObject, formatError, round2 } from "../utils";
+import { formatError } from "../utils";
 import { cartItemSchema, insertCartSchema } from "../validators";
 
-// calculate total price of cart items
-export const calculateCartTotal = async (items: CartItem[]) => {
-  const itemsPrice = round2(
-    items.reduce(
-      (acc, item) => acc + Number(item.price) * Number(item.quantity),
-      0
-    )
-  );
-  const shippingPrice = round2(itemsPrice > 100 ? 0 : 10);
-  const taxPrice = round2(itemsPrice * 0.15);
-  const totalPrice = round2(itemsPrice + shippingPrice + taxPrice);
-  return {
-    itemsPrice: itemsPrice.toFixed(2),
-    shippingPrice: shippingPrice.toFixed(2),
-    taxPrice: taxPrice.toFixed(2),
-    totalPrice: totalPrice.toFixed(2),
-  };
+const revalidateCartUi = (productSlug?: string) => {
+  revalidatePath("/", "layout");
+  revalidatePath("/cart");
+
+  if (productSlug) {
+    revalidatePath(`/product/${productSlug}`);
+  }
 };
 
 export const addItemToCart = async (data: CartItem) => {
   try {
-    // check for existing cart cookie
-    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
-    if (!sessionCartId) throw new Error("Session cart ID not found");
-
-    // Get session and userID from cookies
     const session = await auth();
     const userId = session?.user?.id ? (session.user.id as string) : undefined;
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+
+    if (!userId && !sessionCartId) {
+      throw new Error("Session cart ID not found");
+    }
 
     //Get Cart
     const cart = await getMyCart();
@@ -78,8 +65,7 @@ export const addItemToCart = async (data: CartItem) => {
       // Invalidate cart cache
       await invalidateCartCache(userId, sessionCartId);
 
-      // Revalidate product page
-      revalidatePath(`/product/${item.slug}`);
+      revalidateCartUi(item.slug);
       return {
         success: true,
         message: `${product.name} added to cart successfully`,
@@ -87,7 +73,7 @@ export const addItemToCart = async (data: CartItem) => {
     } else {
       // If cart exists, check if item already exists in cart
       const existingItem = (cart.items as CartItem[]).find(
-        (x) => x.productId === item.productId
+        (x) => x.productId === item.productId,
       );
 
       if (existingItem) {
@@ -118,8 +104,7 @@ export const addItemToCart = async (data: CartItem) => {
       // Invalidate cart cache
       await invalidateCartCache(userId, sessionCartId);
 
-      //revalidate product page
-      revalidatePath(`/product/${item.slug}`);
+      revalidateCartUi(item.slug);
 
       return {
         success: true,
@@ -136,60 +121,13 @@ export const addItemToCart = async (data: CartItem) => {
   }
 };
 
-export async function getMyCart() {
-  try {
-    // check for existing cart cookie
-    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
-    if (!sessionCartId) throw new Error("Session cart ID not found");
-
-    // Get session and userID from cookies
-    const session = await auth();
-    const userId = session?.user?.id ? (session.user.id as string) : undefined;
-
-    // Try to get from cache first (short TTL for cart data)
-    const cacheKey = userId
-      ? generateCacheKey(CACHE_CONFIG.MY_CART.key, { userId })
-      : generateCacheKey(CACHE_CONFIG.MY_CART.key, { sessionCartId });
-
-    return getCachedData(
-      cacheKey,
-      async () => {
-        //Get user cart from database
-        const cart = await prisma.cart.findFirst({
-          where: userId ? { userId: userId } : { sessionCartId: sessionCartId },
-        });
-
-        if (!cart) {
-          return null;
-        }
-
-        console.log("Cart found:", cart.id);
-        // Convert decimal prices and return cart items
-        return convertPrismaObjectToJSObject({
-          ...cart,
-          items: cart.items as CartItem[],
-          itemsPrice: cart.itemsPrice.toString(),
-          totalPrice: cart.totalPrice.toString(),
-          shippingPrice: cart.shippingPrice.toString(),
-          taxPrice: cart.taxPrice.toString(),
-        });
-      },
-      CACHE_CONFIG.MY_CART.ttl
-    );
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
 export const removeItemFromCart = async (productId: string) => {
   try {
-    // Get session and userID from cookies
-    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
-    if (!sessionCartId) throw new Error("Session cart ID not found");
-
     const session = await auth();
     const userId = session?.user?.id ? (session.user.id as string) : undefined;
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+
+    if (!userId && !sessionCartId) throw new Error("Session cart ID not found");
 
     // Get Product
     const product = await prisma.product.findFirst({
@@ -203,7 +141,7 @@ export const removeItemFromCart = async (productId: string) => {
 
     // Find item in cart
     const exist = cart.items.find(
-      (item: CartItem) => item.productId === productId
+      (item: CartItem) => item.productId === productId,
     );
     if (!exist) throw new Error("Item not found in cart");
 
@@ -211,12 +149,12 @@ export const removeItemFromCart = async (productId: string) => {
     if (exist.quantity === 1) {
       // Remove item from cart
       cart.items = cart.items.filter(
-        (item: CartItem) => item.productId !== productId
+        (item: CartItem) => item.productId !== productId,
       );
     } else {
       // Decrease item quantity
       cart.items.find(
-        (item: CartItem) => item.productId === productId
+        (item: CartItem) => item.productId === productId,
       )!.quantity -= 1;
     }
 
@@ -232,7 +170,7 @@ export const removeItemFromCart = async (productId: string) => {
     // Invalidate cart cache
     await invalidateCartCache(userId, sessionCartId);
 
-    revalidatePath(`/product/${exist.slug}`);
+    revalidateCartUi(exist.slug);
 
     // Implementation for removing item from cart
     return {
@@ -253,11 +191,11 @@ export const removeItemFromCart = async (productId: string) => {
 // Clear entire cart with Redis cache invalidation
 export const clearCart = async () => {
   try {
-    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
-    if (!sessionCartId) throw new Error("Session cart ID not found");
-
     const session = await auth();
     const userId = session?.user?.id ? (session.user.id as string) : undefined;
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+
+    if (!userId && !sessionCartId) throw new Error("Session cart ID not found");
 
     // Get user cart
     const cart = await getMyCart();
@@ -271,7 +209,7 @@ export const clearCart = async () => {
     // Invalidate cart cache
     await invalidateCartCache(userId, sessionCartId);
 
-    revalidatePath("/cart");
+    revalidateCartUi();
 
     return {
       success: true,
@@ -289,14 +227,14 @@ export const clearCart = async () => {
 // Update cart item quantity with Redis cache invalidation
 export const updateCartItemQuantity = async (
   productId: string,
-  quantity: number
+  quantity: number,
 ) => {
   try {
-    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
-    if (!sessionCartId) throw new Error("Session cart ID not found");
-
     const session = await auth();
     const userId = session?.user?.id ? (session.user.id as string) : undefined;
+    const sessionCartId = (await cookies()).get("sessionCartId")?.value;
+
+    if (!userId && !sessionCartId) throw new Error("Session cart ID not found");
 
     // Get Product
     const product = await prisma.product.findFirst({
@@ -315,7 +253,7 @@ export const updateCartItemQuantity = async (
 
     // Find item in cart
     const existingItem = cart.items.find(
-      (item: CartItem) => item.productId === productId
+      (item: CartItem) => item.productId === productId,
     );
     if (!existingItem) throw new Error("Item not found in cart");
 
@@ -323,7 +261,7 @@ export const updateCartItemQuantity = async (
     if (quantity <= 0) {
       // Remove item if quantity is 0 or negative
       cart.items = cart.items.filter(
-        (item: CartItem) => item.productId !== productId
+        (item: CartItem) => item.productId !== productId,
       );
     } else {
       // Update quantity
@@ -342,8 +280,7 @@ export const updateCartItemQuantity = async (
     // Invalidate cart cache
     await invalidateCartCache(userId, sessionCartId);
 
-    revalidatePath("/cart");
-    revalidatePath(`/product/${existingItem.slug}`);
+    revalidateCartUi(existingItem.slug);
 
     return {
       success: true,
@@ -361,23 +298,6 @@ export const updateCartItemQuantity = async (
   }
 };
 
-// Get cart count (for header display) with Redis cache
-export async function getCartItemCount() {
-  try {
-    const cart = await getMyCart();
-    if (!cart) return 0;
-
-    return (cart.items as CartItem[]).reduce(
-      (total, item) => total + item.quantity,
-      0
-    );
-  } catch (error) {
-    console.error("Error getting cart count:", error);
-    return 0;
-  }
-}
-
-// Merge guest cart with user cart when user logs in
 export const mergeGuestCartWithUserCart = async (guestSessionId: string) => {
   try {
     const session = await auth();
@@ -404,24 +324,10 @@ export const mergeGuestCartWithUserCart = async (guestSessionId: string) => {
         data: { userId, sessionCartId: null },
       });
     } else {
-      // Merge guest cart items with user cart
-      const userItems = userCart.items as CartItem[];
-      const guestItems = guestCart.items as CartItem[];
-
-      // Merge items (add quantities for existing products)
-      const mergedItems = [...userItems];
-
-      for (const guestItem of guestItems) {
-        const existingIndex = mergedItems.findIndex(
-          (item) => item.productId === guestItem.productId
-        );
-
-        if (existingIndex >= 0) {
-          mergedItems[existingIndex].quantity += guestItem.quantity;
-        } else {
-          mergedItems.push(guestItem);
-        }
-      }
+      const mergedItems = mergeCartItems(
+        userCart.items as CartItem[],
+        guestCart.items as CartItem[],
+      );
 
       // Update user cart with merged items
       await prisma.cart.update({
@@ -440,6 +346,8 @@ export const mergeGuestCartWithUserCart = async (guestSessionId: string) => {
 
     // Invalidate both caches
     await invalidateCartCache(userId, guestSessionId);
+
+    revalidateCartUi();
 
     return {
       success: true,

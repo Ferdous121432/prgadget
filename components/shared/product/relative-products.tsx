@@ -1,43 +1,72 @@
 import Link from "next/link";
 
-import { getSimilarProducts } from "@/lib/actions/vector-search.actions";
 import { getRelatedProducts } from "@/lib/actions/product.actions";
+import { getSimilarProducts } from "@/lib/actions/vector-search.actions";
 
 type RelativeProductsProps = {
   productId: string;
   // Optional hints for fallback when vectors are missing
-  mainCategory?: string | null;
-  subCategory?: string | null;
+  mainCategoryId?: string | null;
+  subCategoryId?: string | null;
+  subSubCategoryId?: string | null;
   brand?: string | null;
 };
 
 export default async function RelativeProducts({
   productId,
+  mainCategoryId,
+  subCategoryId,
+  subSubCategoryId,
   brand,
 }: RelativeProductsProps) {
-  // 1) Try vector-based similar products
-  const { data: vectorSimilar = [] } = await getSimilarProducts(productId, 5);
+  // Start with deterministic category-aware SQL recommendations.
+  const sqlItems = (await getRelatedProducts(
+    productId,
+    mainCategoryId ?? undefined,
+    subCategoryId ?? undefined,
+    subSubCategoryId ?? undefined,
+    brand ?? undefined,
+  )) as any[];
 
-  let items =
-    vectorSimilar?.map((p: any) => ({
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      price: p.price,
-      image: Array.isArray(p.images) ? p.images[0] : p.images || "",
-      rating: p.rating ?? 0,
-    })) ?? [];
+  let items = [...sqlItems];
 
-  // 2) Fallback to DB query if no vectors found
-  if (!items.length) {
-    items = (await getRelatedProducts(productId, brand ?? undefined)) as any[];
+  // Use semantic vectors as a supplement when SQL matches are sparse.
+  if (items.length < 5) {
+    const { data: vectorSimilar = [] } = await getSimilarProducts(
+      productId,
+      10,
+    );
+    const vectorItems =
+      vectorSimilar?.map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        price: p.price,
+        image: Array.isArray(p.images) ? p.images[0] : p.images || "",
+        rating: p.rating ?? 0,
+      })) ?? [];
+
+    const existingIds = new Set(items.map((item) => item.id));
+    for (const item of vectorItems) {
+      if (!existingIds.has(item.id)) {
+        items.push(item);
+        existingIds.add(item.id);
+      }
+
+      if (items.length >= 5) {
+        break;
+      }
+    }
   }
 
   if (!items.length) return null;
 
+  const heading =
+    sqlItems.length > 0 ? "Similar products" : "You may also like";
+
   return (
     <section className="mt-10">
-      <h2 className="text-xl font-semibold mb-4">Related products</h2>
+      <h2 className="text-xl font-semibold mb-4">{heading}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {items.slice(0, 5).map((p) => (
           <Link

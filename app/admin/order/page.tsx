@@ -1,123 +1,22 @@
-import DeleteDialog from "@/components/shared/DeteleDialog";
-import Pagination from "@/components/shared/Pagination";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { deleteOrder, getAllOrders } from "@/lib/actions/order.actions";
-import { requireAdmin } from "@/lib/auth-guard";
-import { formatCurrency, formatDateTime, formatId } from "@/lib/utils";
 import { Metadata } from "next";
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Admin Orders",
 };
 
-// type Order = {
-//   id: string;
-//   createdAt: string;
-//   user: {
-//     name: string;
-//   };
-//   totalPrice: number;
-//   isPaid: boolean;
-//   paidAt?: string;
-//   isDelivered: boolean;
-//   deliveredAt?: string;
-// };
+export default async function AdminOrdersLegacyRedirect(props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const searchParams = await props.searchParams;
+  const params = new URLSearchParams();
 
-const AdminOrdersPage = async (props: {
-  searchParams: Promise<{ page: string; query: string }>;
-}) => {
-  const { page = "1", query: searchText } = await props.searchParams;
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (typeof value === "string" && value.length > 0) {
+      params.set(key, value);
+    }
+  }
 
-  await requireAdmin();
-
-  const orders = await getAllOrders({
-    page: Number(page),
-    // query: searchText,
-  });
-  console.log("Orders Data:", orders);
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-3">
-        <h1 className="h2-bold">Orders</h1>
-        {searchText && (
-          <div>
-            Filtered by <i>&quot;{searchText}&quot;</i>{" "}
-            <Link href="/admin/orders">
-              <Button variant="outline" size="sm">
-                Remove Filter
-              </Button>
-            </Link>
-          </div>
-        )}
-      </div>
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>DATE</TableHead>
-              <TableHead>BUYER</TableHead>
-              <TableHead>TOTAL</TableHead>
-              <TableHead>PAID</TableHead>
-              <TableHead>DELIVERED</TableHead>
-              <TableHead>ACTIONS</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.data.map((order: any) => (
-              <TableRow key={order.id}>
-                <TableCell>{formatId(order.id)}</TableCell>
-                <TableCell>
-                  {formatDateTime(new Date(order.createdAt)).dateTime}
-                </TableCell>
-                <TableCell>{order.user.name}</TableCell>
-                <TableCell>
-                  {formatCurrency(order.totalPrice.toString())}
-                </TableCell>
-                <TableCell>
-                  {order.isPaid && order.paidAt
-                    ? formatDateTime(order.paidAt).dateTime
-                    : "Not Paid"}
-                </TableCell>
-                <TableCell>
-                  {order.isDelivered && order.deliveredAt
-                    ? formatDateTime(order.deliveredAt).dateTime
-                    : "Not Delivered"}
-                </TableCell>
-                <TableCell>
-                  <Button asChild variant="outline" size="sm">
-                    <Link
-                      href={`/order/${order.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer">
-                      Details
-                    </Link>
-                  </Button>
-                  <DeleteDialog id={order.id} action={deleteOrder} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {orders.totalPages > 1 && (
-          <Pagination
-            page={Number(page) || 1}
-            totalPages={orders?.totalPages}
-          />
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default AdminOrdersPage;
+  const query = params.toString();
+  redirect(query ? `/admin/orders?${query}` : "/admin/orders");
+}

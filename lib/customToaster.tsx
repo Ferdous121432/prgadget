@@ -1,8 +1,9 @@
-import { toast } from "sonner";
-import React from "react";
-import { CheckCircle, XCircle, AlertTriangle, Info, Bell } from "lucide-react";
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { AlertTriangle, Bell, CheckCircle, Info, XCircle } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 // Custom toast functions with JSX content
 export const jsxToasts = {
@@ -32,7 +33,7 @@ export const jsxToasts = {
             <Button className="button-primary">{hrefTitle || ""}</Button>
           </Link>
         )}
-      </div>
+      </div>,
     );
   },
 
@@ -45,7 +46,7 @@ export const jsxToasts = {
           <p className="font-medium text-red-900">{title}</p>
           {message && <p className="text-sm text-red-700">{message}</p>}
         </div>
-      </div>
+      </div>,
     );
   },
 
@@ -58,7 +59,7 @@ export const jsxToasts = {
           <p className="font-medium text-yellow-900">{title}</p>
           {message && <p className="text-sm text-yellow-700">{message}</p>}
         </div>
-      </div>
+      </div>,
     );
   },
 
@@ -71,7 +72,7 @@ export const jsxToasts = {
           <p className="font-medium text-blue-900">{title}</p>
           {message && <p className="text-sm text-blue-700">{message}</p>}
         </div>
-      </div>
+      </div>,
     );
   },
 
@@ -80,7 +81,7 @@ export const jsxToasts = {
     title: string,
     message: string,
     onAction?: () => void,
-    actionText = "View"
+    actionText = "View",
   ) => {
     toast(
       <div className="space-y-2">
@@ -109,7 +110,7 @@ export const jsxToasts = {
           </div>
         )}
       </div>,
-      { duration: 6000 }
+      { duration: 6000 },
     );
   },
 
@@ -123,7 +124,7 @@ export const jsxToasts = {
       {
         duration: Infinity,
         id: id || "loading",
-      }
+      },
     );
   },
 
@@ -144,7 +145,7 @@ export const jsxToasts = {
       {
         duration: Infinity,
         id,
-      }
+      },
     );
   },
 
@@ -161,7 +162,7 @@ export const jsxToasts = {
           <p className="font-medium">{title}</p>
           <p className="text-sm text-muted-foreground">{message}</p>
         </div>
-      </div>
+      </div>,
     );
   },
 
@@ -170,7 +171,7 @@ export const jsxToasts = {
     name: string,
     message: string,
     avatarUrl: string,
-    onViewProfile?: () => void
+    onViewProfile?: () => void,
   ) => {
     toast(
       <div className="flex items-center gap-3">
@@ -193,7 +194,7 @@ export const jsxToasts = {
             View
           </button>
         )}
-      </div>
+      </div>,
     );
   },
 
@@ -201,7 +202,7 @@ export const jsxToasts = {
   withInput: (
     title: string,
     placeholder: string,
-    onSubmit: (value: string) => void
+    onSubmit: (value: string) => void,
   ) => {
     toast(
       <div className="space-y-3">
@@ -236,7 +237,7 @@ export const jsxToasts = {
           </button>
         </div>
       </div>,
-      { duration: 10000 }
+      { duration: 10000 },
     );
   },
 };

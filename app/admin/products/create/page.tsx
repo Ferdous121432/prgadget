@@ -1,4 +1,5 @@
 import ProductForm from "@/components/admin/product-form";
+import { getAllBrands } from "@/lib/actions/brand.actions";
 import { getCategoryTagsForSelect } from "@/lib/actions/category-tag.actions";
 import { getCategoriesForProductForm } from "@/lib/actions/category.actions";
 import { Metadata } from "next";
@@ -7,11 +8,17 @@ export const metadata: Metadata = {
 };
 
 const CreateProductPage = async () => {
-  const { mainCategories, subCategories, subSubCategories } =
-    await getCategoriesForProductForm();
+  const [
+    { mainCategories, subCategories, subSubCategories },
+    categoryTags,
+    brandsResponse,
+  ] = await Promise.all([
+    getCategoriesForProductForm(),
+    getCategoryTagsForSelect(),
+    getAllBrands(),
+  ]);
 
-  // Fetch category tags
-  const categoryTags = await getCategoryTagsForSelect();
+  const brandOptions = brandsResponse.data ?? [];
 
   // console.log("categoryTags 💥💥💥", categoryTags);
 
@@ -28,6 +35,7 @@ const CreateProductPage = async () => {
           mainCategories={mainCategories}
           subCategories={subCategories}
           subSubCategories={subSubCategories}
+          brandOptions={brandOptions}
           categoryTags={categoryTags}
         />
       </div>

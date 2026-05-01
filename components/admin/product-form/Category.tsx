@@ -8,7 +8,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,6 +17,7 @@ import {
 import { insertProductSchema } from "@/lib/validators";
 import { ProductSchema, ProductWithId } from "@/types";
 import { SelectValue } from "@radix-ui/react-select";
+import Link from "next/link";
 import { ControllerRenderProps, useFormContext } from "react-hook-form";
 import z from "zod";
 
@@ -25,41 +25,36 @@ function Category({
   mainCategories,
   subCategories,
   subSubCategories,
+  brandOptions,
   categoryTags,
   existingCategoryTags,
 }: {
   mainCategories?: { id: string; name: string }[];
   subCategories?: { id: string; name: string; mainCategoryId: string }[];
   subSubCategories?: { id: string; name: string; subCategoryId: string }[];
+  brandOptions?: { id: string; name: string }[];
   categoryTags?: { id: string; slug: string; name: string }[];
   existingCategoryTags?: { id: string; slug: string; name: string }[];
 }) {
   const form = useFormContext<ProductSchema | ProductWithId>();
+  const hasBrandOptions = (brandOptions?.length ?? 0) > 0;
 
-  console.log("categoryTags 💥💥💥💥`", categoryTags);
-  console.log("existingCategoryTags 🔥🔥🔥", existingCategoryTags);
-  console.log(
-    "categoryTags IDs available:",
-    categoryTags?.map((t) => t.id)
-  );
-  console.log(
-    "existingCategoryTags IDs available:",
-    existingCategoryTags?.map((t) => t.id)
-  );
-  const existingCategoryTagsNames = existingCategoryTags?.map(
-    (tag) => tag.name
-  );
-  const existingCategoryTagsIds = existingCategoryTags?.map((tag) => tag.id);
-  console.log("existingCategoryTagsIds 🚀🚀🚀", existingCategoryTagsIds);
+  const selectedMainCategoryId = form.watch("mainCategoryId");
+  const selectedSubCategoryId = form.watch("subCategoryId");
 
-  // Note: form defaultValues now has categoryTags as array of IDs,
-  // so no need to initialize via useEffect
+  const availableSubCategories =
+    subCategories?.filter(
+      (category) => category.mainCategoryId === selectedMainCategoryId,
+    ) ?? [];
+
+  const availableSubSubCategories =
+    subSubCategories?.filter(
+      (category) => category.subCategoryId === selectedSubCategoryId,
+    ) ?? [];
 
   return (
     <div className="w-full flex flex-col gap-5">
-      {/* Category & Brand */}
-      {/* Category */}
-      <div className="flex flex-col  gap-5">
+      <div className="flex flex-col gap-5">
         <FormField
           control={form.control}
           name="mainCategoryId"
@@ -97,7 +92,7 @@ function Category({
             </FormItem>
           )}
         />
-        {/* Sub Category */}
+
         <FormField
           control={form.control}
           name="subCategoryId"
@@ -113,34 +108,43 @@ function Category({
               <FormLabel>Sub Category</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value}
+                  value={field.value || undefined}
                   onValueChange={(value) => {
                     field.onChange(value);
                     form.setValue("subSubCategoryId", "");
-                  }}>
+                  }}
+                  disabled={
+                    !selectedMainCategoryId ||
+                    availableSubCategories.length === 0
+                  }>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select parent category" />
+                    <SelectValue
+                      placeholder={
+                        !selectedMainCategoryId
+                          ? "Select main category first"
+                          : availableSubCategories.length === 0
+                            ? "No sub categories available"
+                            : "Select sub category"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {subCategories
-                      ?.filter(
-                        (cat) =>
-                          cat.mainCategoryId ===
-                          form.getValues("mainCategoryId")
-                      )
-                      .map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
+                    {availableSubCategories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Use sub category only when it improves browsing and filtering.
+              </p>
               <FormMessage />
             </FormItem>
           )}
         />
-        {/* Sub Sub Category */}
+
         <FormField
           control={form.control}
           name="subSubCategoryId"
@@ -155,51 +159,96 @@ function Category({
             <FormItem className="w-full">
               <FormLabel>Sub Sub Category</FormLabel>
               <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
+                <Select
+                  value={field.value || undefined}
+                  onValueChange={field.onChange}
+                  disabled={
+                    !selectedSubCategoryId ||
+                    availableSubSubCategories.length === 0
+                  }>
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select sub sub category" />
+                    <SelectValue
+                      placeholder={
+                        !selectedSubCategoryId
+                          ? "Select sub category first"
+                          : availableSubSubCategories.length === 0
+                            ? "No sub sub categories available"
+                            : "Select sub sub category"
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    {subSubCategories
-                      ?.filter(
-                        (cat) =>
-                          cat.subCategoryId === form.getValues("subCategoryId")
-                      )
-                      .map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
+                    {availableSubSubCategories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Brand */}
-        <FormField
-          control={form.control}
-          name="brand"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<
-              z.infer<typeof insertProductSchema>,
-              "brand"
-            >;
-          }) => (
-            <FormItem className="w-full">
-              <FormLabel>Brand</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter brand" {...field} />
-              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Reserve sub sub category for leaf-level shopping contexts.
+              </p>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        {/* Category Tags */}
+        <FormField
+          control={form.control}
+          name="brandId"
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof insertProductSchema>,
+              "brandId"
+            >;
+          }) => (
+            <FormItem className="w-full">
+              <FormLabel>Brand</FormLabel>
+              <FormControl>
+                <Select
+                  value={field.value || undefined}
+                  onValueChange={field.onChange}
+                  disabled={!hasBrandOptions}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue
+                      placeholder={
+                        hasBrandOptions
+                          ? "Select brand"
+                          : "Create a brand before creating products"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {brandOptions?.map((brand) => (
+                      <SelectItem key={brand.id} value={brand.id}>
+                        {brand.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                {hasBrandOptions
+                  ? "Products now connect to standalone brand records."
+                  : "No brands available yet. Create one from the Brands admin page."}
+                {!hasBrandOptions && (
+                  <>
+                    {" "}
+                    <Link href="/admin/brands/create" className="underline">
+                      Create brand
+                    </Link>
+                    .
+                  </>
+                )}
+              </p>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <FormField
           control={form.control}
           name="categoryTags"
@@ -212,8 +261,6 @@ function Category({
             >;
           }) => {
             const currentIds: string[] = field.value || [];
-            console.log("Current categoryTags field.value:", field.value);
-            console.log("currentIds array:", currentIds);
 
             return (
               <FormItem className="w-full">
@@ -223,15 +270,10 @@ function Category({
                     value=""
                     onValueChange={(value) => {
                       if (currentIds.includes(value)) {
-                        // if already selected, do nothing
-                        console.log("Tag already selected:", value);
                         return;
-                      } else {
-                        // Add the tag
-                        const updated = [...currentIds, value];
-                        console.log("Selected tags:", updated);
-                        field.onChange(updated);
                       }
+
+                      field.onChange([...currentIds, value]);
                     }}>
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select category tags" />
@@ -250,20 +292,14 @@ function Category({
                 <FormMessage />
                 <div className="mt-2 flex flex-wrap gap-2">
                   {currentIds.map((tagId) => {
-                    // Look up name from categoryTags first, then fallback to existingCategoryTags
                     const foundInCategoryTags = categoryTags?.find(
-                      (tag) => tag.id === tagId
+                      (tag) => tag.id === tagId,
                     );
                     const foundInExisting = existingCategoryTags?.find(
-                      (tag) => tag.id === tagId
+                      (tag) => tag.id === tagId,
                     );
                     const displayName =
                       foundInCategoryTags?.name || foundInExisting?.name;
-
-                    // console.log("tagId:", tagId);
-                    // console.log("foundInCategoryTags:", foundInCategoryTags);
-                    // console.log("foundInExisting:", foundInExisting);
-                    // console.log("displayName:", displayName);
 
                     return displayName ? (
                       <div
@@ -276,10 +312,9 @@ function Category({
                           size="sm"
                           className="h-5 w-5 p-0"
                           onClick={() => {
-                            const updated = currentIds.filter(
-                              (id) => id !== tagId
+                            field.onChange(
+                              currentIds.filter((id) => id !== tagId),
                             );
-                            field.onChange(updated);
                           }}>
                           ×
                         </Button>

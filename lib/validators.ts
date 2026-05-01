@@ -6,7 +6,7 @@ const currency = z
   .string()
   .refine(
     (value) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(Number(value))),
-    "Price must have exactly two decimal places"
+    "Price must have exactly two decimal places",
   );
 
 // MainCategory
@@ -18,6 +18,18 @@ export const createMainCategorySchema = z.object({
 });
 
 export const updateMainCategorySchema = createMainCategorySchema.extend({
+  id: z.string(),
+});
+
+// Brand
+export const createBrandSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  slug: z.string().min(3, "Slug must be at least 3 characters"),
+  image: z.string(),
+  image_key: z.string(),
+});
+
+export const updateBrandSchema = createBrandSchema.extend({
   id: z.string(),
 });
 
@@ -80,7 +92,7 @@ export const insertProductSchema = z.object({
     .min(3, "Main category must be at least 3 characters"),
   subCategoryId: z.string().optional(),
   subSubCategoryId: z.string().optional(),
-  brand: z.string().min(3, "Brand must be at least 3 characters"),
+  brandId: z.string().min(1, "Brand is required"),
   categoryTags: z.array(z.string()).optional(),
   description: z.string().min(3, "Description must be at least 3 characters"),
   stock: z.coerce.number(),
@@ -144,19 +156,63 @@ export const insertCartSchema = z.object({
   totalPrice: currency,
   shippingPrice: currency,
   taxPrice: currency,
-  sessionCartId: z.string().min(1, "Session cart id is required"),
+  sessionCartId: z
+    .string()
+    .min(1, "Session cart id is required")
+    .optional()
+    .nullable(),
   userId: z.string().optional().nullable(),
 });
 
+const optionalAddressField = z
+  .string()
+  .trim()
+  .max(120, "Must be 120 characters or fewer")
+  .optional()
+  .or(z.literal(""));
+
+const optionalPhoneField = z
+  .string()
+  .trim()
+  .max(20, "Phone number must be 20 characters or fewer")
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) => !value || value.length >= 7,
+    "Phone number must be at least 7 characters",
+  );
+
+const shippingAddressLabelSchema = z
+  .string()
+  .trim()
+  .min(2, "Label must be at least 2 characters")
+  .max(40);
+
 // Schema for the shipping address
 export const shippingAddressSchema = z.object({
+  label: shippingAddressLabelSchema.optional().or(z.literal("")),
   fullName: z.string().min(3, "Name must be at least 3 characters"),
+  phone: optionalPhoneField,
   streetAddress: z.string().min(3, "Address must be at least 3 characters"),
+  addressLine2: optionalAddressField,
   city: z.string().min(3, "City must be at least 3 characters"),
+  state: optionalAddressField,
   postalCode: z.string().min(3, "Postal code must be at least 3 characters"),
   country: z.string().min(3, "Country must be at least 3 characters"),
+  deliveryInstructions: z
+    .string()
+    .trim()
+    .max(300, "Delivery instructions must be 300 characters or fewer")
+    .optional()
+    .or(z.literal("")),
   lat: z.number().optional(),
   lng: z.number().optional(),
+});
+
+export const saveShippingAddressSchema = shippingAddressSchema.extend({
+  label: shippingAddressLabelSchema,
+  id: z.string().optional(),
+  isDefault: z.boolean().optional(),
 });
 
 // Schema for inserting an order item

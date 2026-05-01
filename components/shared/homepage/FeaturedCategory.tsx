@@ -9,42 +9,59 @@ type FeaturedCategories = {
   image: StaticImageData;
 };
 
-async function FeaturedCategory({
+function FeaturedCategory({
   categories,
+  title = "Featured Categories",
+  subtitle,
 }: {
   categories: FeaturedCategories[];
+  title?: string;
+  subtitle?: string;
 }) {
-  // const { data: categories } = (await getFeaturedCategories()) as any;
-
   return (
-    <div className="bg-slate-100 dark:bg-gray-800">
-      <div className="border rounded-lg">
-        <div className="text-xl w-full text-center font-bold p-4">
-          Featured Categories
+    <section className="rounded-4xl border border-stone-200 bg-white p-6 shadow-none sm:p-8 [content-visibility:auto] [contain-intrinsic-size:1px_500px]">
+      <div className="mb-6 space-y-2">
+        <div className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500">
+          Browse faster
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4 justify-center items-center">
-          {categories.map((category) => (
-            <Link key={category.id} href={`/category/${category.link}`}>
-              <div className="space-y-2 justify-center items-center flex flex-col">
-                <div className="p-3 bg-primary/10 rounded-full text-primary">
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={50}
-                    height={50}
-                    loading="lazy"
-                    sizes="50px"
-                  />
-                </div>
-                <div className="text-sm capitalize font-bold">
-                  {category.name}
-                </div>
-              </div>
-            </Link>
-          ))}
+        <div className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950">
+          {title}
         </div>
+        {subtitle ? (
+          <p className="max-w-2xl text-sm leading-7 text-stone-600">
+            {subtitle}
+          </p>
+        ) : null}
       </div>
-    </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
+        {categories.map((category) => (
+          <Link
+            key={category.id}
+            href={`/category/${category.link}`}
+            className="group rounded-[28px] border border-stone-200 bg-[#f8f3ea] p-4 text-center transition hover:-translate-y-0.5 hover:border-stone-400 sm:p-5">
+            <div className="space-y-3">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white transition group-hover:bg-stone-100">
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  width={50}
+                  height={50}
+                  loading="lazy"
+                  sizes="50px"
+                />
+              </div>
+              <div className="text-sm font-semibold uppercase tracking-[0.08em] text-stone-900">
+                {category.name}
+              </div>
+              <div className="text-[11px] uppercase tracking-[0.22em] text-stone-500">
+                Shop category
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 

@@ -1,20 +1,28 @@
-import { Metadata } from "next";
+import { Button } from "@/components/ui/button";
 import { requireAdmin } from "@/lib/auth-guard";
-import CategoryForm from "./Category-form";
+import { Metadata } from "next";
+import Link from "next/link";
+import BrandForm from "./Brand-form";
+
 export const metadata: Metadata = {
-  title: "Create Category",
+  title: "Create Brand",
 };
 
-const CreateCategoryPage = async () => {
+const CreateBrandPage = async () => {
   await requireAdmin();
   return (
     <>
-      <h2 className="h2-bold">Create Category</h2>
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="h2-bold">Create Brand</h2>
+        <Button asChild variant="outline">
+          <Link href="/admin/brands">Back to Brands</Link>
+        </Button>
+      </div>
       <div className="my-8">
-        <CategoryForm type="Create" />
+        <BrandForm type="Create" />
       </div>
     </>
   );
 };
 
-export default CreateCategoryPage;
+export default CreateBrandPage;

@@ -1,11 +1,14 @@
-import { auth } from "@/auth";
-import { getMyCart } from "@/lib/actions/cart.actions";
+import CheckoutSteps from "@/components/shared/CheckoutSteps";
 import { getUserById } from "@/lib/actions/user.actions";
+import { requireAuth } from "@/lib/auth-guard";
+import { getMyCart } from "@/lib/cart-data";
+import {
+  mapSavedShippingAddress,
+  parseLegacyShippingAddress,
+} from "@/lib/shipping-address";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { ShippingAddress } from "@/types";
 import ShippingAddressForm from "./shipping-address-form";
-import CheckoutSteps from "@/components/shared/CheckoutSteps";
 
 export const metadata: Metadata = {
   title: "Shipping Address",
@@ -19,18 +22,40 @@ const ShippingAddressPage = async () => {
 
   if (!cart || cart.items.length === 0) redirect("/cart");
 
-  const session = await auth();
+  const session = await requireAuth("/shipping-address");
 
   const userId = session?.user?.id;
 
-  if (!userId) throw new Error("No user ID");
+  if (!userId) redirect("/login?callbackUrl=%2Fshipping-address");
 
   const user = await getUserById(userId);
+  const savedAddresses = ((user.shippingAddresses as never[]) ?? []).map(
+    mapSavedShippingAddress,
+  );
+  const legacyShippingAddress =
+    savedAddresses.length === 0
+      ? parseLegacyShippingAddress(user.address)
+      : null;
+  const legacyAddress = legacyShippingAddress
+    ? {
+        ...legacyShippingAddress,
+        label: legacyShippingAddress.label || "Saved address",
+        isDefault: true,
+      }
+    : null;
+  const selectedAddressId =
+    (user.selectedShippingAddress as { id?: string } | null)?.id ??
+    savedAddresses.find((address) => address.isDefault)?.id ??
+    null;
 
   return (
     <>
       <CheckoutSteps current={1} />
-      <ShippingAddressForm address={user.address as ShippingAddress} />
+      <ShippingAddressForm
+        addresses={savedAddresses}
+        selectedAddressId={selectedAddressId}
+        legacyAddress={legacyAddress}
+      />
     </>
   );
 };

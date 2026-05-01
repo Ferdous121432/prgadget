@@ -7,26 +7,28 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { EllipsisVertical, ShoppingCart } from "lucide-react";
+import { getMyCart } from "@/lib/cart-data";
+import { Cart } from "@/types";
+import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
+import FloatingCartSheet from "./FloatingCartSheet";
 import Search from "./Search";
 import ToggleButton from "./ToggleButton";
 import UserButton from "./UserButton";
 
-const Menu = () => {
+const Menu = async () => {
+  const cart = (await getMyCart()) as Cart | null;
+
   return (
     <div className="flex justify-end gap-3">
       <nav className="hidden md:flex w-full max-w-xs gap-1">
         <ToggleButton />
         {/* <ModeToggle /> */}
-        <Button asChild variant="ghost">
-          <Link href="/cart">
-            <ShoppingCart className="size-5" aria-hidden="true" /> Cart
-          </Link>
-        </Button>
+        <FloatingCartSheet cart={cart} />
         <UserButton />
       </nav>
-      <nav className="md:hidden">
+      <nav className="flex items-center gap-1 md:hidden">
+        <FloatingCartSheet cart={cart} showLabel={false} />
         <Sheet>
           <SheetTrigger className="align-middle" aria-label="Open menu">
             <EllipsisVertical className="size-5" aria-hidden="true" />
@@ -38,9 +40,7 @@ const Menu = () => {
               <ToggleButton />
               <Search />
               <Button asChild variant="ghost">
-                <Link href="/cart">
-                  <ShoppingCart className="size-5" aria-hidden="true" /> Cart
-                </Link>
+                <Link href="/cart">View Cart Page</Link>
               </Button>
               <UserButton />
               <SheetDescription></SheetDescription>

@@ -32,8 +32,8 @@ const Charts = ({
           label={{
             position: "middle",
             fill: "#fff",
-            formatter: (label: React.ReactNode) =>
-              typeof label === "number" ? `$${label}` : label,
+            formatter: (label) =>
+              typeof label === "number" ? `$${label}` : `${label ?? ""}`,
           }}
         />
       </BarChart>

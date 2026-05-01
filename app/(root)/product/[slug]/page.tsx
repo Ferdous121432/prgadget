@@ -6,8 +6,8 @@ import Rating from "@/components/shared/product/rating";
 import RelativeProducts from "@/components/shared/product/relative-products";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { getMyCart } from "@/lib/actions/cart.actions";
 import { getProductBySlug } from "@/lib/actions/product.actions";
+import { getMyCart } from "@/lib/cart-data";
 import { Cart } from "@/types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -21,9 +21,12 @@ const ProductDetailsPage = async (props: {
 }) => {
   const { slug } = await props.params;
 
-  const product = await getProductBySlug(slug);
-  if (!product) notFound();
-  console.log("product", product);
+  const productData = await getProductBySlug(slug);
+  if (!productData) {
+    return notFound();
+  }
+
+  const product = productData;
 
   const session = await auth();
   const userId = session?.user?.id;
@@ -84,7 +87,7 @@ const ProductDetailsPage = async (props: {
                         productId: product.id,
                         name: product.name,
                         slug: product.slug,
-                        price: product.price,
+                        price: String(product.price),
                         quantity: 1,
                         image: product.images![0],
                       }}
@@ -103,7 +106,13 @@ const ProductDetailsPage = async (props: {
           productId={product.id}
           productSlug={product.slug}
         />
-        <RelativeProducts productId={product.id} brand={product.brand} />
+        <RelativeProducts
+          productId={product.id}
+          mainCategoryId={product.mainCategoryId}
+          subCategoryId={product.subCategoryId}
+          subSubCategoryId={product.subSubCategoryId}
+          brand={product.brand}
+        />
         <Badge variant="outline" className="mt-4 ml-2" asChild>
           <Link href="/">Back To Home</Link>
         </Badge>

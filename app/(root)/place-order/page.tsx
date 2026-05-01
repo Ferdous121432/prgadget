@@ -1,13 +1,6 @@
-import { getMyCart } from "@/lib/actions/cart.actions";
-import { getUserById } from "@/lib/actions/user.actions";
-import { requireAuth } from "@/lib/auth-guard";
-import { ShippingAddress } from "@/types";
-import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import CheckoutSteps from "@/components/shared/CheckoutSteps";
-import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -16,8 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
+import { getUserById } from "@/lib/actions/user.actions";
+import { requireAuth } from "@/lib/auth-guard";
+import { getMyCart } from "@/lib/cart-data";
+import {
+  formatShippingAddressLines,
+  resolveSelectedShippingAddress,
+} from "@/lib/shipping-address";
 import { formatCurrency } from "@/lib/utils";
+import { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import PlaceOrderForm from "./place-order-form";
 
 export const metadata: Metadata = {
@@ -35,12 +38,15 @@ const PlaceOrderPage = async () => {
   if (!userId) throw new Error("User not found");
 
   const user = await getUserById(userId);
+  const userAddress = resolveSelectedShippingAddress({
+    selectedShippingAddress: user.selectedShippingAddress as never,
+    shippingAddresses: user.shippingAddresses as never[],
+    address: user.address,
+  });
 
   if (!cart || cart.items.length === 0) redirect("/cart");
-  if (!user.address) redirect("/shipping-address");
+  if (!userAddress) redirect("/shipping-address");
   if (!user.paymentMethod) redirect("/payment-method");
-
-  const userAddress = user.address as ShippingAddress;
 
   return (
     <>
@@ -51,11 +57,11 @@ const PlaceOrderPage = async () => {
           <Card>
             <CardContent className="p-4 gap-4">
               <h2 className="text-xl pb-4">Shipping Address</h2>
-              <p>{userAddress.fullName}</p>
-              <p>
-                {userAddress.streetAddress}, {userAddress.city}{" "}
-                {userAddress.postalCode}, {userAddress.country}{" "}
-              </p>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                {formatShippingAddressLines(userAddress).map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
               <div className="mt-3">
                 <Link href="/shipping-address">
                   <Button variant="outline">Edit</Button>
@@ -118,7 +124,7 @@ const PlaceOrderPage = async () => {
                           ${Number(item.price)}
                         </TableCell>
                       </TableRow>
-                    )
+                    ),
                   )}
                 </TableBody>
               </Table>

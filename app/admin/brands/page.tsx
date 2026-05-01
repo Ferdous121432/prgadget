@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -8,15 +9,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Pagination from "@/components/shared/Pagination";
-import DeleteDialog from "@/components/shared/DeteleDialog";
+import { getAdminBrandSummaries } from "@/lib/actions/brand.actions";
 import { requireAdmin } from "@/lib/auth-guard";
-import { UpdateMainCategory } from "@/types";
-import {
-  deleteMainCategory,
-  getAllMainCategories,
-} from "@/lib/actions/category.actions";
-import Image from "next/image";
+import { formatCurrency, formatDateTime, formatNumber } from "@/lib/utils";
+import { Boxes, PackageSearch, ShieldAlert, Tags } from "lucide-react";
+import Link from "next/link";
+
+type BrandSummary = {
+  id: string;
+  brand: string;
+  productCount: number;
+  totalStock: number;
+  outOfStockCount: number;
+  averagePrice: number;
+  latestProductAt: Date | string | null;
+  categoryNames: string[];
+};
 
 const AdminProductsPage = async (props: {
   searchParams: Promise<{
@@ -29,24 +37,54 @@ const AdminProductsPage = async (props: {
 
   const searchParams = await props.searchParams;
 
-  const page = Number(searchParams.page) || 1;
   const searchText = searchParams.query || "";
-  const category = searchParams.category || "";
 
-  const categories = (await getAllMainCategories()) as {
-    data: UpdateMainCategory[];
-    totalPages: number;
-  };
+  const brandsResponse = await getAdminBrandSummaries();
+  const brands = (brandsResponse.data ?? []) as BrandSummary[];
+
+  const filteredBrands = brands.filter((item: BrandSummary) => {
+    const normalizedQuery = searchText.trim().toLowerCase();
+
+    if (!normalizedQuery) {
+      return true;
+    }
+
+    return (
+      item.brand.toLowerCase().includes(normalizedQuery) ||
+      item.categoryNames.some((categoryName: string) =>
+        categoryName.toLowerCase().includes(normalizedQuery),
+      )
+    );
+  });
+
+  const totalBrands = filteredBrands.length;
+  const totalBrandProducts = filteredBrands.reduce(
+    (total: number, brand: BrandSummary) => total + brand.productCount,
+    0,
+  );
+  const totalBrandStock = filteredBrands.reduce(
+    (total: number, brand: BrandSummary) => total + brand.totalStock,
+    0,
+  );
+  const brandsWithStockRisk = filteredBrands.filter(
+    (brand: BrandSummary) => brand.outOfStockCount > 0 || brand.totalStock <= 5,
+  ).length;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-6">
       <div className="flex-between">
         <div className="flex items-center gap-3">
-          <h1 className="h2-bold">Categories</h1>
+          <div>
+            <h1 className="h2-bold">Brands</h1>
+            <p className="text-sm text-muted-foreground">
+              Manage standalone brands and review their product coverage across
+              the catalog.
+            </p>
+          </div>
           {searchText && (
-            <div>
+            <div className="flex items-center gap-2">
               Filtered by <i>&quot;{searchText}&quot;</i>{" "}
-              <Link href="/admin/categories">
+              <Link href="/admin/brands">
                 <Button variant="outline" size="sm">
                   Remove Filter
                 </Button>
@@ -54,50 +92,168 @@ const AdminProductsPage = async (props: {
             </div>
           )}
         </div>
-        <Button asChild variant="default">
-          <Link href="/admin/categories/create">Create Category</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link href="/admin/products">View Products</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/admin/products/create">Create Product</Link>
+          </Button>
+          <Button asChild variant="default">
+            <Link href="/admin/brands/create">Create Brand</Link>
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active brands</CardTitle>
+            <Tags className="size-4" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatNumber(totalBrands)}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Unique product brands currently represented in catalog data.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Branded products
+            </CardTitle>
+            <Boxes className="size-4" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatNumber(totalBrandProducts)}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Products assigned to a non-empty brand name.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Total brand stock
+            </CardTitle>
+            <PackageSearch className="size-4" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatNumber(totalBrandStock)}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Combined inventory across all branded SKUs.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Stock-risk brands
+            </CardTitle>
+            <ShieldAlert className="size-4" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatNumber(brandsWithStockRisk)}
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Brands with out-of-stock products or critically low total stock.
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>NAME</TableHead>
-            <TableHead>LIST OF SUB</TableHead>
-            <TableHead>IMAGE</TableHead>
-            <TableHead className="w-[100px]">ACTIONS</TableHead>
+            <TableHead>BRAND</TableHead>
+            <TableHead>PRODUCTS</TableHead>
+            <TableHead>STOCK</TableHead>
+            <TableHead>AVG PRICE</TableHead>
+            <TableHead>TOP CATEGORIES</TableHead>
+            <TableHead>LAST ADDED</TableHead>
+            <TableHead className="w-40">ACTIONS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {categories.data?.map((category) => (
-            <TableRow key={category.id}>
-              <TableCell>...{category.id.split("-").pop()}</TableCell>
-              <TableCell>{category.name}</TableCell>
-              <TableCell>{category.name}</TableCell>
-              <TableCell>
-                {category.image && (
-                  <Image
-                    src={category.image}
-                    alt={category.name}
-                    width={30}
-                    height={30}
-                  />
-                )}
-              </TableCell>
-              <TableCell className="flex gap-1">
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/admin/categories/${category.id}`}>Edit</Link>
-                </Button>
-                <DeleteDialog id={category.id} action={deleteMainCategory} />
+          {filteredBrands.length > 0 ? (
+            filteredBrands.map((brand: BrandSummary) => (
+              <TableRow key={brand.id}>
+                <TableCell className="font-medium">{brand.brand}</TableCell>
+                <TableCell>{formatNumber(brand.productCount)}</TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <span>{formatNumber(brand.totalStock)}</span>
+                    {brand.outOfStockCount > 0 && (
+                      <Badge variant="destructive">
+                        {brand.outOfStockCount} out
+                      </Badge>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>{formatCurrency(brand.averagePrice)}</TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {brand.categoryNames.length > 0 ? (
+                      brand.categoryNames.map((categoryName: string) => (
+                        <Badge key={categoryName} variant="outline">
+                          {categoryName}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-sm text-muted-foreground">
+                        No products yet
+                      </span>
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell>
+                  {brand.latestProductAt
+                    ? formatDateTime(new Date(brand.latestProductAt)).dateOnly
+                    : "-"}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-1">
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/admin/brands/${brand.id}`}>Edit</Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link
+                        href={`/admin/products?query=${encodeURIComponent(brand.brand)}`}>
+                        Products
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link
+                        href={`/search?query=${encodeURIComponent(brand.brand)}`}>
+                        Storefront
+                      </Link>
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={7}
+                className="py-8 text-center text-sm text-muted-foreground">
+                No brands matched the current filter.
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
-      {(categories.totalPages ?? 0) > 1 && (
-        <Pagination page={page} totalPages={categories.totalPages ?? 1} />
-      )}
     </div>
   );
 };
