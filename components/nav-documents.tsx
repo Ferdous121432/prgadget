@@ -24,6 +24,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function NavDocuments({
   items,
@@ -37,6 +39,13 @@ export function NavDocuments({
   }[];
 }) {
   const { isMobile } = useSidebar();
+  const pathname = usePathname();
+  const activeUrl =
+    items
+      .filter(
+        (item) => pathname === item.url || pathname.startsWith(`${item.url}/`),
+      )
+      .sort((left, right) => right.url.length - left.url.length)[0]?.url ?? "";
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -44,11 +53,11 @@ export function NavDocuments({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
+            <SidebarMenuButton asChild isActive={item.url === activeUrl}>
+              <Link href={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

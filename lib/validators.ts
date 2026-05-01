@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { PAYMENT_METHODS } from "./constants";
+import {
+  ORDER_FULFILLMENT_STATUSES,
+  ORDER_PAYMENT_STATUSES,
+} from "./order-status";
 import { formatNumberWithDecimal } from "./utils";
 
 const currency = z
@@ -254,6 +258,8 @@ export const insertOrderSchema = z.object({
   paymentMethod: z.string().refine((data) => PAYMENT_METHODS.includes(data), {
     message: "Invalid payment method",
   }),
+  paymentStatus: z.enum(ORDER_PAYMENT_STATUSES).optional(),
+  fulfillmentStatus: z.enum(ORDER_FULFILLMENT_STATUSES).optional(),
   shippingAddress: shippingAddressSchema,
   isPaid: z.boolean().optional(),
   paidAt: z.string().optional(),
@@ -265,6 +271,8 @@ export const insertOrderSchema = z.object({
 export const updateOrderSchema = insertOrderSchema.extend({
   id: z.string().min(1, "ID is required"),
   createdAt: z.string(), // Use z.string() for ISO date, or z.date() if you want Date objects
+  paymentStatus: z.enum(ORDER_PAYMENT_STATUSES),
+  fulfillmentStatus: z.enum(ORDER_FULFILLMENT_STATUSES),
   isPaid: z.boolean(),
   paidAt: z.date().nullable().optional(),
   isDelivered: z.boolean(),
@@ -281,6 +289,7 @@ export const updateOrderSchema = insertOrderSchema.extend({
 export const updateProfileSchema = z.object({
   name: z.string().min(3, "Name must be at leaast 3 characters"),
   email: z.string().min(3, "Email must be at leaast 3 characters"),
+  phone: optionalPhoneField,
 });
 
 // Schema to update users

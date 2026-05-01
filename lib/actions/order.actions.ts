@@ -4,6 +4,15 @@ import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { sendPurchaseReceipt } from "@/email";
 import { getMyCart } from "@/lib/cart-data";
+import {
+  getAllowedOrderPaymentStatuses,
+  getDefaultOrderPaymentStatus,
+  isCashOnDeliveryPaymentMethod,
+  ORDER_FULFILLMENT_STATUSES,
+  ORDER_PAYMENT_STATUSES,
+  OrderFulfillmentStatusValue,
+  OrderPaymentStatusValue,
+} from "@/lib/order-status";
 import { resolveSelectedShippingAddress } from "@/lib/shipping-address";
 import { CartItem, PaymentResult, SalesData, ShippingAddress } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -19,6 +28,69 @@ import { insertOrderSchema } from "../validators";
 import { getUserById } from "./user.actions";
 
 export type OrderDateRange = "today" | "7d" | "30d" | "lifetime";
+export type AdminOrderSortField =
+  | "buyer"
+  | "date"
+  | "total"
+  | "paymentStatus"
+  | "fulfillmentStatus";
+export type AdminOrderSortOrder = "asc" | "desc";
+export type AdminOrderPaymentStatusFilter = "all" | OrderPaymentStatusValue;
+export type AdminOrderFulfillmentStatusFilter =
+  | "all"
+  | OrderFulfillmentStatusValue;
+
+function getPaymentStatusUpdate(
+  status: OrderPaymentStatusValue,
+  order: {
+    paidAt: Date | null;
+  },
+) {
+  if (status === "PAID") {
+    return {
+      isPaid: true,
+      paidAt: order.paidAt ?? new Date(),
+    };
+  }
+
+  if (status === "REFUNDED") {
+    return {
+      isPaid: false,
+      paidAt: order.paidAt,
+    };
+  }
+
+  return {
+    isPaid: false,
+    paidAt: null,
+  };
+}
+
+function getFulfillmentStatusUpdate(
+  status: OrderFulfillmentStatusValue,
+  order: {
+    deliveredAt: Date | null;
+  },
+) {
+  if (status === "DELIVERED") {
+    return {
+      isDelivered: true,
+      deliveredAt: order.deliveredAt ?? new Date(),
+    };
+  }
+
+  if (status === "RETURNED") {
+    return {
+      isDelivered: false,
+      deliveredAt: order.deliveredAt,
+    };
+  }
+
+  return {
+    isDelivered: false,
+    deliveredAt: null,
+  };
+}
 
 function getDateFromForRange(range: OrderDateRange = "lifetime") {
   if (range === "lifetime") return undefined;
@@ -87,6 +159,8 @@ export const createOrder = async () => {
       userId: user.id,
       shippingAddress,
       paymentMethod: user.paymentMethod,
+      paymentStatus: getDefaultOrderPaymentStatus(user.paymentMethod),
+      fulfillmentStatus: "PLACED",
       itemsPrice: cart.itemsPrice,
       shippingPrice: cart.shippingPrice,
       taxPrice: cart.taxPrice,
@@ -141,6 +215,28 @@ export const createOrder = async () => {
     };
   }
 };
+
+function getOrdersOrderBy({
+  sortBy = "date",
+  sortOrder = "desc",
+}: {
+  sortBy?: AdminOrderSortField;
+  sortOrder?: AdminOrderSortOrder;
+}): Prisma.OrderOrderByWithRelationInput[] {
+  switch (sortBy) {
+    case "buyer":
+      return [{ user: { name: sortOrder } }, { createdAt: "desc" }];
+    case "total":
+      return [{ totalPrice: sortOrder }, { createdAt: "desc" }];
+    case "paymentStatus":
+      return [{ paymentStatus: sortOrder }, { createdAt: "desc" }];
+    case "fulfillmentStatus":
+      return [{ fulfillmentStatus: sortOrder }, { createdAt: "desc" }];
+    case "date":
+    default:
+      return [{ createdAt: sortOrder }];
+  }
+}
 
 // Get order by ID
 export const getOrderById = async (orderId: string) => {
@@ -197,7 +293,7 @@ export async function updateOrderToPaid({
 
   if (!order) throw new Error("Order not found");
 
-  if (order.isPaid) throw new Error("Order is already paid");
+  if (order.paymentStatus === "PAID") throw new Error("Order is already paid");
 
   // Transaction to update order and account for product stock
   await prisma.$transaction(async (tx: any) => {
@@ -213,6 +309,7 @@ export async function updateOrderToPaid({
     await tx.order.update({
       where: { id },
       data: {
+        paymentStatus: "PAID",
         isPaid: true,
         paidAt: new Date(),
         paymentResult,
@@ -291,16 +388,22 @@ export async function getOrderSummary(range: OrderDateRange = "lifetime") {
     const productCounts = await prisma.product.count();
     const usersCount = await prisma.user.count();
     const paidOrdersCount = await prisma.order.count({
-      where: { ...orderDateFilter, isPaid: true },
+      where: { ...orderDateFilter, paymentStatus: "PAID" },
     });
     const unpaidOrdersCount = await prisma.order.count({
-      where: { ...orderDateFilter, isPaid: false },
+      where: {
+        ...orderDateFilter,
+        paymentStatus: { in: ["PENDING", "FAILED"] },
+      },
     });
     const deliveredOrdersCount = await prisma.order.count({
-      where: { ...orderDateFilter, isDelivered: true },
+      where: { ...orderDateFilter, fulfillmentStatus: "DELIVERED" },
     });
     const processingOrdersCount = await prisma.order.count({
-      where: { ...orderDateFilter, isDelivered: false },
+      where: {
+        ...orderDateFilter,
+        fulfillmentStatus: { in: ["PLACED", "PROCESSING", "SHIPPED"] },
+      },
     });
 
     //calculate total sales
@@ -415,11 +518,21 @@ export async function getAllOrders({
   page,
   query,
   range = "lifetime",
+  sortBy = "date",
+  sortOrder = "desc",
+  paymentMethod,
+  paymentStatus = "all",
+  fulfillmentStatus = "all",
 }: {
   limit?: number;
   page: number;
   query?: string;
   range?: OrderDateRange;
+  sortBy?: AdminOrderSortField;
+  sortOrder?: AdminOrderSortOrder;
+  paymentMethod?: string;
+  paymentStatus?: AdminOrderPaymentStatusFilter;
+  fulfillmentStatus?: AdminOrderFulfillmentStatusFilter;
 }) {
   // Helper function to check if string is a valid UUID
   const isValidUUID = (str: string) => {
@@ -493,12 +606,27 @@ export async function getAllOrders({
     AND: [
       ...(dateFrom ? [{ createdAt: { gte: dateFrom } }] : []),
       ...(Object.keys(queryFilter).length > 0 ? [queryFilter] : []),
+      ...(paymentMethod
+        ? [
+            {
+              paymentMethod: {
+                equals: paymentMethod,
+              },
+            },
+          ]
+        : []),
+      ...(paymentStatus !== "all"
+        ? [{ paymentStatus: { equals: paymentStatus } }]
+        : []),
+      ...(fulfillmentStatus !== "all"
+        ? [{ fulfillmentStatus: { equals: fulfillmentStatus } }]
+        : []),
     ],
   };
 
   const data = await prisma.order.findMany({
     where,
-    orderBy: { createdAt: "desc" },
+    orderBy: getOrdersOrderBy({ sortBy, sortOrder }),
     include: {
       user: { select: { name: true, email: true } },
       orderItems: true,
@@ -517,31 +645,395 @@ export async function getAllOrders({
   };
 }
 
-// Delete order by ID
-export async function deleteOrder(id: string) {
+export async function getAdminOrderFilterOptions() {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    throw new Error("You are not authorized to view order filters");
+  }
+
+  const paymentMethods = await prisma.order.findMany({
+    distinct: ["paymentMethod"],
+    orderBy: { paymentMethod: "asc" },
+    select: {
+      paymentMethod: true,
+    },
+  });
+
+  return {
+    paymentMethods: paymentMethods
+      .map((item) => item.paymentMethod)
+      .filter(Boolean),
+  };
+}
+
+export async function updateOrderPaymentStatus({
+  id,
+  status,
+}: {
+  id: string;
+  status: OrderPaymentStatusValue;
+}) {
   try {
     const session = await auth();
-    if (!session?.user?.id) {
-      throw new Error("User not authenticated");
+
+    if (session?.user?.role !== "admin") {
+      return {
+        success: false,
+        message: "Only admins can update payment status",
+      };
     }
 
-    // Check if the order exists
-    const order = await prisma.order.findUnique({
+    const order = await prisma.order.findFirst({
       where: { id },
+      select: {
+        id: true,
+        paymentMethod: true,
+        paymentStatus: true,
+        paidAt: true,
+      },
     });
 
     if (!order) {
       throw new Error("Order not found");
     }
 
-    // Delete the order
-    await prisma.order.delete({
-      where: { id },
+    const normalizedStatus = ORDER_PAYMENT_STATUSES.includes(status)
+      ? status
+      : "PENDING";
+
+    if (
+      normalizedStatus === "COD" &&
+      !isCashOnDeliveryPaymentMethod(order.paymentMethod)
+    ) {
+      return {
+        success: false,
+        message: "COD payment state is only valid for cash on delivery orders",
+      };
+    }
+
+    const allowedStatuses = getAllowedOrderPaymentStatuses({
+      paymentMethod: order.paymentMethod,
+      currentStatus: order.paymentStatus,
     });
+
+    if (!allowedStatuses.includes(normalizedStatus)) {
+      return {
+        success: false,
+        message: `Payment state cannot move from ${order.paymentStatus.toLowerCase()} to ${normalizedStatus.toLowerCase()} for this order`,
+      };
+    }
+
+    const legacyUpdate = getPaymentStatusUpdate(normalizedStatus, order);
+
+    await prisma.order.update({
+      where: { id },
+      data: {
+        paymentStatus: normalizedStatus,
+        ...legacyUpdate,
+      },
+    });
+
+    revalidatePath(`/order/${id}`);
     revalidatePath("/admin/orders");
+    revalidatePath("/admin/orders/all-orders");
+
     return {
       success: true,
-      message: "Order deleted successfully",
+      message: `Payment status updated to ${normalizedStatus.toLowerCase()}`,
+    };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update payment status",
+    };
+  }
+}
+
+export async function updateOrderFulfillmentStatus({
+  id,
+  status,
+}: {
+  id: string;
+  status: OrderFulfillmentStatusValue;
+}) {
+  try {
+    const session = await auth();
+
+    if (session?.user?.role !== "admin") {
+      return {
+        success: false,
+        message: "Only admins can update fulfillment status",
+      };
+    }
+
+    const order = await prisma.order.findFirst({
+      where: { id },
+      select: {
+        id: true,
+        deliveredAt: true,
+      },
+    });
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    const normalizedStatus = ORDER_FULFILLMENT_STATUSES.includes(status)
+      ? status
+      : "PLACED";
+    const legacyUpdate = getFulfillmentStatusUpdate(normalizedStatus, order);
+
+    await prisma.order.update({
+      where: { id },
+      data: {
+        fulfillmentStatus: normalizedStatus,
+        ...legacyUpdate,
+      },
+    });
+
+    revalidatePath(`/order/${id}`);
+    revalidatePath("/admin/orders");
+    revalidatePath("/admin/orders/all-orders");
+
+    return {
+      success: true,
+      message: `Fulfillment status updated to ${normalizedStatus.toLowerCase()}`,
+    };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to update fulfillment status",
+    };
+  }
+}
+
+export async function getDeletedOrders({
+  limit = DB_ADMIN_PRODUCT_TAKE,
+  page,
+  query,
+}: {
+  limit?: number;
+  page: number;
+  query?: string;
+}) {
+  const session = await auth();
+
+  if (session?.user?.role !== "admin") {
+    throw new Error("You are not authorized to view deleted orders");
+  }
+
+  const isValidUUID = (value: string) => {
+    const uuidRegex =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(value);
+  };
+
+  const words = query
+    ? query
+        .split(" ")
+        .map((word) => word.trim())
+        .filter(Boolean)
+    : [];
+
+  const where: Prisma.DeletedOrderWhereInput =
+    query && query !== "all"
+      ? {
+          OR: [
+            {
+              userName: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              userEmail: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              deletedByUserName: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            {
+              deletedByUserEmail: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+            ...(isValidUUID(query)
+              ? [
+                  {
+                    id: {
+                      equals: query,
+                    },
+                  },
+                  {
+                    originalOrderId: {
+                      equals: query,
+                    },
+                  },
+                ]
+              : []),
+            ...words.map((word) => ({
+              OR: [
+                {
+                  userName: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+                {
+                  userEmail: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+                {
+                  deletedByUserName: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+                {
+                  deletedByUserEmail: {
+                    contains: word,
+                    mode: "insensitive" as const,
+                  },
+                },
+              ],
+            })),
+          ],
+        }
+      : {};
+
+  const data = await prisma.deletedOrder.findMany({
+    where,
+    orderBy: { deletedAt: "desc" },
+    include: {
+      _count: {
+        select: {
+          orderItems: true,
+        },
+      },
+    },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.deletedOrder.count({
+    where,
+  });
+
+  return {
+    data: convertPrismaObjectToJSObject(data),
+    totalPages: Math.ceil(dataCount / limit),
+    totalCount: dataCount,
+  };
+}
+
+// Delete order by ID
+export async function deleteOrder(id: string) {
+  try {
+    const session = await auth();
+    const adminUserId = session?.user?.id;
+
+    if (!adminUserId) {
+      throw new Error("User not authenticated");
+    }
+
+    if (session.user.role !== "admin") {
+      return {
+        success: false,
+        message: "Only admins can delete orders",
+      };
+    }
+
+    // Check if the order exists
+    const order = await prisma.order.findUnique({
+      where: { id },
+      include: {
+        orderItems: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.deletedOrder.create({
+        data: {
+          originalOrderId: order.id,
+          userId: order.userId,
+          userName: order.user?.name ?? null,
+          userEmail: order.user?.email ?? null,
+          shippingAddress: order.shippingAddress as Prisma.InputJsonValue,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          fulfillmentStatus: order.fulfillmentStatus,
+          ...(order.paymentResult !== null
+            ? {
+                paymentResult: order.paymentResult as Prisma.InputJsonValue,
+              }
+            : {}),
+          itemsPrice: order.itemsPrice,
+          totalPrice: order.totalPrice,
+          shippingPrice: order.shippingPrice,
+          taxPrice: order.taxPrice,
+          isPaid: order.isPaid,
+          paidAt: order.paidAt,
+          isDelivered: order.isDelivered,
+          deliveredAt: order.deliveredAt,
+          createdAt: order.createdAt,
+          updatedAt: order.updatedAt,
+          deletedByUserId: adminUserId,
+          deletedByUserName: session.user.name ?? null,
+          deletedByUserEmail: session.user.email ?? null,
+          orderItems: {
+            create: order.orderItems.map((item) => ({
+              originalOrderId: item.orderId,
+              productId: item.productId,
+              name: item.name,
+              slug: item.slug,
+              image: item.image,
+              price: item.price,
+              quantity: item.quantity,
+              createdAt: item.createdAt,
+              updatedAt: item.updatedAt,
+            })),
+          },
+        },
+      });
+
+      await tx.order.delete({
+        where: { id },
+      });
+    });
+
+    revalidatePath("/admin/orders");
+    revalidatePath("/admin/orders/deleted");
+    return {
+      success: true,
+      message: "Order moved to deleted orders archive",
     };
   } catch (error) {
     if (isRedirectError(error)) throw error;
@@ -555,7 +1047,11 @@ export async function deleteOrder(id: string) {
 // Update COD to PAID status
 export async function updateOrderToPaidCOD(id: string) {
   try {
-    await updateOrderToPaid({ id });
+    const res = await updateOrderPaymentStatus({ id, status: "PAID" });
+
+    if (!res.success) {
+      throw new Error(res.message);
+    }
 
     revalidatePath(`order/${id}`);
 
@@ -575,29 +1071,14 @@ export async function updateOrderToPaidCOD(id: string) {
 // Update COD order to delevered
 export async function updateOrderToDelivered(id: string) {
   try {
-    const order = await prisma.order.findFirst({
-      where: { id },
+    const res = await updateOrderFulfillmentStatus({
+      id,
+      status: "DELIVERED",
     });
 
-    if (!order) {
-      throw new Error("Order not found");
+    if (!res.success) {
+      throw new Error(res.message);
     }
-    if (!order.isPaid) {
-      throw new Error("Order is not paid");
-    }
-
-    if (order.isDelivered) {
-      throw new Error("Order is already delivered");
-    }
-
-    // Update order status to delivered
-    await prisma.order.update({
-      where: { id },
-      data: {
-        isDelivered: true,
-        deliveredAt: new Date(),
-      },
-    });
 
     revalidatePath(`order/${id}`);
 

@@ -1,3 +1,6 @@
+import sampleData from "@/db/sample-data";
+import { formatCurrency } from "@/lib/utils";
+import { Order } from "@/types";
 import {
   Body,
   Column,
@@ -12,9 +15,6 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
-import { Order } from "@/types";
-import { formatCurrency } from "@/lib/utils";
-import sampleData from "@/db/sample-data";
 require("dotenv").config();
 
 PurchaseReceiptEmail.PreviewProps = {
@@ -34,6 +34,8 @@ PurchaseReceiptEmail.PreviewProps = {
       country: "US",
     },
     createdAt: new Date().toISOString(),
+    paymentStatus: "PAID",
+    fulfillmentStatus: "DELIVERED",
     totalPrice: "100",
     taxPrice: "10",
     shippingPrice: "10",

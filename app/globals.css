@@ -118,6 +118,51 @@ body {
   .destructive-button {
     @apply bg-red-500 text-white hover:bg-red-700 dark:hover:bg-red-400 transition-colors font-semibold px-2 duration-200;
   }
+
+  .html-editor-content:empty::before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground;
+  }
+
+  .html-editor-content h2,
+  .html-content h2 {
+    @apply mt-5 text-xl font-semibold;
+  }
+
+  .html-editor-content h3,
+  .html-content h3 {
+    @apply mt-4 text-lg font-semibold;
+  }
+
+  .html-editor-content h4,
+  .html-content h4 {
+    @apply mt-3 text-base font-semibold;
+  }
+
+  .html-editor-content p,
+  .html-content p {
+    @apply mt-3 leading-7;
+  }
+
+  .html-editor-content ul,
+  .html-content ul {
+    @apply mt-3 list-disc space-y-2 pl-6;
+  }
+
+  .html-editor-content ol,
+  .html-content ol {
+    @apply mt-3 list-decimal space-y-2 pl-6;
+  }
+
+  .html-editor-content blockquote,
+  .html-content blockquote {
+    @apply mt-4 border-l-4 border-primary/30 pl-4 italic text-muted-foreground;
+  }
+
+  .html-editor-content a,
+  .html-content a {
+    @apply text-primary underline underline-offset-4;
+  }
 }
 
 @layer base {

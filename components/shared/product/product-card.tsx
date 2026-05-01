@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { getHtmlTextExcerpt } from "@/lib/html";
 import Image from "next/image";
 import Link from "next/link";
 import ProductPrice from "./product-price";
@@ -9,6 +10,7 @@ interface ProductCardProps {
     slug: string;
     images: string[];
     name: string;
+    description?: string | null;
     brand?: string | null;
     rating?: string | number | null;
     stock: number;
@@ -42,6 +44,11 @@ const ProductCard = ({
         <Link href={`/product/${product.slug}`}>
           <h2 className="text-sm font-medium">{product.name}</h2>
         </Link>
+        {product.description && (
+          <p className="text-xs leading-5 text-muted-foreground">
+            {getHtmlTextExcerpt(product.description, 110)}
+          </p>
+        )}
         <div className="flex-between h-full flex-wrap gap-4">
           <Rating value={Number(product.rating)} />
           {product.stock > 0 ? (

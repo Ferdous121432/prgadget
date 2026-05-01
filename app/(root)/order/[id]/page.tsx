@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { getOrderById } from "@/lib/actions/order.actions";
+import { isOrderPaymentCollectible } from "@/lib/order-status";
 import { convertPrismaObjectToJSObject } from "@/lib/utils";
 import { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
@@ -23,19 +24,15 @@ const OrderDetailsPage = async (props: {
   const order = (await getOrderById(id)) as any;
   if (!order) notFound();
 
-  console.log(
-    "Order payment method:",
-    order.paymentMethod,
-    "isPaid:",
-    order.isPaid
-  );
-
   const session = await auth();
 
   let client_secret: string | null = null;
 
   // Check if the order is paid via Stripe
-  if (order.paymentMethod === "Stripe" && !order.isPaid) {
+  if (
+    order.paymentMethod === "Stripe" &&
+    isOrderPaymentCollectible(order.paymentStatus)
+  ) {
     try {
       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
       // create payment intent if not already created

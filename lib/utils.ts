@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
 import qs from "query-string";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -97,15 +97,15 @@ export const formatDateTime = (dateString: Date) => {
   };
   const formattedDateTime: string = new Date(dateString).toLocaleString(
     "en-US",
-    dateTimeOptions
+    dateTimeOptions,
   );
   const formattedDate: string = new Date(dateString).toLocaleString(
     "en-US",
-    dateOptions
+    dateOptions,
   );
   const formattedTime: string = new Date(dateString).toLocaleString(
     "en-US",
-    timeOptions
+    timeOptions,
   );
   return {
     dateTime: formattedDateTime,
@@ -135,7 +135,7 @@ export function formUrlQuery({
     },
     {
       skipNull: true,
-    }
+    },
   );
 }
 
@@ -165,7 +165,7 @@ export function formUrlQueryMultiple({
     },
     {
       skipNull: true,
-    }
+    },
   );
 }
 
@@ -176,6 +176,8 @@ export function serializeOrderForClient(order: any) {
     userId: order.userId,
     shippingAddress: order.shippingAddress,
     paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus,
+    fulfillmentStatus: order.fulfillmentStatus,
     itemsPrice: order.itemsPrice?.toString(),
     totalPrice: order.totalPrice?.toString(),
     shippingPrice: order.shippingPrice?.toString(),
@@ -214,6 +216,8 @@ export function SerializeGetMyOrder(response: any) {
           userId: order.userId,
           shippingAddress: order.shippingAddress,
           paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          fulfillmentStatus: order.fulfillmentStatus,
           paymentResult: order.paymentResult,
           itemsPrice: order.itemsPrice?.toString(),
           totalPrice: order.totalPrice?.toString(),
@@ -256,6 +260,8 @@ export function serializeDashboardStats(response: any) {
           userId: order.userId,
           shippingAddress: order.shippingAddress,
           paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          fulfillmentStatus: order.fulfillmentStatus,
           paymentResult: order.paymentResult,
           itemsPrice: order.itemsPrice?.toString(),
           totalPrice: order.totalPrice?.toString(),

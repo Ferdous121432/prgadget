@@ -312,7 +312,15 @@ const AdminUserUpdatePage = async (props: {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <UpdateUserForm user={user} />
+              <UpdateUserForm
+                user={{
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  role: user.role,
+                  phone: user.phone ?? undefined,
+                }}
+              />
             </CardContent>
           </Card>
         </div>

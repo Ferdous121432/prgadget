@@ -12,12 +12,18 @@ import {
 import { getOrderSummary } from "@/lib/actions/order.actions";
 import { requireAdmin } from "@/lib/auth-guard";
 import {
+  getOrderFulfillmentStatusLabel,
+  getOrderFulfillmentStatusTone,
+  getOrderPaymentStatusLabel,
+  getOrderPaymentStatusTone,
+} from "@/lib/order-status";
+import {
   convertPrismaObjectToJSObject,
   formatCurrency,
   formatDateTime,
+  formatId,
   formatNumber,
 } from "@/lib/utils";
-import { Order } from "@/types";
 import {
   AlertTriangle,
   BadgeDollarSign,
@@ -51,6 +57,41 @@ function getBadgeVariant(value: number) {
 function getStatusTone(value: number, warningThreshold: number) {
   if (value <= warningThreshold) return "destructive" as const;
   return "secondary" as const;
+}
+
+function buildAllOrdersHref({
+  sortBy,
+  sortOrder,
+  paymentStatus,
+  fulfillmentStatus,
+}: {
+  sortBy?: "buyer" | "date" | "total" | "paymentStatus" | "fulfillmentStatus";
+  sortOrder?: "asc" | "desc";
+  paymentStatus?: string;
+  fulfillmentStatus?: string;
+}) {
+  const params = new URLSearchParams();
+
+  if (sortBy && sortBy !== "date") {
+    params.set("sortBy", sortBy);
+  }
+
+  if (sortOrder && sortOrder !== "desc") {
+    params.set("sortOrder", sortOrder);
+  }
+
+  if (paymentStatus && paymentStatus !== "all") {
+    params.set("paymentStatus", paymentStatus);
+  }
+
+  if (fulfillmentStatus && fulfillmentStatus !== "all") {
+    params.set("fulfillmentStatus", fulfillmentStatus);
+  }
+
+  const search = params.toString();
+  return search
+    ? `/admin/orders/all-orders?${search}`
+    : "/admin/orders/all-orders";
 }
 
 const AdminOverviewPage = async () => {
@@ -103,94 +144,116 @@ const AdminOverviewPage = async () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <BadgeDollarSign />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(totalRevenue)}
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Lifetime gross sales across all paid and unpaid orders.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Trend</CardTitle>
-            <CreditCard />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {revenueChange >= 0 ? "+" : ""}
-              {revenueChange.toFixed(1)}%
-            </div>
-            <Badge variant={getBadgeVariant(revenueChange)} className="mt-2">
-              {formatCurrency(currentMonthSales)} this month
-            </Badge>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Average Order Value
-            </CardTitle>
-            <ShoppingCart />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(averageOrderValue)}
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Based on {formatNumber(summary.ordersCount)} total orders.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Customers</CardTitle>
-            <Users />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatNumber(summary.usersCount)}
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Registered shoppers with active account history.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Catalog</CardTitle>
-            <Barcode />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatNumber(summary.productCounts)}
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Active products currently available in the catalog.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Fulfillment</CardTitle>
-            <Truck />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {fulfillmentRate.toFixed(0)}%
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              {formatNumber(summary.deliveredOrdersCount)} delivered and{" "}
-              {formatNumber(summary.processingOrdersCount)} still in queue.
-            </p>
-          </CardContent>
-        </Card>
+        <Link
+          href={buildAllOrdersHref({ sortBy: "total" })}
+          className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Revenue
+              </CardTitle>
+              <BadgeDollarSign />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {formatCurrency(totalRevenue)}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Lifetime gross sales across all paid and unpaid orders.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/admin/orders" className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Monthly Trend
+              </CardTitle>
+              <CreditCard />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {revenueChange >= 0 ? "+" : ""}
+                {revenueChange.toFixed(1)}%
+              </div>
+              <Badge variant={getBadgeVariant(revenueChange)} className="mt-2">
+                {formatCurrency(currentMonthSales)} this month
+              </Badge>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link
+          href={buildAllOrdersHref({ sortBy: "total" })}
+          className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Average Order Value
+              </CardTitle>
+              <ShoppingCart />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {formatCurrency(averageOrderValue)}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Based on {formatNumber(summary.ordersCount)} total orders.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/admin/users" className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Customers</CardTitle>
+              <Users />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {formatNumber(summary.usersCount)}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Registered shoppers with active account history.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/admin/products" className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Catalog</CardTitle>
+              <Barcode />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {formatNumber(summary.productCounts)}
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Active products currently available in the catalog.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link
+          href={buildAllOrdersHref({ sortBy: "fulfillmentStatus" })}
+          className="block h-full">
+          <Card className="h-full transition-colors hover:border-primary/40 hover:bg-muted/30">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Fulfillment</CardTitle>
+              <Truck />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {fulfillmentRate.toFixed(0)}%
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {formatNumber(summary.deliveredOrdersCount)} delivered and{" "}
+                {formatNumber(summary.processingOrdersCount)} still in queue.
+              </p>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-12">
@@ -208,7 +271,12 @@ const AdminOverviewPage = async () => {
             <CardTitle>Order health</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            <Link
+              href={buildAllOrdersHref({
+                paymentStatus: "PAID",
+                sortBy: "paymentStatus",
+              })}
+              className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:border-primary/40 hover:bg-muted/30">
               <div>
                 <p className="text-sm font-medium">Paid orders</p>
                 <p className="text-2xl font-semibold">
@@ -218,8 +286,13 @@ const AdminOverviewPage = async () => {
               <Badge variant="secondary">
                 {paidRate.toFixed(0)}% paid rate
               </Badge>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            </Link>
+            <Link
+              href={buildAllOrdersHref({
+                paymentStatus: "PENDING",
+                sortBy: "paymentStatus",
+              })}
+              className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:border-primary/40 hover:bg-muted/30">
               <div>
                 <p className="text-sm font-medium">Awaiting payment</p>
                 <p className="text-2xl font-semibold">
@@ -229,8 +302,13 @@ const AdminOverviewPage = async () => {
               <Badge variant={getStatusTone(summary.unpaidOrdersCount, 3)}>
                 Needs follow-up
               </Badge>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            </Link>
+            <Link
+              href={buildAllOrdersHref({
+                fulfillmentStatus: "PROCESSING",
+                sortBy: "fulfillmentStatus",
+              })}
+              className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:border-primary/40 hover:bg-muted/30">
               <div>
                 <p className="text-sm font-medium">In fulfillment</p>
                 <p className="text-2xl font-semibold">
@@ -240,7 +318,7 @@ const AdminOverviewPage = async () => {
               <Badge variant={getStatusTone(summary.processingOrdersCount, 5)}>
                 Shipping queue
               </Badge>
-            </div>
+            </Link>
           </CardContent>
         </Card>
 
@@ -250,7 +328,9 @@ const AdminOverviewPage = async () => {
             <AlertTriangle className="size-4 text-amber-600" />
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between rounded-lg border p-4">
+            <Link
+              href="/admin/products"
+              className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:border-primary/40 hover:bg-muted/30">
               <div>
                 <p className="text-sm font-medium">Low-stock SKUs</p>
                 <p className="text-2xl font-semibold">
@@ -265,14 +345,15 @@ const AdminOverviewPage = async () => {
                 }>
                 Threshold: 5 units
               </Badge>
-            </div>
+            </Link>
 
             <div className="space-y-3">
               {summary.lowStockProducts.length > 0 ? (
                 summary.lowStockProducts.map((product: any) => (
-                  <div
+                  <Link
                     key={product.id}
-                    className="flex items-center justify-between rounded-lg border p-3">
+                    href={`/admin/products/${product.id}`}
+                    className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:border-primary/40 hover:bg-muted/30">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">
                         {product.name}
@@ -285,13 +366,11 @@ const AdminOverviewPage = async () => {
                       <Badge variant={getStatusTone(product.stock, 2)}>
                         {product.stock} left
                       </Badge>
-                      <Link
-                        href={`/admin/products/${product.id}`}
-                        className="text-xs font-medium text-primary underline-offset-4 hover:underline">
+                      <span className="text-xs font-medium text-primary underline-offset-4 hover:underline">
                         Restock
-                      </Link>
+                      </span>
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p className="text-sm text-muted-foreground">
@@ -322,38 +401,84 @@ const AdminOverviewPage = async () => {
               <TableBody>
                 {summary.latestSales
                   .map((order: any) => convertPrismaObjectToJSObject(order))
-                  .map((order: Order) => (
-                    <TableRow key={order.id}>
-                      <TableCell>
-                        {order?.user?.name ? order.user.name : "Deleted User"}
-                      </TableCell>
-                      <TableCell>
-                        {formatDateTime(new Date(order.createdAt)).dateOnly}
-                      </TableCell>
-                      <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-2">
-                          <Badge
-                            variant={
-                              order.isPaid ? "secondary" : "destructive"
-                            }>
-                            {order.isPaid ? "Paid" : "Unpaid"}
-                          </Badge>
-                          <Badge
-                            variant={
-                              order.isDelivered ? "secondary" : "outline"
-                            }>
-                            {order.isDelivered ? "Delivered" : "Processing"}
-                          </Badge>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Link href={`/order/${order.id}`}>
-                          <span className="px-2">Details</span>
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  .map((order: any) => {
+                    const orderHref = `/order/${order.id}`;
+
+                    return (
+                      <TableRow key={order.id} className="hover:bg-muted/40">
+                        <TableCell className="p-0">
+                          <Link
+                            href={orderHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-3">
+                            <div className="space-y-1">
+                              <div className="font-medium">
+                                {order?.user?.name
+                                  ? order.user.name
+                                  : "Deleted User"}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {formatId(order.id)}
+                              </div>
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0">
+                          <Link
+                            href={orderHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-3">
+                            {formatDateTime(new Date(order.createdAt)).dateOnly}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0">
+                          <Link
+                            href={orderHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-3">
+                            {formatCurrency(order.totalPrice)}
+                          </Link>
+                        </TableCell>
+                        <TableCell className="p-0">
+                          <Link
+                            href={orderHref}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block px-4 py-3">
+                            <div className="flex flex-wrap gap-2">
+                              <Badge
+                                variant={getOrderPaymentStatusTone(
+                                  order.paymentStatus,
+                                )}>
+                                {getOrderPaymentStatusLabel(
+                                  order.paymentStatus,
+                                )}
+                              </Badge>
+                              <Badge
+                                variant={getOrderFulfillmentStatusTone(
+                                  order.fulfillmentStatus,
+                                )}>
+                                {getOrderFulfillmentStatusLabel(
+                                  order.fulfillmentStatus,
+                                )}
+                              </Badge>
+                            </div>
+                          </Link>
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            href={orderHref}
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            <span className="px-2">Details</span>
+                          </Link>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
               </TableBody>
             </Table>
           </CardContent>
@@ -365,9 +490,10 @@ const AdminOverviewPage = async () => {
           </CardHeader>
           <CardContent className="space-y-3">
             {summary.topProducts.map((product: any, index: number) => (
-              <div
+              <Link
                 key={product.productId}
-                className="flex items-center justify-between rounded-lg border p-3">
+                href={`/admin/products/${product.productId}`}
+                className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:border-primary/40 hover:bg-muted/30">
                 <div className="min-w-0">
                   <p className="text-sm font-medium">
                     {index + 1}. {product.name}
@@ -380,13 +506,11 @@ const AdminOverviewPage = async () => {
                   <p className="text-sm font-semibold">
                     {formatCurrency(product.revenue)}
                   </p>
-                  <Link
-                    href={`/product/${product.slug}`}
-                    className="text-xs text-primary underline-offset-4 hover:underline">
-                    View PDP
-                  </Link>
+                  <span className="text-xs text-primary underline-offset-4 hover:underline">
+                    Open product
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>
@@ -400,14 +524,15 @@ const AdminOverviewPage = async () => {
           </CardHeader>
           <CardContent className="space-y-3">
             {summary.topCategories.map((item: any) => (
-              <div
+              <Link
                 key={item.category}
-                className="flex items-center justify-between rounded-lg border p-3">
+                href="/admin/categories"
+                className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:border-primary/40 hover:bg-muted/30">
                 <p className="text-sm font-medium">{item.category}</p>
                 <Badge variant="outline">
                   {formatNumber(Number(item.productCount))} products
                 </Badge>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>

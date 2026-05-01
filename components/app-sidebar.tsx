@@ -1,23 +1,12 @@
 "use client";
 
-import {
-  IconAffiliate,
-  IconBrandProducthunt,
-  IconCamera,
-  IconCategory,
-  IconCategoryMinus,
-  IconCategoryPlus,
-  IconChartBar,
-  IconDashboard,
-  IconFileAi,
-  IconFileDescription,
-  IconHome,
-  IconListDetails,
-  IconUsers,
-  IconUserStar,
-} from "@tabler/icons-react";
+import { IconUserStar } from "@tabler/icons-react";
 import * as React from "react";
 
+import {
+  adminCatalogNavItems,
+  adminPrimaryNavItems,
+} from "@/app/admin/navigation";
 import { NavDocuments } from "@/components/nav-documents";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
@@ -40,114 +29,16 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/admin/overview",
-      icon: IconDashboard,
-    },
-    {
-      title: "Orders",
-      url: "/admin/orders",
-      icon: IconListDetails,
-    },
-    {
-      title: "Users",
-      url: "/admin/users",
-      icon: IconUsers,
-    },
-    {
-      title: "Home Page",
-      url: "/admin/homepage",
-      icon: IconHome,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
-
-  products: [
-    {
-      name: "Products",
-      url: "/admin/products",
-      icon: IconBrandProducthunt,
-    },
-    {
-      name: "Brands",
-      url: "/admin/brands",
-      icon: IconAffiliate,
-    },
-    {
-      name: "Category Tags",
-      url: "/admin/category-tags",
-      icon: IconAffiliate,
-    },
-    {
-      name: "Categories",
-      url: "/admin/categories",
-      icon: IconCategory,
-    },
-    {
-      name: "Sub Categories",
-      url: "/admin/sub-categories",
-      icon: IconCategoryPlus,
-    },
-    {
-      name: "Sub Sub Categories",
-      url: "/admin/sub-sub-categories",
-      icon: IconCategoryMinus,
-    },
-  ],
+  navMain: adminPrimaryNavItems.map(({ title, href, icon }) => ({
+    title,
+    url: href,
+    icon,
+  })),
+  products: adminCatalogNavItems.map(({ title, href, icon }) => ({
+    name: title,
+    url: href,
+    icon,
+  })),
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -158,9 +49,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem className="flex flex-row justify-between items-center">
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5">
-              <a href="#">
-                <IconUserStar className="!size-5" />
+              className="data-[slot=sidebar-menu-button]:p-1.5!">
+              <a href="/admin/overview">
+                <IconUserStar className="size-5!" />
                 <span className="text-base font-semibold">Admin Panel</span>
               </a>
             </SidebarMenuButton>
@@ -176,7 +67,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments title="Products" items={data.products} />
+        <NavDocuments title="Catalog" items={data.products} />
         <div className="px-2 pt-6 w-full">
           <AdminSearch />
         </div>

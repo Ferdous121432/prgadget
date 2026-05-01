@@ -2,6 +2,7 @@
 
 import { prisma } from "@/db/prisma";
 import { getCachedData } from "@/lib/cache/redis";
+import { stripHtml } from "@/lib/html";
 import { vectorIndex } from "@/lib/vector/config";
 import { ProductSchemaPublic, ProductWithIds } from "@/types";
 import { InferenceClient } from "@huggingface/inference";
@@ -151,7 +152,7 @@ export async function upsertProductVector(
     // Create searchable text from product data
     const searchText = [
       normalizedProduct.name,
-      normalizedProduct.description,
+      stripHtml(normalizedProduct.description),
       normalizedProduct.mainCategory,
       normalizedProduct.subCategory,
       normalizedProduct.subSubCategory,
@@ -271,7 +272,7 @@ export async function syncAllProductsToVector() {
           // Create searchable text
           const searchText = [
             normalizedProduct.name,
-            normalizedProduct.description,
+            stripHtml(normalizedProduct.description),
             normalizedProduct.mainCategory,
             normalizedProduct.subCategory,
             normalizedProduct.subSubCategory,
@@ -501,14 +502,35 @@ export async function vectorSearchProducts({
         filteredResults.sort((a, b) => {
           const aData = a.metadata as any;
           const bData = b.metadata as any;
+          const aName = String(aData.name ?? "").toLowerCase();
+          const bName = String(bData.name ?? "").toLowerCase();
+          const aPrice = Number(aData.price ?? 0);
+          const bPrice = Number(bData.price ?? 0);
+          const aRating = Number(aData.rating ?? 0);
+          const bRating = Number(bData.rating ?? 0);
+          const aStock = Number(aData.stock ?? 0);
+          const bStock = Number(bData.stock ?? 0);
 
           switch (sort) {
+            case "name-asc":
+              return aName.localeCompare(bName);
+            case "name-desc":
+              return bName.localeCompare(aName);
+            case "price-asc":
             case "lowest":
-              return aData.price - bData.price;
+              return aPrice - bPrice;
+            case "price-desc":
             case "highest":
-              return bData.price - aData.price;
+              return bPrice - aPrice;
+            case "stock-asc":
+              return aStock - bStock;
+            case "stock-desc":
+              return bStock - aStock;
+            case "rating-asc":
+              return aRating - bRating;
+            case "rating-desc":
             case "rating":
-              return bData.rating - aData.rating;
+              return bRating - aRating;
             case "newest":
             default:
               return (
@@ -621,11 +643,21 @@ async function fallbackSearch({
   }
 
   let orderBy: any = { createdAt: "desc" };
-  if (sort === "lowest") {
+  if (sort === "name-asc") {
+    orderBy = { name: "asc" };
+  } else if (sort === "name-desc") {
+    orderBy = { name: "desc" };
+  } else if (sort === "price-asc" || sort === "lowest") {
     orderBy = { price: "asc" };
-  } else if (sort === "highest") {
+  } else if (sort === "price-desc" || sort === "highest") {
     orderBy = { price: "desc" };
-  } else if (sort === "rating") {
+  } else if (sort === "stock-asc") {
+    orderBy = { stock: "asc" };
+  } else if (sort === "stock-desc") {
+    orderBy = { stock: "desc" };
+  } else if (sort === "rating-asc") {
+    orderBy = { rating: "asc" };
+  } else if (sort === "rating-desc" || sort === "rating") {
     orderBy = { rating: "desc" };
   }
 

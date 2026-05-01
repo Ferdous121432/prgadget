@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import HtmlEditor from "@/components/ui/html-editor";
 import { insertProductSchema } from "@/lib/validators";
 import { ProductSchema, ProductWithId } from "@/types";
 import React from "react";
@@ -67,7 +67,7 @@ function Details() {
                     onClick={() => {
                       form.setValue(
                         "slug",
-                        slugify(form.getValues("name"), { lower: true })
+                        slugify(form.getValues("name"), { lower: true }),
                       );
                     }}>
                     Generate
@@ -139,12 +139,15 @@ function Details() {
             <FormItem className="w-full">
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Enter product description"
-                  className="resize-none"
-                  {...field}
+                <HtmlEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Write a polished HTML description with headings, lists, quotes, and links"
                 />
               </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Use headings, lists, and links for SEO-friendly structured copy.
+              </p>
               <FormMessage />
             </FormItem>
           )}

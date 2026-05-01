@@ -56,6 +56,7 @@ type ShippingAddressBookProps = {
   addresses: SavedShippingAddress[];
   selectedAddressId?: string | null;
   legacyAddress?: SavedShippingAddress | null;
+  mode?: "checkout" | "account";
 };
 
 function createNewAddressTemplate(
@@ -318,9 +319,11 @@ const ShippingAddressForm = ({
   addresses,
   selectedAddressId,
   legacyAddress,
+  mode = "checkout",
 }: ShippingAddressBookProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const isCheckoutMode = mode === "checkout";
 
   const selectedAddress = useMemo(
     () =>
@@ -372,10 +375,18 @@ const ShippingAddressForm = ({
       }
 
       jsxToasts.successWithIcon({
-        title: "Shipping address selected",
-        message: "Continuing to payment method",
+        title: isCheckoutMode
+          ? "Shipping address selected"
+          : "Address updated for your account",
+        message: isCheckoutMode
+          ? "Continuing to payment method"
+          : "This address will be used for your next order.",
       });
-      router.push("/payment-method");
+
+      if (isCheckoutMode) {
+        router.push("/payment-method");
+      }
+
       router.refresh();
     });
   };
@@ -426,6 +437,10 @@ const ShippingAddressForm = ({
   };
 
   const handleContinue = () => {
+    if (!isCheckoutMode) {
+      return;
+    }
+
     if (!selectedAddress) {
       jsxToasts.errorWithIcon(
         "Select a shipping address first",
@@ -442,10 +457,13 @@ const ShippingAddressForm = ({
       <div className="space-y-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="h2-bold">Shipping Address</h1>
+            <h1 className="h2-bold">
+              {isCheckoutMode ? "Shipping Address" : "Address Book"}
+            </h1>
             <p className="text-sm text-muted-foreground">
-              Save multiple delivery addresses, choose one for this checkout,
-              and keep a default ready for future orders.
+              {isCheckoutMode
+                ? "Save multiple delivery addresses, choose one for this checkout, and keep a default ready for future orders."
+                : "Manage saved delivery addresses, choose your default, and keep your next order ready with one click."}
             </p>
           </div>
           <Button
@@ -492,7 +510,9 @@ const ShippingAddressForm = ({
                       </CardTitle>
                       <CardDescription>
                         {isSelected
-                          ? "Selected for this checkout"
+                          ? isCheckoutMode
+                            ? "Selected for this checkout"
+                            : "Selected for your next order"
                           : "Saved delivery address"}
                       </CardDescription>
                     </div>
@@ -526,7 +546,7 @@ const ShippingAddressForm = ({
                         disabled={isPending}
                         onClick={() => handleSelectAddress(address.id!)}>
                         <CheckCircle2 className="size-4" />
-                        Deliver here
+                        {isCheckoutMode ? "Deliver here" : "Use next"}
                       </Button>
                     ) : null}
 
@@ -575,7 +595,9 @@ const ShippingAddressForm = ({
               <div className="space-y-1">
                 <p className="font-medium">No saved shipping addresses yet</p>
                 <p className="text-sm text-muted-foreground">
-                  Add your first delivery address to continue checkout.
+                  {isCheckoutMode
+                    ? "Add your first delivery address to continue checkout."
+                    : "Add your first delivery address so future orders are faster to place."}
                 </p>
               </div>
             </CardContent>
@@ -597,9 +619,13 @@ const ShippingAddressForm = ({
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Checkout selection</CardTitle>
+            <CardTitle className="text-base">
+              {isCheckoutMode ? "Checkout selection" : "Selected address"}
+            </CardTitle>
             <CardDescription>
-              Continue with the address currently selected for this order.
+              {isCheckoutMode
+                ? "Continue with the address currently selected for this order."
+                : "This address is currently selected on your account for the next order."}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -611,18 +637,22 @@ const ShippingAddressForm = ({
               </div>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Save or choose a shipping address to continue.
+                {isCheckoutMode
+                  ? "Save or choose a shipping address to continue."
+                  : "Save or choose a shipping address to keep your account ready for checkout."}
               </p>
             )}
 
-            <Button
-              type="button"
-              className="w-full button-primary"
-              disabled={!selectedAddress || isPending}
-              onClick={handleContinue}>
-              Continue to payment
-              <ArrowRight className="size-4" />
-            </Button>
+            {isCheckoutMode ? (
+              <Button
+                type="button"
+                className="w-full button-primary"
+                disabled={!selectedAddress || isPending}
+                onClick={handleContinue}>
+                Continue to payment
+                <ArrowRight className="size-4" />
+              </Button>
+            ) : null}
           </CardContent>
         </Card>
       </div>

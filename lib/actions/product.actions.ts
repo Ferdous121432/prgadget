@@ -14,6 +14,7 @@ import {
   invalidateProductCaches,
 } from "../cache/redis";
 import { Prisma } from "../generated/prisma";
+import { sanitizeRichTextHtml } from "../html";
 import { convertPrismaObjectToJSObject, formatError } from "../utils";
 import {
   deleteProductVector,
@@ -182,6 +183,62 @@ function escapeSqlLiteral(value: string) {
   return value.replace(/'/g, "''");
 }
 
+function getProductOrderBy(
+  sort?: string,
+): Prisma.ProductOrderByWithRelationInput[] {
+  switch (sort) {
+    case "name-asc":
+      return [{ name: "asc" }, { createdAt: "desc" }];
+    case "name-desc":
+      return [{ name: "desc" }, { createdAt: "desc" }];
+    case "price-asc":
+    case "lowest":
+      return [{ price: "asc" }, { createdAt: "desc" }];
+    case "price-desc":
+    case "highest":
+      return [{ price: "desc" }, { createdAt: "desc" }];
+    case "stock-asc":
+      return [{ stock: "asc" }, { createdAt: "desc" }];
+    case "stock-desc":
+      return [{ stock: "desc" }, { createdAt: "desc" }];
+    case "rating-asc":
+      return [{ rating: "asc" }, { createdAt: "desc" }];
+    case "rating-desc":
+    case "rating":
+      return [{ rating: "desc" }, { createdAt: "desc" }];
+    case "newest":
+    default:
+      return [{ createdAt: "desc" }];
+  }
+}
+
+function getProductSqlOrderBy(sort?: string) {
+  switch (sort) {
+    case "name-asc":
+      return 'LOWER(name) ASC, "createdAt" DESC';
+    case "name-desc":
+      return 'LOWER(name) DESC, "createdAt" DESC';
+    case "price-asc":
+    case "lowest":
+      return 'price ASC, "createdAt" DESC';
+    case "price-desc":
+    case "highest":
+      return 'price DESC, "createdAt" DESC';
+    case "stock-asc":
+      return 'stock ASC, "createdAt" DESC';
+    case "stock-desc":
+      return 'stock DESC, "createdAt" DESC';
+    case "rating-asc":
+      return 'rating ASC, "createdAt" DESC';
+    case "rating-desc":
+    case "rating":
+      return 'rating DESC, "createdAt" DESC';
+    case "newest":
+    default:
+      return '"createdAt" DESC';
+  }
+}
+
 //Create a new product
 export async function createProduct(data: Product) {
   try {
@@ -209,6 +266,7 @@ export async function createProduct(data: Product) {
 
     const createData: any = {
       ...restData,
+      description: sanitizeRichTextHtml(restData.description),
       brand: brand.name,
     };
 
@@ -305,6 +363,7 @@ export async function updateProduct(data: ProductWithId) {
 
     const updateData: any = {
       ...restData,
+      description: sanitizeRichTextHtml(restData.description),
       brand: brand.name,
     };
 
@@ -619,14 +678,7 @@ export async function getAllProducts({
       if (!query || query === "all") {
         const data = await prisma.product.findMany({
           where: whereClause,
-          orderBy:
-            sort === "lowest"
-              ? { price: "asc" }
-              : sort === "highest"
-                ? { price: "desc" }
-                : sort === "rating"
-                  ? { rating: "desc" }
-                  : { createdAt: "desc" },
+          orderBy: getProductOrderBy(sort),
           skip: (page - 1) * limit,
           take: limit,
         });
@@ -752,15 +804,7 @@ export async function getAllProducts({
     ${ratingCondition}
     ORDER BY 
       relevance_score DESC,
-      ${
-        sort === "lowest"
-          ? "price ASC"
-          : sort === "highest"
-            ? "price DESC"
-            : sort === "rating"
-              ? "rating DESC"
-              : '"createdAt" DESC'
-      }
+      ${getProductSqlOrderBy(sort)}
     LIMIT $${searchTerms.length + 2}
     OFFSET $${searchTerms.length + 3}
   `;

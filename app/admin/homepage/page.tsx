@@ -326,8 +326,8 @@ const AdminHomePage = async (props: {
         </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-12">
-        <Card className="xl:col-span-6">
+      <div className="grid w-full gap-4 xl:flex xl:flex-row">
+        <Card className="w-full">
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
               <CardTitle>Featured Products Rail</CardTitle>
@@ -373,7 +373,7 @@ const AdminHomePage = async (props: {
           </CardContent>
         </Card>
 
-        <Card className="xl:col-span-6">
+        <Card className="w-full">
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>
               <CardTitle>Latest Drops Rail</CardTitle>
@@ -419,7 +419,7 @@ const AdminHomePage = async (props: {
         </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-12">
+      <div className="grid gap-4 xl:flex">
         <Card className="xl:col-span-6">
           <CardHeader className="flex flex-row items-start justify-between gap-4">
             <div>

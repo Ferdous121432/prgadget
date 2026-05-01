@@ -11,7 +11,12 @@ import {
   signUpFormSchema,
   updateProfileSchema,
 } from "@/lib/validators";
-import { PaymentMethod, SavedShippingAddress, ShippingAddress } from "@/types";
+import {
+  PaymentMethod,
+  SavedShippingAddress,
+  ShippingAddress,
+  UpdateUserProfile,
+} from "@/types";
 import { hashSync } from "bcrypt-ts-edge";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -471,10 +476,7 @@ export async function updateUserPaymentMethod(paymentMethod: PaymentMethod) {
 }
 
 // Update user profile
-export async function updateUserProfile(profileData: {
-  name: string;
-  email: string;
-}) {
+export async function updateUserProfile(profileData: UpdateUserProfile) {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -493,6 +495,7 @@ export async function updateUserProfile(profileData: {
       where: { id: userId },
       data: {
         name: parsedProfileData.name,
+        phone: toNullableString(parsedProfileData.phone),
       },
     });
 

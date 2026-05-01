@@ -8,6 +8,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import "./globals.css";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,8 +75,10 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem
           disableTransitionOnChange>
-          <Toaster position="top-center" closeButton />
-          {children}
+          <Providers>
+            <Toaster position="top-center" closeButton />
+            {children}
+          </Providers>
         </ThemeProvider>
         <SpeedInsights />
       </body>

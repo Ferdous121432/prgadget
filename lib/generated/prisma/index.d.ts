@@ -89,10 +89,20 @@ export type Cart = $Result.DefaultSelection<Prisma.$CartPayload>
  */
 export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
 /**
+ * Model DeletedOrder
+ * 
+ */
+export type DeletedOrder = $Result.DefaultSelection<Prisma.$DeletedOrderPayload>
+/**
  * Model OrderItem
  * 
  */
 export type OrderItem = $Result.DefaultSelection<Prisma.$OrderItemPayload>
+/**
+ * Model DeletedOrderItem
+ * 
+ */
+export type DeletedOrderItem = $Result.DefaultSelection<Prisma.$DeletedOrderItemPayload>
 /**
  * Model Review
  * 
@@ -103,6 +113,42 @@ export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
  * 
  */
 export type HomePageSlider = $Result.DefaultSelection<Prisma.$HomePageSliderPayload>
+
+/**
+ * Enums
+ */
+export namespace $Enums {
+  export const OrderPaymentStatus: {
+  COD: 'COD',
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED'
+};
+
+export type OrderPaymentStatus = (typeof OrderPaymentStatus)[keyof typeof OrderPaymentStatus]
+
+
+export const OrderFulfillmentStatus: {
+  PLACED: 'PLACED',
+  PROCESSING: 'PROCESSING',
+  SHIPPED: 'SHIPPED',
+  DELIVERED: 'DELIVERED',
+  CANCELLED: 'CANCELLED',
+  RETURNED: 'RETURNED'
+};
+
+export type OrderFulfillmentStatus = (typeof OrderFulfillmentStatus)[keyof typeof OrderFulfillmentStatus]
+
+}
+
+export type OrderPaymentStatus = $Enums.OrderPaymentStatus
+
+export const OrderPaymentStatus: typeof $Enums.OrderPaymentStatus
+
+export type OrderFulfillmentStatus = $Enums.OrderFulfillmentStatus
+
+export const OrderFulfillmentStatus: typeof $Enums.OrderFulfillmentStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -373,6 +419,16 @@ export class PrismaClient<
   get order(): Prisma.OrderDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.deletedOrder`: Exposes CRUD operations for the **DeletedOrder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeletedOrders
+    * const deletedOrders = await prisma.deletedOrder.findMany()
+    * ```
+    */
+  get deletedOrder(): Prisma.DeletedOrderDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.orderItem`: Exposes CRUD operations for the **OrderItem** model.
     * Example usage:
     * ```ts
@@ -381,6 +437,16 @@ export class PrismaClient<
     * ```
     */
   get orderItem(): Prisma.OrderItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.deletedOrderItem`: Exposes CRUD operations for the **DeletedOrderItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DeletedOrderItems
+    * const deletedOrderItems = await prisma.deletedOrderItem.findMany()
+    * ```
+    */
+  get deletedOrderItem(): Prisma.DeletedOrderItemDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.review`: Exposes CRUD operations for the **Review** model.
@@ -857,7 +923,9 @@ export namespace Prisma {
     Authenticator: 'Authenticator',
     Cart: 'Cart',
     Order: 'Order',
+    DeletedOrder: 'DeletedOrder',
     OrderItem: 'OrderItem',
+    DeletedOrderItem: 'DeletedOrderItem',
     Review: 'Review',
     HomePageSlider: 'HomePageSlider'
   };
@@ -878,7 +946,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "categoryTag" | "productCategoryTag" | "mainCategory" | "subCategory" | "subSubCategory" | "brand" | "product" | "user" | "userShippingAddress" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "orderItem" | "review" | "homePageSlider"
+      modelProps: "categoryTag" | "productCategoryTag" | "mainCategory" | "subCategory" | "subSubCategory" | "brand" | "product" | "user" | "userShippingAddress" | "account" | "session" | "verificationToken" | "authenticator" | "cart" | "order" | "deletedOrder" | "orderItem" | "deletedOrderItem" | "review" | "homePageSlider"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1992,6 +2060,80 @@ export namespace Prisma {
           }
         }
       }
+      DeletedOrder: {
+        payload: Prisma.$DeletedOrderPayload<ExtArgs>
+        fields: Prisma.DeletedOrderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeletedOrderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeletedOrderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          findFirst: {
+            args: Prisma.DeletedOrderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeletedOrderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          findMany: {
+            args: Prisma.DeletedOrderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>[]
+          }
+          create: {
+            args: Prisma.DeletedOrderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          createMany: {
+            args: Prisma.DeletedOrderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeletedOrderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>[]
+          }
+          delete: {
+            args: Prisma.DeletedOrderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          update: {
+            args: Prisma.DeletedOrderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeletedOrderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeletedOrderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeletedOrderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeletedOrderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderPayload>
+          }
+          aggregate: {
+            args: Prisma.DeletedOrderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeletedOrder>
+          }
+          groupBy: {
+            args: Prisma.DeletedOrderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeletedOrderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeletedOrderCountArgs<ExtArgs>
+            result: $Utils.Optional<DeletedOrderCountAggregateOutputType> | number
+          }
+        }
+      }
       OrderItem: {
         payload: Prisma.$OrderItemPayload<ExtArgs>
         fields: Prisma.OrderItemFieldRefs
@@ -2063,6 +2205,80 @@ export namespace Prisma {
           count: {
             args: Prisma.OrderItemCountArgs<ExtArgs>
             result: $Utils.Optional<OrderItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      DeletedOrderItem: {
+        payload: Prisma.$DeletedOrderItemPayload<ExtArgs>
+        fields: Prisma.DeletedOrderItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DeletedOrderItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DeletedOrderItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          findFirst: {
+            args: Prisma.DeletedOrderItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DeletedOrderItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          findMany: {
+            args: Prisma.DeletedOrderItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>[]
+          }
+          create: {
+            args: Prisma.DeletedOrderItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          createMany: {
+            args: Prisma.DeletedOrderItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DeletedOrderItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>[]
+          }
+          delete: {
+            args: Prisma.DeletedOrderItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          update: {
+            args: Prisma.DeletedOrderItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.DeletedOrderItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DeletedOrderItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DeletedOrderItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.DeletedOrderItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DeletedOrderItemPayload>
+          }
+          aggregate: {
+            args: Prisma.DeletedOrderItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDeletedOrderItem>
+          }
+          groupBy: {
+            args: Prisma.DeletedOrderItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DeletedOrderItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DeletedOrderItemCountArgs<ExtArgs>
+            result: $Utils.Optional<DeletedOrderItemCountAggregateOutputType> | number
           }
         }
       }
@@ -2325,7 +2541,9 @@ export namespace Prisma {
     authenticator?: AuthenticatorOmit
     cart?: CartOmit
     order?: OrderOmit
+    deletedOrder?: DeletedOrderOmit
     orderItem?: OrderItemOmit
+    deletedOrderItem?: DeletedOrderItemOmit
     review?: ReviewOmit
     homePageSlider?: HomePageSliderOmit
   }
@@ -2769,6 +2987,37 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountOrderItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderItemWhereInput
+  }
+
+
+  /**
+   * Count Type DeletedOrderCountOutputType
+   */
+
+  export type DeletedOrderCountOutputType = {
+    orderItems: number
+  }
+
+  export type DeletedOrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItems?: boolean | DeletedOrderCountOutputTypeCountOrderItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DeletedOrderCountOutputType without action
+   */
+  export type DeletedOrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderCountOutputType
+     */
+    select?: DeletedOrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DeletedOrderCountOutputType without action
+   */
+  export type DeletedOrderCountOutputTypeCountOrderItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeletedOrderItemWhereInput
   }
 
 
@@ -18812,6 +19061,8 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     paymentMethod: string | null
+    paymentStatus: $Enums.OrderPaymentStatus | null
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus | null
     itemsPrice: Decimal | null
     totalPrice: Decimal | null
     shippingPrice: Decimal | null
@@ -18828,6 +19079,8 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     paymentMethod: string | null
+    paymentStatus: $Enums.OrderPaymentStatus | null
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus | null
     itemsPrice: Decimal | null
     totalPrice: Decimal | null
     shippingPrice: Decimal | null
@@ -18846,6 +19099,8 @@ export namespace Prisma {
     shippingAddress: number
     paymentMethod: number
     paymentResult: number
+    paymentStatus: number
+    fulfillmentStatus: number
     itemsPrice: number
     totalPrice: number
     shippingPrice: number
@@ -18878,6 +19133,8 @@ export namespace Prisma {
     id?: true
     userId?: true
     paymentMethod?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     itemsPrice?: true
     totalPrice?: true
     shippingPrice?: true
@@ -18894,6 +19151,8 @@ export namespace Prisma {
     id?: true
     userId?: true
     paymentMethod?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     itemsPrice?: true
     totalPrice?: true
     shippingPrice?: true
@@ -18912,6 +19171,8 @@ export namespace Prisma {
     shippingAddress?: true
     paymentMethod?: true
     paymentResult?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
     itemsPrice?: true
     totalPrice?: true
     shippingPrice?: true
@@ -19017,6 +19278,8 @@ export namespace Prisma {
     shippingAddress: JsonValue
     paymentMethod: string
     paymentResult: JsonValue | null
+    paymentStatus: $Enums.OrderPaymentStatus
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus
     itemsPrice: Decimal
     totalPrice: Decimal
     shippingPrice: Decimal
@@ -19054,6 +19317,8 @@ export namespace Prisma {
     shippingAddress?: boolean
     paymentMethod?: boolean
     paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     itemsPrice?: boolean
     totalPrice?: boolean
     shippingPrice?: boolean
@@ -19075,6 +19340,8 @@ export namespace Prisma {
     shippingAddress?: boolean
     paymentMethod?: boolean
     paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     itemsPrice?: boolean
     totalPrice?: boolean
     shippingPrice?: boolean
@@ -19094,6 +19361,8 @@ export namespace Prisma {
     shippingAddress?: boolean
     paymentMethod?: boolean
     paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     itemsPrice?: boolean
     totalPrice?: boolean
     shippingPrice?: boolean
@@ -19113,6 +19382,8 @@ export namespace Prisma {
     shippingAddress?: boolean
     paymentMethod?: boolean
     paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
     itemsPrice?: boolean
     totalPrice?: boolean
     shippingPrice?: boolean
@@ -19125,7 +19396,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "shippingAddress" | "paymentMethod" | "paymentResult" | "itemsPrice" | "totalPrice" | "shippingPrice" | "taxPrice" | "isPaid" | "paidAt" | "isDelivered" | "deliveredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "shippingAddress" | "paymentMethod" | "paymentResult" | "paymentStatus" | "fulfillmentStatus" | "itemsPrice" | "totalPrice" | "shippingPrice" | "taxPrice" | "isPaid" | "paidAt" | "isDelivered" | "deliveredAt" | "createdAt" | "updatedAt", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     orderItems?: boolean | Order$orderItemsArgs<ExtArgs>
@@ -19150,6 +19421,8 @@ export namespace Prisma {
       shippingAddress: Prisma.JsonValue
       paymentMethod: string
       paymentResult: Prisma.JsonValue | null
+      paymentStatus: $Enums.OrderPaymentStatus
+      fulfillmentStatus: $Enums.OrderFulfillmentStatus
       itemsPrice: Prisma.Decimal
       totalPrice: Prisma.Decimal
       shippingPrice: Prisma.Decimal
@@ -19590,6 +19863,8 @@ export namespace Prisma {
     readonly shippingAddress: FieldRef<"Order", 'Json'>
     readonly paymentMethod: FieldRef<"Order", 'String'>
     readonly paymentResult: FieldRef<"Order", 'Json'>
+    readonly paymentStatus: FieldRef<"Order", 'OrderPaymentStatus'>
+    readonly fulfillmentStatus: FieldRef<"Order", 'OrderFulfillmentStatus'>
     readonly itemsPrice: FieldRef<"Order", 'Decimal'>
     readonly totalPrice: FieldRef<"Order", 'Decimal'>
     readonly shippingPrice: FieldRef<"Order", 'Decimal'>
@@ -20035,6 +20310,1361 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DeletedOrder
+   */
+
+  export type AggregateDeletedOrder = {
+    _count: DeletedOrderCountAggregateOutputType | null
+    _avg: DeletedOrderAvgAggregateOutputType | null
+    _sum: DeletedOrderSumAggregateOutputType | null
+    _min: DeletedOrderMinAggregateOutputType | null
+    _max: DeletedOrderMaxAggregateOutputType | null
+  }
+
+  export type DeletedOrderAvgAggregateOutputType = {
+    itemsPrice: Decimal | null
+    totalPrice: Decimal | null
+    shippingPrice: Decimal | null
+    taxPrice: Decimal | null
+  }
+
+  export type DeletedOrderSumAggregateOutputType = {
+    itemsPrice: Decimal | null
+    totalPrice: Decimal | null
+    shippingPrice: Decimal | null
+    taxPrice: Decimal | null
+  }
+
+  export type DeletedOrderMinAggregateOutputType = {
+    id: string | null
+    originalOrderId: string | null
+    userId: string | null
+    userName: string | null
+    userEmail: string | null
+    paymentMethod: string | null
+    paymentStatus: $Enums.OrderPaymentStatus | null
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus | null
+    itemsPrice: Decimal | null
+    totalPrice: Decimal | null
+    shippingPrice: Decimal | null
+    taxPrice: Decimal | null
+    isPaid: boolean | null
+    paidAt: Date | null
+    isDelivered: boolean | null
+    deliveredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+    deletedByUserId: string | null
+    deletedByUserName: string | null
+    deletedByUserEmail: string | null
+  }
+
+  export type DeletedOrderMaxAggregateOutputType = {
+    id: string | null
+    originalOrderId: string | null
+    userId: string | null
+    userName: string | null
+    userEmail: string | null
+    paymentMethod: string | null
+    paymentStatus: $Enums.OrderPaymentStatus | null
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus | null
+    itemsPrice: Decimal | null
+    totalPrice: Decimal | null
+    shippingPrice: Decimal | null
+    taxPrice: Decimal | null
+    isPaid: boolean | null
+    paidAt: Date | null
+    isDelivered: boolean | null
+    deliveredAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
+    deletedByUserId: string | null
+    deletedByUserName: string | null
+    deletedByUserEmail: string | null
+  }
+
+  export type DeletedOrderCountAggregateOutputType = {
+    id: number
+    originalOrderId: number
+    userId: number
+    userName: number
+    userEmail: number
+    shippingAddress: number
+    paymentMethod: number
+    paymentResult: number
+    paymentStatus: number
+    fulfillmentStatus: number
+    itemsPrice: number
+    totalPrice: number
+    shippingPrice: number
+    taxPrice: number
+    isPaid: number
+    paidAt: number
+    isDelivered: number
+    deliveredAt: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
+    deletedByUserId: number
+    deletedByUserName: number
+    deletedByUserEmail: number
+    _all: number
+  }
+
+
+  export type DeletedOrderAvgAggregateInputType = {
+    itemsPrice?: true
+    totalPrice?: true
+    shippingPrice?: true
+    taxPrice?: true
+  }
+
+  export type DeletedOrderSumAggregateInputType = {
+    itemsPrice?: true
+    totalPrice?: true
+    shippingPrice?: true
+    taxPrice?: true
+  }
+
+  export type DeletedOrderMinAggregateInputType = {
+    id?: true
+    originalOrderId?: true
+    userId?: true
+    userName?: true
+    userEmail?: true
+    paymentMethod?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
+    itemsPrice?: true
+    totalPrice?: true
+    shippingPrice?: true
+    taxPrice?: true
+    isPaid?: true
+    paidAt?: true
+    isDelivered?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    deletedByUserId?: true
+    deletedByUserName?: true
+    deletedByUserEmail?: true
+  }
+
+  export type DeletedOrderMaxAggregateInputType = {
+    id?: true
+    originalOrderId?: true
+    userId?: true
+    userName?: true
+    userEmail?: true
+    paymentMethod?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
+    itemsPrice?: true
+    totalPrice?: true
+    shippingPrice?: true
+    taxPrice?: true
+    isPaid?: true
+    paidAt?: true
+    isDelivered?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    deletedByUserId?: true
+    deletedByUserName?: true
+    deletedByUserEmail?: true
+  }
+
+  export type DeletedOrderCountAggregateInputType = {
+    id?: true
+    originalOrderId?: true
+    userId?: true
+    userName?: true
+    userEmail?: true
+    shippingAddress?: true
+    paymentMethod?: true
+    paymentResult?: true
+    paymentStatus?: true
+    fulfillmentStatus?: true
+    itemsPrice?: true
+    totalPrice?: true
+    shippingPrice?: true
+    taxPrice?: true
+    isPaid?: true
+    paidAt?: true
+    isDelivered?: true
+    deliveredAt?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
+    deletedByUserId?: true
+    deletedByUserName?: true
+    deletedByUserEmail?: true
+    _all?: true
+  }
+
+  export type DeletedOrderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeletedOrder to aggregate.
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrders to fetch.
+     */
+    orderBy?: DeletedOrderOrderByWithRelationInput | DeletedOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeletedOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeletedOrders
+    **/
+    _count?: true | DeletedOrderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeletedOrderAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeletedOrderSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeletedOrderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeletedOrderMaxAggregateInputType
+  }
+
+  export type GetDeletedOrderAggregateType<T extends DeletedOrderAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeletedOrder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeletedOrder[P]>
+      : GetScalarType<T[P], AggregateDeletedOrder[P]>
+  }
+
+
+
+
+  export type DeletedOrderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeletedOrderWhereInput
+    orderBy?: DeletedOrderOrderByWithAggregationInput | DeletedOrderOrderByWithAggregationInput[]
+    by: DeletedOrderScalarFieldEnum[] | DeletedOrderScalarFieldEnum
+    having?: DeletedOrderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeletedOrderCountAggregateInputType | true
+    _avg?: DeletedOrderAvgAggregateInputType
+    _sum?: DeletedOrderSumAggregateInputType
+    _min?: DeletedOrderMinAggregateInputType
+    _max?: DeletedOrderMaxAggregateInputType
+  }
+
+  export type DeletedOrderGroupByOutputType = {
+    id: string
+    originalOrderId: string
+    userId: string | null
+    userName: string | null
+    userEmail: string | null
+    shippingAddress: JsonValue
+    paymentMethod: string
+    paymentResult: JsonValue | null
+    paymentStatus: $Enums.OrderPaymentStatus
+    fulfillmentStatus: $Enums.OrderFulfillmentStatus
+    itemsPrice: Decimal
+    totalPrice: Decimal
+    shippingPrice: Decimal
+    taxPrice: Decimal
+    isPaid: boolean
+    paidAt: Date | null
+    isDelivered: boolean
+    deliveredAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date
+    deletedByUserId: string
+    deletedByUserName: string | null
+    deletedByUserEmail: string | null
+    _count: DeletedOrderCountAggregateOutputType | null
+    _avg: DeletedOrderAvgAggregateOutputType | null
+    _sum: DeletedOrderSumAggregateOutputType | null
+    _min: DeletedOrderMinAggregateOutputType | null
+    _max: DeletedOrderMaxAggregateOutputType | null
+  }
+
+  type GetDeletedOrderGroupByPayload<T extends DeletedOrderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeletedOrderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeletedOrderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeletedOrderGroupByOutputType[P]>
+            : GetScalarType<T[P], DeletedOrderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeletedOrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalOrderId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userEmail?: boolean
+    shippingAddress?: boolean
+    paymentMethod?: boolean
+    paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
+    itemsPrice?: boolean
+    totalPrice?: boolean
+    shippingPrice?: boolean
+    taxPrice?: boolean
+    isPaid?: boolean
+    paidAt?: boolean
+    isDelivered?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    deletedByUserId?: boolean
+    deletedByUserName?: boolean
+    deletedByUserEmail?: boolean
+    orderItems?: boolean | DeletedOrder$orderItemsArgs<ExtArgs>
+    _count?: boolean | DeletedOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deletedOrder"]>
+
+  export type DeletedOrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalOrderId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userEmail?: boolean
+    shippingAddress?: boolean
+    paymentMethod?: boolean
+    paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
+    itemsPrice?: boolean
+    totalPrice?: boolean
+    shippingPrice?: boolean
+    taxPrice?: boolean
+    isPaid?: boolean
+    paidAt?: boolean
+    isDelivered?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    deletedByUserId?: boolean
+    deletedByUserName?: boolean
+    deletedByUserEmail?: boolean
+  }, ExtArgs["result"]["deletedOrder"]>
+
+  export type DeletedOrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    originalOrderId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userEmail?: boolean
+    shippingAddress?: boolean
+    paymentMethod?: boolean
+    paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
+    itemsPrice?: boolean
+    totalPrice?: boolean
+    shippingPrice?: boolean
+    taxPrice?: boolean
+    isPaid?: boolean
+    paidAt?: boolean
+    isDelivered?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    deletedByUserId?: boolean
+    deletedByUserName?: boolean
+    deletedByUserEmail?: boolean
+  }, ExtArgs["result"]["deletedOrder"]>
+
+  export type DeletedOrderSelectScalar = {
+    id?: boolean
+    originalOrderId?: boolean
+    userId?: boolean
+    userName?: boolean
+    userEmail?: boolean
+    shippingAddress?: boolean
+    paymentMethod?: boolean
+    paymentResult?: boolean
+    paymentStatus?: boolean
+    fulfillmentStatus?: boolean
+    itemsPrice?: boolean
+    totalPrice?: boolean
+    shippingPrice?: boolean
+    taxPrice?: boolean
+    isPaid?: boolean
+    paidAt?: boolean
+    isDelivered?: boolean
+    deliveredAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
+    deletedByUserId?: boolean
+    deletedByUserName?: boolean
+    deletedByUserEmail?: boolean
+  }
+
+  export type DeletedOrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "originalOrderId" | "userId" | "userName" | "userEmail" | "shippingAddress" | "paymentMethod" | "paymentResult" | "paymentStatus" | "fulfillmentStatus" | "itemsPrice" | "totalPrice" | "shippingPrice" | "taxPrice" | "isPaid" | "paidAt" | "isDelivered" | "deliveredAt" | "createdAt" | "updatedAt" | "deletedAt" | "deletedByUserId" | "deletedByUserName" | "deletedByUserEmail", ExtArgs["result"]["deletedOrder"]>
+  export type DeletedOrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    orderItems?: boolean | DeletedOrder$orderItemsArgs<ExtArgs>
+    _count?: boolean | DeletedOrderCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DeletedOrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type DeletedOrderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $DeletedOrderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeletedOrder"
+    objects: {
+      orderItems: Prisma.$DeletedOrderItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      originalOrderId: string
+      userId: string | null
+      userName: string | null
+      userEmail: string | null
+      shippingAddress: Prisma.JsonValue
+      paymentMethod: string
+      paymentResult: Prisma.JsonValue | null
+      paymentStatus: $Enums.OrderPaymentStatus
+      fulfillmentStatus: $Enums.OrderFulfillmentStatus
+      itemsPrice: Prisma.Decimal
+      totalPrice: Prisma.Decimal
+      shippingPrice: Prisma.Decimal
+      taxPrice: Prisma.Decimal
+      isPaid: boolean
+      paidAt: Date | null
+      isDelivered: boolean
+      deliveredAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date
+      deletedByUserId: string
+      deletedByUserName: string | null
+      deletedByUserEmail: string | null
+    }, ExtArgs["result"]["deletedOrder"]>
+    composites: {}
+  }
+
+  type DeletedOrderGetPayload<S extends boolean | null | undefined | DeletedOrderDefaultArgs> = $Result.GetResult<Prisma.$DeletedOrderPayload, S>
+
+  type DeletedOrderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeletedOrderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeletedOrderCountAggregateInputType | true
+    }
+
+  export interface DeletedOrderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeletedOrder'], meta: { name: 'DeletedOrder' } }
+    /**
+     * Find zero or one DeletedOrder that matches the filter.
+     * @param {DeletedOrderFindUniqueArgs} args - Arguments to find a DeletedOrder
+     * @example
+     * // Get one DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeletedOrderFindUniqueArgs>(args: SelectSubset<T, DeletedOrderFindUniqueArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeletedOrder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeletedOrderFindUniqueOrThrowArgs} args - Arguments to find a DeletedOrder
+     * @example
+     * // Get one DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeletedOrderFindUniqueOrThrowArgs>(args: SelectSubset<T, DeletedOrderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeletedOrder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderFindFirstArgs} args - Arguments to find a DeletedOrder
+     * @example
+     * // Get one DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeletedOrderFindFirstArgs>(args?: SelectSubset<T, DeletedOrderFindFirstArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeletedOrder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderFindFirstOrThrowArgs} args - Arguments to find a DeletedOrder
+     * @example
+     * // Get one DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeletedOrderFindFirstOrThrowArgs>(args?: SelectSubset<T, DeletedOrderFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeletedOrders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeletedOrders
+     * const deletedOrders = await prisma.deletedOrder.findMany()
+     * 
+     * // Get first 10 DeletedOrders
+     * const deletedOrders = await prisma.deletedOrder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deletedOrderWithIdOnly = await prisma.deletedOrder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeletedOrderFindManyArgs>(args?: SelectSubset<T, DeletedOrderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeletedOrder.
+     * @param {DeletedOrderCreateArgs} args - Arguments to create a DeletedOrder.
+     * @example
+     * // Create one DeletedOrder
+     * const DeletedOrder = await prisma.deletedOrder.create({
+     *   data: {
+     *     // ... data to create a DeletedOrder
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeletedOrderCreateArgs>(args: SelectSubset<T, DeletedOrderCreateArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeletedOrders.
+     * @param {DeletedOrderCreateManyArgs} args - Arguments to create many DeletedOrders.
+     * @example
+     * // Create many DeletedOrders
+     * const deletedOrder = await prisma.deletedOrder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeletedOrderCreateManyArgs>(args?: SelectSubset<T, DeletedOrderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeletedOrders and returns the data saved in the database.
+     * @param {DeletedOrderCreateManyAndReturnArgs} args - Arguments to create many DeletedOrders.
+     * @example
+     * // Create many DeletedOrders
+     * const deletedOrder = await prisma.deletedOrder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeletedOrders and only return the `id`
+     * const deletedOrderWithIdOnly = await prisma.deletedOrder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeletedOrderCreateManyAndReturnArgs>(args?: SelectSubset<T, DeletedOrderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeletedOrder.
+     * @param {DeletedOrderDeleteArgs} args - Arguments to delete one DeletedOrder.
+     * @example
+     * // Delete one DeletedOrder
+     * const DeletedOrder = await prisma.deletedOrder.delete({
+     *   where: {
+     *     // ... filter to delete one DeletedOrder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeletedOrderDeleteArgs>(args: SelectSubset<T, DeletedOrderDeleteArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeletedOrder.
+     * @param {DeletedOrderUpdateArgs} args - Arguments to update one DeletedOrder.
+     * @example
+     * // Update one DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeletedOrderUpdateArgs>(args: SelectSubset<T, DeletedOrderUpdateArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeletedOrders.
+     * @param {DeletedOrderDeleteManyArgs} args - Arguments to filter DeletedOrders to delete.
+     * @example
+     * // Delete a few DeletedOrders
+     * const { count } = await prisma.deletedOrder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeletedOrderDeleteManyArgs>(args?: SelectSubset<T, DeletedOrderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeletedOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeletedOrders
+     * const deletedOrder = await prisma.deletedOrder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeletedOrderUpdateManyArgs>(args: SelectSubset<T, DeletedOrderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeletedOrders and returns the data updated in the database.
+     * @param {DeletedOrderUpdateManyAndReturnArgs} args - Arguments to update many DeletedOrders.
+     * @example
+     * // Update many DeletedOrders
+     * const deletedOrder = await prisma.deletedOrder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeletedOrders and only return the `id`
+     * const deletedOrderWithIdOnly = await prisma.deletedOrder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeletedOrderUpdateManyAndReturnArgs>(args: SelectSubset<T, DeletedOrderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeletedOrder.
+     * @param {DeletedOrderUpsertArgs} args - Arguments to update or create a DeletedOrder.
+     * @example
+     * // Update or create a DeletedOrder
+     * const deletedOrder = await prisma.deletedOrder.upsert({
+     *   create: {
+     *     // ... data to create a DeletedOrder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeletedOrder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeletedOrderUpsertArgs>(args: SelectSubset<T, DeletedOrderUpsertArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeletedOrders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderCountArgs} args - Arguments to filter DeletedOrders to count.
+     * @example
+     * // Count the number of DeletedOrders
+     * const count = await prisma.deletedOrder.count({
+     *   where: {
+     *     // ... the filter for the DeletedOrders we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeletedOrderCountArgs>(
+      args?: Subset<T, DeletedOrderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeletedOrderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeletedOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeletedOrderAggregateArgs>(args: Subset<T, DeletedOrderAggregateArgs>): Prisma.PrismaPromise<GetDeletedOrderAggregateType<T>>
+
+    /**
+     * Group by DeletedOrder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeletedOrderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeletedOrderGroupByArgs['orderBy'] }
+        : { orderBy?: DeletedOrderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeletedOrderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeletedOrderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeletedOrder model
+   */
+  readonly fields: DeletedOrderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeletedOrder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeletedOrderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    orderItems<T extends DeletedOrder$orderItemsArgs<ExtArgs> = {}>(args?: Subset<T, DeletedOrder$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeletedOrder model
+   */
+  interface DeletedOrderFieldRefs {
+    readonly id: FieldRef<"DeletedOrder", 'String'>
+    readonly originalOrderId: FieldRef<"DeletedOrder", 'String'>
+    readonly userId: FieldRef<"DeletedOrder", 'String'>
+    readonly userName: FieldRef<"DeletedOrder", 'String'>
+    readonly userEmail: FieldRef<"DeletedOrder", 'String'>
+    readonly shippingAddress: FieldRef<"DeletedOrder", 'Json'>
+    readonly paymentMethod: FieldRef<"DeletedOrder", 'String'>
+    readonly paymentResult: FieldRef<"DeletedOrder", 'Json'>
+    readonly paymentStatus: FieldRef<"DeletedOrder", 'OrderPaymentStatus'>
+    readonly fulfillmentStatus: FieldRef<"DeletedOrder", 'OrderFulfillmentStatus'>
+    readonly itemsPrice: FieldRef<"DeletedOrder", 'Decimal'>
+    readonly totalPrice: FieldRef<"DeletedOrder", 'Decimal'>
+    readonly shippingPrice: FieldRef<"DeletedOrder", 'Decimal'>
+    readonly taxPrice: FieldRef<"DeletedOrder", 'Decimal'>
+    readonly isPaid: FieldRef<"DeletedOrder", 'Boolean'>
+    readonly paidAt: FieldRef<"DeletedOrder", 'DateTime'>
+    readonly isDelivered: FieldRef<"DeletedOrder", 'Boolean'>
+    readonly deliveredAt: FieldRef<"DeletedOrder", 'DateTime'>
+    readonly createdAt: FieldRef<"DeletedOrder", 'DateTime'>
+    readonly updatedAt: FieldRef<"DeletedOrder", 'DateTime'>
+    readonly deletedAt: FieldRef<"DeletedOrder", 'DateTime'>
+    readonly deletedByUserId: FieldRef<"DeletedOrder", 'String'>
+    readonly deletedByUserName: FieldRef<"DeletedOrder", 'String'>
+    readonly deletedByUserEmail: FieldRef<"DeletedOrder", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeletedOrder findUnique
+   */
+  export type DeletedOrderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrder to fetch.
+     */
+    where: DeletedOrderWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrder findUniqueOrThrow
+   */
+  export type DeletedOrderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrder to fetch.
+     */
+    where: DeletedOrderWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrder findFirst
+   */
+  export type DeletedOrderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrder to fetch.
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrders to fetch.
+     */
+    orderBy?: DeletedOrderOrderByWithRelationInput | DeletedOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeletedOrders.
+     */
+    cursor?: DeletedOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeletedOrders.
+     */
+    distinct?: DeletedOrderScalarFieldEnum | DeletedOrderScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrder findFirstOrThrow
+   */
+  export type DeletedOrderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrder to fetch.
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrders to fetch.
+     */
+    orderBy?: DeletedOrderOrderByWithRelationInput | DeletedOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeletedOrders.
+     */
+    cursor?: DeletedOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeletedOrders.
+     */
+    distinct?: DeletedOrderScalarFieldEnum | DeletedOrderScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrder findMany
+   */
+  export type DeletedOrderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrders to fetch.
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrders to fetch.
+     */
+    orderBy?: DeletedOrderOrderByWithRelationInput | DeletedOrderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeletedOrders.
+     */
+    cursor?: DeletedOrderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrders.
+     */
+    skip?: number
+    distinct?: DeletedOrderScalarFieldEnum | DeletedOrderScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrder create
+   */
+  export type DeletedOrderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeletedOrder.
+     */
+    data: XOR<DeletedOrderCreateInput, DeletedOrderUncheckedCreateInput>
+  }
+
+  /**
+   * DeletedOrder createMany
+   */
+  export type DeletedOrderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeletedOrders.
+     */
+    data: DeletedOrderCreateManyInput | DeletedOrderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeletedOrder createManyAndReturn
+   */
+  export type DeletedOrderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeletedOrders.
+     */
+    data: DeletedOrderCreateManyInput | DeletedOrderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeletedOrder update
+   */
+  export type DeletedOrderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeletedOrder.
+     */
+    data: XOR<DeletedOrderUpdateInput, DeletedOrderUncheckedUpdateInput>
+    /**
+     * Choose, which DeletedOrder to update.
+     */
+    where: DeletedOrderWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrder updateMany
+   */
+  export type DeletedOrderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeletedOrders.
+     */
+    data: XOR<DeletedOrderUpdateManyMutationInput, DeletedOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which DeletedOrders to update
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * Limit how many DeletedOrders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeletedOrder updateManyAndReturn
+   */
+  export type DeletedOrderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * The data used to update DeletedOrders.
+     */
+    data: XOR<DeletedOrderUpdateManyMutationInput, DeletedOrderUncheckedUpdateManyInput>
+    /**
+     * Filter which DeletedOrders to update
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * Limit how many DeletedOrders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeletedOrder upsert
+   */
+  export type DeletedOrderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeletedOrder to update in case it exists.
+     */
+    where: DeletedOrderWhereUniqueInput
+    /**
+     * In case the DeletedOrder found by the `where` argument doesn't exist, create a new DeletedOrder with this data.
+     */
+    create: XOR<DeletedOrderCreateInput, DeletedOrderUncheckedCreateInput>
+    /**
+     * In case the DeletedOrder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeletedOrderUpdateInput, DeletedOrderUncheckedUpdateInput>
+  }
+
+  /**
+   * DeletedOrder delete
+   */
+  export type DeletedOrderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
+    /**
+     * Filter which DeletedOrder to delete.
+     */
+    where: DeletedOrderWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrder deleteMany
+   */
+  export type DeletedOrderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeletedOrders to delete
+     */
+    where?: DeletedOrderWhereInput
+    /**
+     * Limit how many DeletedOrders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeletedOrder.orderItems
+   */
+  export type DeletedOrder$orderItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    where?: DeletedOrderItemWhereInput
+    orderBy?: DeletedOrderItemOrderByWithRelationInput | DeletedOrderItemOrderByWithRelationInput[]
+    cursor?: DeletedOrderItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DeletedOrderItemScalarFieldEnum | DeletedOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrder without action
+   */
+  export type DeletedOrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrder
+     */
+    select?: DeletedOrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrder
+     */
+    omit?: DeletedOrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderInclude<ExtArgs> | null
   }
 
 
@@ -21191,6 +22821,1180 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DeletedOrderItem
+   */
+
+  export type AggregateDeletedOrderItem = {
+    _count: DeletedOrderItemCountAggregateOutputType | null
+    _avg: DeletedOrderItemAvgAggregateOutputType | null
+    _sum: DeletedOrderItemSumAggregateOutputType | null
+    _min: DeletedOrderItemMinAggregateOutputType | null
+    _max: DeletedOrderItemMaxAggregateOutputType | null
+  }
+
+  export type DeletedOrderItemAvgAggregateOutputType = {
+    price: Decimal | null
+    quantity: number | null
+  }
+
+  export type DeletedOrderItemSumAggregateOutputType = {
+    price: Decimal | null
+    quantity: number | null
+  }
+
+  export type DeletedOrderItemMinAggregateOutputType = {
+    id: string | null
+    deletedOrderId: string | null
+    originalOrderId: string | null
+    productId: string | null
+    name: string | null
+    slug: string | null
+    image: string | null
+    price: Decimal | null
+    quantity: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DeletedOrderItemMaxAggregateOutputType = {
+    id: string | null
+    deletedOrderId: string | null
+    originalOrderId: string | null
+    productId: string | null
+    name: string | null
+    slug: string | null
+    image: string | null
+    price: Decimal | null
+    quantity: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DeletedOrderItemCountAggregateOutputType = {
+    id: number
+    deletedOrderId: number
+    originalOrderId: number
+    productId: number
+    name: number
+    slug: number
+    image: number
+    price: number
+    quantity: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DeletedOrderItemAvgAggregateInputType = {
+    price?: true
+    quantity?: true
+  }
+
+  export type DeletedOrderItemSumAggregateInputType = {
+    price?: true
+    quantity?: true
+  }
+
+  export type DeletedOrderItemMinAggregateInputType = {
+    id?: true
+    deletedOrderId?: true
+    originalOrderId?: true
+    productId?: true
+    name?: true
+    slug?: true
+    image?: true
+    price?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DeletedOrderItemMaxAggregateInputType = {
+    id?: true
+    deletedOrderId?: true
+    originalOrderId?: true
+    productId?: true
+    name?: true
+    slug?: true
+    image?: true
+    price?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DeletedOrderItemCountAggregateInputType = {
+    id?: true
+    deletedOrderId?: true
+    originalOrderId?: true
+    productId?: true
+    name?: true
+    slug?: true
+    image?: true
+    price?: true
+    quantity?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DeletedOrderItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeletedOrderItem to aggregate.
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrderItems to fetch.
+     */
+    orderBy?: DeletedOrderItemOrderByWithRelationInput | DeletedOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DeletedOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DeletedOrderItems
+    **/
+    _count?: true | DeletedOrderItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DeletedOrderItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DeletedOrderItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DeletedOrderItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DeletedOrderItemMaxAggregateInputType
+  }
+
+  export type GetDeletedOrderItemAggregateType<T extends DeletedOrderItemAggregateArgs> = {
+        [P in keyof T & keyof AggregateDeletedOrderItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDeletedOrderItem[P]>
+      : GetScalarType<T[P], AggregateDeletedOrderItem[P]>
+  }
+
+
+
+
+  export type DeletedOrderItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DeletedOrderItemWhereInput
+    orderBy?: DeletedOrderItemOrderByWithAggregationInput | DeletedOrderItemOrderByWithAggregationInput[]
+    by: DeletedOrderItemScalarFieldEnum[] | DeletedOrderItemScalarFieldEnum
+    having?: DeletedOrderItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DeletedOrderItemCountAggregateInputType | true
+    _avg?: DeletedOrderItemAvgAggregateInputType
+    _sum?: DeletedOrderItemSumAggregateInputType
+    _min?: DeletedOrderItemMinAggregateInputType
+    _max?: DeletedOrderItemMaxAggregateInputType
+  }
+
+  export type DeletedOrderItemGroupByOutputType = {
+    id: string
+    deletedOrderId: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal
+    quantity: number
+    createdAt: Date
+    updatedAt: Date
+    _count: DeletedOrderItemCountAggregateOutputType | null
+    _avg: DeletedOrderItemAvgAggregateOutputType | null
+    _sum: DeletedOrderItemSumAggregateOutputType | null
+    _min: DeletedOrderItemMinAggregateOutputType | null
+    _max: DeletedOrderItemMaxAggregateOutputType | null
+  }
+
+  type GetDeletedOrderItemGroupByPayload<T extends DeletedOrderItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DeletedOrderItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DeletedOrderItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DeletedOrderItemGroupByOutputType[P]>
+            : GetScalarType<T[P], DeletedOrderItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DeletedOrderItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deletedOrderId?: boolean
+    originalOrderId?: boolean
+    productId?: boolean
+    name?: boolean
+    slug?: boolean
+    image?: boolean
+    price?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deletedOrderItem"]>
+
+  export type DeletedOrderItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deletedOrderId?: boolean
+    originalOrderId?: boolean
+    productId?: boolean
+    name?: boolean
+    slug?: boolean
+    image?: boolean
+    price?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deletedOrderItem"]>
+
+  export type DeletedOrderItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    deletedOrderId?: boolean
+    originalOrderId?: boolean
+    productId?: boolean
+    name?: boolean
+    slug?: boolean
+    image?: boolean
+    price?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["deletedOrderItem"]>
+
+  export type DeletedOrderItemSelectScalar = {
+    id?: boolean
+    deletedOrderId?: boolean
+    originalOrderId?: boolean
+    productId?: boolean
+    name?: boolean
+    slug?: boolean
+    image?: boolean
+    price?: boolean
+    quantity?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DeletedOrderItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "deletedOrderId" | "originalOrderId" | "productId" | "name" | "slug" | "image" | "price" | "quantity" | "createdAt" | "updatedAt", ExtArgs["result"]["deletedOrderItem"]>
+  export type DeletedOrderItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }
+  export type DeletedOrderItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }
+  export type DeletedOrderItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    deletedOrder?: boolean | DeletedOrderDefaultArgs<ExtArgs>
+  }
+
+  export type $DeletedOrderItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DeletedOrderItem"
+    objects: {
+      deletedOrder: Prisma.$DeletedOrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      deletedOrderId: string
+      originalOrderId: string
+      productId: string
+      name: string
+      slug: string
+      image: string
+      price: Prisma.Decimal
+      quantity: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["deletedOrderItem"]>
+    composites: {}
+  }
+
+  type DeletedOrderItemGetPayload<S extends boolean | null | undefined | DeletedOrderItemDefaultArgs> = $Result.GetResult<Prisma.$DeletedOrderItemPayload, S>
+
+  type DeletedOrderItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DeletedOrderItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DeletedOrderItemCountAggregateInputType | true
+    }
+
+  export interface DeletedOrderItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DeletedOrderItem'], meta: { name: 'DeletedOrderItem' } }
+    /**
+     * Find zero or one DeletedOrderItem that matches the filter.
+     * @param {DeletedOrderItemFindUniqueArgs} args - Arguments to find a DeletedOrderItem
+     * @example
+     * // Get one DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DeletedOrderItemFindUniqueArgs>(args: SelectSubset<T, DeletedOrderItemFindUniqueArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DeletedOrderItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DeletedOrderItemFindUniqueOrThrowArgs} args - Arguments to find a DeletedOrderItem
+     * @example
+     * // Get one DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DeletedOrderItemFindUniqueOrThrowArgs>(args: SelectSubset<T, DeletedOrderItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeletedOrderItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemFindFirstArgs} args - Arguments to find a DeletedOrderItem
+     * @example
+     * // Get one DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DeletedOrderItemFindFirstArgs>(args?: SelectSubset<T, DeletedOrderItemFindFirstArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DeletedOrderItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemFindFirstOrThrowArgs} args - Arguments to find a DeletedOrderItem
+     * @example
+     * // Get one DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DeletedOrderItemFindFirstOrThrowArgs>(args?: SelectSubset<T, DeletedOrderItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DeletedOrderItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DeletedOrderItems
+     * const deletedOrderItems = await prisma.deletedOrderItem.findMany()
+     * 
+     * // Get first 10 DeletedOrderItems
+     * const deletedOrderItems = await prisma.deletedOrderItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const deletedOrderItemWithIdOnly = await prisma.deletedOrderItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DeletedOrderItemFindManyArgs>(args?: SelectSubset<T, DeletedOrderItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DeletedOrderItem.
+     * @param {DeletedOrderItemCreateArgs} args - Arguments to create a DeletedOrderItem.
+     * @example
+     * // Create one DeletedOrderItem
+     * const DeletedOrderItem = await prisma.deletedOrderItem.create({
+     *   data: {
+     *     // ... data to create a DeletedOrderItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends DeletedOrderItemCreateArgs>(args: SelectSubset<T, DeletedOrderItemCreateArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DeletedOrderItems.
+     * @param {DeletedOrderItemCreateManyArgs} args - Arguments to create many DeletedOrderItems.
+     * @example
+     * // Create many DeletedOrderItems
+     * const deletedOrderItem = await prisma.deletedOrderItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DeletedOrderItemCreateManyArgs>(args?: SelectSubset<T, DeletedOrderItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DeletedOrderItems and returns the data saved in the database.
+     * @param {DeletedOrderItemCreateManyAndReturnArgs} args - Arguments to create many DeletedOrderItems.
+     * @example
+     * // Create many DeletedOrderItems
+     * const deletedOrderItem = await prisma.deletedOrderItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DeletedOrderItems and only return the `id`
+     * const deletedOrderItemWithIdOnly = await prisma.deletedOrderItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DeletedOrderItemCreateManyAndReturnArgs>(args?: SelectSubset<T, DeletedOrderItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DeletedOrderItem.
+     * @param {DeletedOrderItemDeleteArgs} args - Arguments to delete one DeletedOrderItem.
+     * @example
+     * // Delete one DeletedOrderItem
+     * const DeletedOrderItem = await prisma.deletedOrderItem.delete({
+     *   where: {
+     *     // ... filter to delete one DeletedOrderItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DeletedOrderItemDeleteArgs>(args: SelectSubset<T, DeletedOrderItemDeleteArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DeletedOrderItem.
+     * @param {DeletedOrderItemUpdateArgs} args - Arguments to update one DeletedOrderItem.
+     * @example
+     * // Update one DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DeletedOrderItemUpdateArgs>(args: SelectSubset<T, DeletedOrderItemUpdateArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DeletedOrderItems.
+     * @param {DeletedOrderItemDeleteManyArgs} args - Arguments to filter DeletedOrderItems to delete.
+     * @example
+     * // Delete a few DeletedOrderItems
+     * const { count } = await prisma.deletedOrderItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DeletedOrderItemDeleteManyArgs>(args?: SelectSubset<T, DeletedOrderItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeletedOrderItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DeletedOrderItems
+     * const deletedOrderItem = await prisma.deletedOrderItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DeletedOrderItemUpdateManyArgs>(args: SelectSubset<T, DeletedOrderItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DeletedOrderItems and returns the data updated in the database.
+     * @param {DeletedOrderItemUpdateManyAndReturnArgs} args - Arguments to update many DeletedOrderItems.
+     * @example
+     * // Update many DeletedOrderItems
+     * const deletedOrderItem = await prisma.deletedOrderItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DeletedOrderItems and only return the `id`
+     * const deletedOrderItemWithIdOnly = await prisma.deletedOrderItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DeletedOrderItemUpdateManyAndReturnArgs>(args: SelectSubset<T, DeletedOrderItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DeletedOrderItem.
+     * @param {DeletedOrderItemUpsertArgs} args - Arguments to update or create a DeletedOrderItem.
+     * @example
+     * // Update or create a DeletedOrderItem
+     * const deletedOrderItem = await prisma.deletedOrderItem.upsert({
+     *   create: {
+     *     // ... data to create a DeletedOrderItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DeletedOrderItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DeletedOrderItemUpsertArgs>(args: SelectSubset<T, DeletedOrderItemUpsertArgs<ExtArgs>>): Prisma__DeletedOrderItemClient<$Result.GetResult<Prisma.$DeletedOrderItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DeletedOrderItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemCountArgs} args - Arguments to filter DeletedOrderItems to count.
+     * @example
+     * // Count the number of DeletedOrderItems
+     * const count = await prisma.deletedOrderItem.count({
+     *   where: {
+     *     // ... the filter for the DeletedOrderItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends DeletedOrderItemCountArgs>(
+      args?: Subset<T, DeletedOrderItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DeletedOrderItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DeletedOrderItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DeletedOrderItemAggregateArgs>(args: Subset<T, DeletedOrderItemAggregateArgs>): Prisma.PrismaPromise<GetDeletedOrderItemAggregateType<T>>
+
+    /**
+     * Group by DeletedOrderItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DeletedOrderItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DeletedOrderItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DeletedOrderItemGroupByArgs['orderBy'] }
+        : { orderBy?: DeletedOrderItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DeletedOrderItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDeletedOrderItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DeletedOrderItem model
+   */
+  readonly fields: DeletedOrderItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DeletedOrderItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DeletedOrderItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    deletedOrder<T extends DeletedOrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DeletedOrderDefaultArgs<ExtArgs>>): Prisma__DeletedOrderClient<$Result.GetResult<Prisma.$DeletedOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DeletedOrderItem model
+   */
+  interface DeletedOrderItemFieldRefs {
+    readonly id: FieldRef<"DeletedOrderItem", 'String'>
+    readonly deletedOrderId: FieldRef<"DeletedOrderItem", 'String'>
+    readonly originalOrderId: FieldRef<"DeletedOrderItem", 'String'>
+    readonly productId: FieldRef<"DeletedOrderItem", 'String'>
+    readonly name: FieldRef<"DeletedOrderItem", 'String'>
+    readonly slug: FieldRef<"DeletedOrderItem", 'String'>
+    readonly image: FieldRef<"DeletedOrderItem", 'String'>
+    readonly price: FieldRef<"DeletedOrderItem", 'Decimal'>
+    readonly quantity: FieldRef<"DeletedOrderItem", 'Int'>
+    readonly createdAt: FieldRef<"DeletedOrderItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"DeletedOrderItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DeletedOrderItem findUnique
+   */
+  export type DeletedOrderItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrderItem to fetch.
+     */
+    where: DeletedOrderItemWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrderItem findUniqueOrThrow
+   */
+  export type DeletedOrderItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrderItem to fetch.
+     */
+    where: DeletedOrderItemWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrderItem findFirst
+   */
+  export type DeletedOrderItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrderItem to fetch.
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrderItems to fetch.
+     */
+    orderBy?: DeletedOrderItemOrderByWithRelationInput | DeletedOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeletedOrderItems.
+     */
+    cursor?: DeletedOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeletedOrderItems.
+     */
+    distinct?: DeletedOrderItemScalarFieldEnum | DeletedOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrderItem findFirstOrThrow
+   */
+  export type DeletedOrderItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrderItem to fetch.
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrderItems to fetch.
+     */
+    orderBy?: DeletedOrderItemOrderByWithRelationInput | DeletedOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DeletedOrderItems.
+     */
+    cursor?: DeletedOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrderItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DeletedOrderItems.
+     */
+    distinct?: DeletedOrderItemScalarFieldEnum | DeletedOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrderItem findMany
+   */
+  export type DeletedOrderItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter, which DeletedOrderItems to fetch.
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DeletedOrderItems to fetch.
+     */
+    orderBy?: DeletedOrderItemOrderByWithRelationInput | DeletedOrderItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DeletedOrderItems.
+     */
+    cursor?: DeletedOrderItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DeletedOrderItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DeletedOrderItems.
+     */
+    skip?: number
+    distinct?: DeletedOrderItemScalarFieldEnum | DeletedOrderItemScalarFieldEnum[]
+  }
+
+  /**
+   * DeletedOrderItem create
+   */
+  export type DeletedOrderItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DeletedOrderItem.
+     */
+    data: XOR<DeletedOrderItemCreateInput, DeletedOrderItemUncheckedCreateInput>
+  }
+
+  /**
+   * DeletedOrderItem createMany
+   */
+  export type DeletedOrderItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DeletedOrderItems.
+     */
+    data: DeletedOrderItemCreateManyInput | DeletedOrderItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DeletedOrderItem createManyAndReturn
+   */
+  export type DeletedOrderItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many DeletedOrderItems.
+     */
+    data: DeletedOrderItemCreateManyInput | DeletedOrderItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeletedOrderItem update
+   */
+  export type DeletedOrderItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DeletedOrderItem.
+     */
+    data: XOR<DeletedOrderItemUpdateInput, DeletedOrderItemUncheckedUpdateInput>
+    /**
+     * Choose, which DeletedOrderItem to update.
+     */
+    where: DeletedOrderItemWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrderItem updateMany
+   */
+  export type DeletedOrderItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DeletedOrderItems.
+     */
+    data: XOR<DeletedOrderItemUpdateManyMutationInput, DeletedOrderItemUncheckedUpdateManyInput>
+    /**
+     * Filter which DeletedOrderItems to update
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * Limit how many DeletedOrderItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeletedOrderItem updateManyAndReturn
+   */
+  export type DeletedOrderItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * The data used to update DeletedOrderItems.
+     */
+    data: XOR<DeletedOrderItemUpdateManyMutationInput, DeletedOrderItemUncheckedUpdateManyInput>
+    /**
+     * Filter which DeletedOrderItems to update
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * Limit how many DeletedOrderItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DeletedOrderItem upsert
+   */
+  export type DeletedOrderItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DeletedOrderItem to update in case it exists.
+     */
+    where: DeletedOrderItemWhereUniqueInput
+    /**
+     * In case the DeletedOrderItem found by the `where` argument doesn't exist, create a new DeletedOrderItem with this data.
+     */
+    create: XOR<DeletedOrderItemCreateInput, DeletedOrderItemUncheckedCreateInput>
+    /**
+     * In case the DeletedOrderItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DeletedOrderItemUpdateInput, DeletedOrderItemUncheckedUpdateInput>
+  }
+
+  /**
+   * DeletedOrderItem delete
+   */
+  export type DeletedOrderItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
+    /**
+     * Filter which DeletedOrderItem to delete.
+     */
+    where: DeletedOrderItemWhereUniqueInput
+  }
+
+  /**
+   * DeletedOrderItem deleteMany
+   */
+  export type DeletedOrderItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DeletedOrderItems to delete
+     */
+    where?: DeletedOrderItemWhereInput
+    /**
+     * Limit how many DeletedOrderItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DeletedOrderItem without action
+   */
+  export type DeletedOrderItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DeletedOrderItem
+     */
+    select?: DeletedOrderItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DeletedOrderItem
+     */
+    omit?: DeletedOrderItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DeletedOrderItemInclude<ExtArgs> | null
   }
 
 
@@ -23568,6 +26372,8 @@ export namespace Prisma {
     shippingAddress: 'shippingAddress',
     paymentMethod: 'paymentMethod',
     paymentResult: 'paymentResult',
+    paymentStatus: 'paymentStatus',
+    fulfillmentStatus: 'fulfillmentStatus',
     itemsPrice: 'itemsPrice',
     totalPrice: 'totalPrice',
     shippingPrice: 'shippingPrice',
@@ -23583,6 +26389,36 @@ export namespace Prisma {
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
+  export const DeletedOrderScalarFieldEnum: {
+    id: 'id',
+    originalOrderId: 'originalOrderId',
+    userId: 'userId',
+    userName: 'userName',
+    userEmail: 'userEmail',
+    shippingAddress: 'shippingAddress',
+    paymentMethod: 'paymentMethod',
+    paymentResult: 'paymentResult',
+    paymentStatus: 'paymentStatus',
+    fulfillmentStatus: 'fulfillmentStatus',
+    itemsPrice: 'itemsPrice',
+    totalPrice: 'totalPrice',
+    shippingPrice: 'shippingPrice',
+    taxPrice: 'taxPrice',
+    isPaid: 'isPaid',
+    paidAt: 'paidAt',
+    isDelivered: 'isDelivered',
+    deliveredAt: 'deliveredAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt',
+    deletedByUserId: 'deletedByUserId',
+    deletedByUserName: 'deletedByUserName',
+    deletedByUserEmail: 'deletedByUserEmail'
+  };
+
+  export type DeletedOrderScalarFieldEnum = (typeof DeletedOrderScalarFieldEnum)[keyof typeof DeletedOrderScalarFieldEnum]
+
+
   export const OrderItemScalarFieldEnum: {
     orderId: 'orderId',
     productId: 'productId',
@@ -23596,6 +26432,23 @@ export namespace Prisma {
   };
 
   export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+  export const DeletedOrderItemScalarFieldEnum: {
+    id: 'id',
+    deletedOrderId: 'deletedOrderId',
+    originalOrderId: 'originalOrderId',
+    productId: 'productId',
+    name: 'name',
+    slug: 'slug',
+    image: 'image',
+    price: 'price',
+    quantity: 'quantity',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DeletedOrderItemScalarFieldEnum = (typeof DeletedOrderItemScalarFieldEnum)[keyof typeof DeletedOrderItemScalarFieldEnum]
 
 
   export const ReviewScalarFieldEnum: {
@@ -23759,6 +26612,34 @@ export namespace Prisma {
    * Reference to a field of type 'Json[]'
    */
   export type ListJsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrderPaymentStatus'
+   */
+  export type EnumOrderPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderPaymentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrderPaymentStatus[]'
+   */
+  export type ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderPaymentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrderFulfillmentStatus'
+   */
+  export type EnumOrderFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderFulfillmentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrderFulfillmentStatus[]'
+   */
+  export type ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderFulfillmentStatus[]'>
     
 
 
@@ -24824,6 +27705,8 @@ export namespace Prisma {
     shippingAddress?: JsonFilter<"Order">
     paymentMethod?: StringFilter<"Order"> | string
     paymentResult?: JsonNullableFilter<"Order">
+    paymentStatus?: EnumOrderPaymentStatusFilter<"Order"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFilter<"Order"> | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -24844,6 +27727,8 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     paymentMethod?: SortOrder
     paymentResult?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     itemsPrice?: SortOrder
     totalPrice?: SortOrder
     shippingPrice?: SortOrder
@@ -24867,6 +27752,8 @@ export namespace Prisma {
     shippingAddress?: JsonFilter<"Order">
     paymentMethod?: StringFilter<"Order"> | string
     paymentResult?: JsonNullableFilter<"Order">
+    paymentStatus?: EnumOrderPaymentStatusFilter<"Order"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFilter<"Order"> | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -24887,6 +27774,8 @@ export namespace Prisma {
     shippingAddress?: SortOrder
     paymentMethod?: SortOrder
     paymentResult?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     itemsPrice?: SortOrder
     totalPrice?: SortOrder
     shippingPrice?: SortOrder
@@ -24913,6 +27802,8 @@ export namespace Prisma {
     shippingAddress?: JsonWithAggregatesFilter<"Order">
     paymentMethod?: StringWithAggregatesFilter<"Order"> | string
     paymentResult?: JsonNullableWithAggregatesFilter<"Order">
+    paymentStatus?: EnumOrderPaymentStatusWithAggregatesFilter<"Order"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusWithAggregatesFilter<"Order"> | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalWithAggregatesFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -24923,6 +27814,158 @@ export namespace Prisma {
     deliveredAt?: DateTimeNullableWithAggregatesFilter<"Order"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+  }
+
+  export type DeletedOrderWhereInput = {
+    AND?: DeletedOrderWhereInput | DeletedOrderWhereInput[]
+    OR?: DeletedOrderWhereInput[]
+    NOT?: DeletedOrderWhereInput | DeletedOrderWhereInput[]
+    id?: UuidFilter<"DeletedOrder"> | string
+    originalOrderId?: UuidFilter<"DeletedOrder"> | string
+    userId?: UuidNullableFilter<"DeletedOrder"> | string | null
+    userName?: StringNullableFilter<"DeletedOrder"> | string | null
+    userEmail?: StringNullableFilter<"DeletedOrder"> | string | null
+    shippingAddress?: JsonFilter<"DeletedOrder">
+    paymentMethod?: StringFilter<"DeletedOrder"> | string
+    paymentResult?: JsonNullableFilter<"DeletedOrder">
+    paymentStatus?: EnumOrderPaymentStatusFilter<"DeletedOrder"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFilter<"DeletedOrder"> | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFilter<"DeletedOrder"> | boolean
+    paidAt?: DateTimeNullableFilter<"DeletedOrder"> | Date | string | null
+    isDelivered?: BoolFilter<"DeletedOrder"> | boolean
+    deliveredAt?: DateTimeNullableFilter<"DeletedOrder"> | Date | string | null
+    createdAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    deletedAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    deletedByUserId?: UuidFilter<"DeletedOrder"> | string
+    deletedByUserName?: StringNullableFilter<"DeletedOrder"> | string | null
+    deletedByUserEmail?: StringNullableFilter<"DeletedOrder"> | string | null
+    orderItems?: DeletedOrderItemListRelationFilter
+  }
+
+  export type DeletedOrderOrderByWithRelationInput = {
+    id?: SortOrder
+    originalOrderId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userName?: SortOrderInput | SortOrder
+    userEmail?: SortOrderInput | SortOrder
+    shippingAddress?: SortOrder
+    paymentMethod?: SortOrder
+    paymentResult?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+    isPaid?: SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    isDelivered?: SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+    deletedByUserId?: SortOrder
+    deletedByUserName?: SortOrderInput | SortOrder
+    deletedByUserEmail?: SortOrderInput | SortOrder
+    orderItems?: DeletedOrderItemOrderByRelationAggregateInput
+  }
+
+  export type DeletedOrderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    originalOrderId?: string
+    AND?: DeletedOrderWhereInput | DeletedOrderWhereInput[]
+    OR?: DeletedOrderWhereInput[]
+    NOT?: DeletedOrderWhereInput | DeletedOrderWhereInput[]
+    userId?: UuidNullableFilter<"DeletedOrder"> | string | null
+    userName?: StringNullableFilter<"DeletedOrder"> | string | null
+    userEmail?: StringNullableFilter<"DeletedOrder"> | string | null
+    shippingAddress?: JsonFilter<"DeletedOrder">
+    paymentMethod?: StringFilter<"DeletedOrder"> | string
+    paymentResult?: JsonNullableFilter<"DeletedOrder">
+    paymentStatus?: EnumOrderPaymentStatusFilter<"DeletedOrder"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFilter<"DeletedOrder"> | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFilter<"DeletedOrder"> | boolean
+    paidAt?: DateTimeNullableFilter<"DeletedOrder"> | Date | string | null
+    isDelivered?: BoolFilter<"DeletedOrder"> | boolean
+    deliveredAt?: DateTimeNullableFilter<"DeletedOrder"> | Date | string | null
+    createdAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    updatedAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    deletedAt?: DateTimeFilter<"DeletedOrder"> | Date | string
+    deletedByUserId?: UuidFilter<"DeletedOrder"> | string
+    deletedByUserName?: StringNullableFilter<"DeletedOrder"> | string | null
+    deletedByUserEmail?: StringNullableFilter<"DeletedOrder"> | string | null
+    orderItems?: DeletedOrderItemListRelationFilter
+  }, "id" | "originalOrderId">
+
+  export type DeletedOrderOrderByWithAggregationInput = {
+    id?: SortOrder
+    originalOrderId?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    userName?: SortOrderInput | SortOrder
+    userEmail?: SortOrderInput | SortOrder
+    shippingAddress?: SortOrder
+    paymentMethod?: SortOrder
+    paymentResult?: SortOrderInput | SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+    isPaid?: SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    isDelivered?: SortOrder
+    deliveredAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+    deletedByUserId?: SortOrder
+    deletedByUserName?: SortOrderInput | SortOrder
+    deletedByUserEmail?: SortOrderInput | SortOrder
+    _count?: DeletedOrderCountOrderByAggregateInput
+    _avg?: DeletedOrderAvgOrderByAggregateInput
+    _max?: DeletedOrderMaxOrderByAggregateInput
+    _min?: DeletedOrderMinOrderByAggregateInput
+    _sum?: DeletedOrderSumOrderByAggregateInput
+  }
+
+  export type DeletedOrderScalarWhereWithAggregatesInput = {
+    AND?: DeletedOrderScalarWhereWithAggregatesInput | DeletedOrderScalarWhereWithAggregatesInput[]
+    OR?: DeletedOrderScalarWhereWithAggregatesInput[]
+    NOT?: DeletedOrderScalarWhereWithAggregatesInput | DeletedOrderScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"DeletedOrder"> | string
+    originalOrderId?: UuidWithAggregatesFilter<"DeletedOrder"> | string
+    userId?: UuidNullableWithAggregatesFilter<"DeletedOrder"> | string | null
+    userName?: StringNullableWithAggregatesFilter<"DeletedOrder"> | string | null
+    userEmail?: StringNullableWithAggregatesFilter<"DeletedOrder"> | string | null
+    shippingAddress?: JsonWithAggregatesFilter<"DeletedOrder">
+    paymentMethod?: StringWithAggregatesFilter<"DeletedOrder"> | string
+    paymentResult?: JsonNullableWithAggregatesFilter<"DeletedOrder">
+    paymentStatus?: EnumOrderPaymentStatusWithAggregatesFilter<"DeletedOrder"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusWithAggregatesFilter<"DeletedOrder"> | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalWithAggregatesFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalWithAggregatesFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalWithAggregatesFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalWithAggregatesFilter<"DeletedOrder"> | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolWithAggregatesFilter<"DeletedOrder"> | boolean
+    paidAt?: DateTimeNullableWithAggregatesFilter<"DeletedOrder"> | Date | string | null
+    isDelivered?: BoolWithAggregatesFilter<"DeletedOrder"> | boolean
+    deliveredAt?: DateTimeNullableWithAggregatesFilter<"DeletedOrder"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DeletedOrder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DeletedOrder"> | Date | string
+    deletedAt?: DateTimeWithAggregatesFilter<"DeletedOrder"> | Date | string
+    deletedByUserId?: UuidWithAggregatesFilter<"DeletedOrder"> | string
+    deletedByUserName?: StringNullableWithAggregatesFilter<"DeletedOrder"> | string | null
+    deletedByUserEmail?: StringNullableWithAggregatesFilter<"DeletedOrder"> | string | null
   }
 
   export type OrderItemWhereInput = {
@@ -25004,6 +28047,93 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"OrderItem"> | number
     createdAt?: DateTimeWithAggregatesFilter<"OrderItem"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"OrderItem"> | Date | string
+  }
+
+  export type DeletedOrderItemWhereInput = {
+    AND?: DeletedOrderItemWhereInput | DeletedOrderItemWhereInput[]
+    OR?: DeletedOrderItemWhereInput[]
+    NOT?: DeletedOrderItemWhereInput | DeletedOrderItemWhereInput[]
+    id?: UuidFilter<"DeletedOrderItem"> | string
+    deletedOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    originalOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    productId?: UuidFilter<"DeletedOrderItem"> | string
+    name?: StringFilter<"DeletedOrderItem"> | string
+    slug?: StringFilter<"DeletedOrderItem"> | string
+    image?: StringFilter<"DeletedOrderItem"> | string
+    price?: DecimalFilter<"DeletedOrderItem"> | Decimal | DecimalJsLike | number | string
+    quantity?: IntFilter<"DeletedOrderItem"> | number
+    createdAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+    updatedAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+    deletedOrder?: XOR<DeletedOrderScalarRelationFilter, DeletedOrderWhereInput>
+  }
+
+  export type DeletedOrderItemOrderByWithRelationInput = {
+    id?: SortOrder
+    deletedOrderId?: SortOrder
+    originalOrderId?: SortOrder
+    productId?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    image?: SortOrder
+    price?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedOrder?: DeletedOrderOrderByWithRelationInput
+  }
+
+  export type DeletedOrderItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DeletedOrderItemWhereInput | DeletedOrderItemWhereInput[]
+    OR?: DeletedOrderItemWhereInput[]
+    NOT?: DeletedOrderItemWhereInput | DeletedOrderItemWhereInput[]
+    deletedOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    originalOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    productId?: UuidFilter<"DeletedOrderItem"> | string
+    name?: StringFilter<"DeletedOrderItem"> | string
+    slug?: StringFilter<"DeletedOrderItem"> | string
+    image?: StringFilter<"DeletedOrderItem"> | string
+    price?: DecimalFilter<"DeletedOrderItem"> | Decimal | DecimalJsLike | number | string
+    quantity?: IntFilter<"DeletedOrderItem"> | number
+    createdAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+    updatedAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+    deletedOrder?: XOR<DeletedOrderScalarRelationFilter, DeletedOrderWhereInput>
+  }, "id">
+
+  export type DeletedOrderItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    deletedOrderId?: SortOrder
+    originalOrderId?: SortOrder
+    productId?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    image?: SortOrder
+    price?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DeletedOrderItemCountOrderByAggregateInput
+    _avg?: DeletedOrderItemAvgOrderByAggregateInput
+    _max?: DeletedOrderItemMaxOrderByAggregateInput
+    _min?: DeletedOrderItemMinOrderByAggregateInput
+    _sum?: DeletedOrderItemSumOrderByAggregateInput
+  }
+
+  export type DeletedOrderItemScalarWhereWithAggregatesInput = {
+    AND?: DeletedOrderItemScalarWhereWithAggregatesInput | DeletedOrderItemScalarWhereWithAggregatesInput[]
+    OR?: DeletedOrderItemScalarWhereWithAggregatesInput[]
+    NOT?: DeletedOrderItemScalarWhereWithAggregatesInput | DeletedOrderItemScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"DeletedOrderItem"> | string
+    deletedOrderId?: UuidWithAggregatesFilter<"DeletedOrderItem"> | string
+    originalOrderId?: UuidWithAggregatesFilter<"DeletedOrderItem"> | string
+    productId?: UuidWithAggregatesFilter<"DeletedOrderItem"> | string
+    name?: StringWithAggregatesFilter<"DeletedOrderItem"> | string
+    slug?: StringWithAggregatesFilter<"DeletedOrderItem"> | string
+    image?: StringWithAggregatesFilter<"DeletedOrderItem"> | string
+    price?: DecimalWithAggregatesFilter<"DeletedOrderItem"> | Decimal | DecimalJsLike | number | string
+    quantity?: IntWithAggregatesFilter<"DeletedOrderItem"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"DeletedOrderItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DeletedOrderItem"> | Date | string
   }
 
   export type ReviewWhereInput = {
@@ -26271,6 +29401,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -26291,6 +29423,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -26309,6 +29443,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -26329,6 +29465,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -26348,6 +29486,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -26365,6 +29505,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -26383,6 +29525,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -26393,6 +29537,199 @@ export namespace Prisma {
     deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderCreateInput = {
+    id?: string
+    originalOrderId: string
+    userId?: string | null
+    userName?: string | null
+    userEmail?: string | null
+    shippingAddress: JsonNullValueInput | InputJsonValue
+    paymentMethod: string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
+    itemsPrice?: Decimal | DecimalJsLike | number | string
+    totalPrice?: Decimal | DecimalJsLike | number | string
+    shippingPrice?: Decimal | DecimalJsLike | number | string
+    taxPrice?: Decimal | DecimalJsLike | number | string
+    isPaid?: boolean
+    paidAt?: Date | string | null
+    isDelivered?: boolean
+    deliveredAt?: Date | string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedAt?: Date | string
+    deletedByUserId: string
+    deletedByUserName?: string | null
+    deletedByUserEmail?: string | null
+    orderItems?: DeletedOrderItemCreateNestedManyWithoutDeletedOrderInput
+  }
+
+  export type DeletedOrderUncheckedCreateInput = {
+    id?: string
+    originalOrderId: string
+    userId?: string | null
+    userName?: string | null
+    userEmail?: string | null
+    shippingAddress: JsonNullValueInput | InputJsonValue
+    paymentMethod: string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
+    itemsPrice?: Decimal | DecimalJsLike | number | string
+    totalPrice?: Decimal | DecimalJsLike | number | string
+    shippingPrice?: Decimal | DecimalJsLike | number | string
+    taxPrice?: Decimal | DecimalJsLike | number | string
+    isPaid?: boolean
+    paidAt?: Date | string | null
+    isDelivered?: boolean
+    deliveredAt?: Date | string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedAt?: Date | string
+    deletedByUserId: string
+    deletedByUserName?: string | null
+    deletedByUserEmail?: string | null
+    orderItems?: DeletedOrderItemUncheckedCreateNestedManyWithoutDeletedOrderInput
+  }
+
+  export type DeletedOrderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    orderItems?: DeletedOrderItemUpdateManyWithoutDeletedOrderNestedInput
+  }
+
+  export type DeletedOrderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    orderItems?: DeletedOrderItemUncheckedUpdateManyWithoutDeletedOrderNestedInput
+  }
+
+  export type DeletedOrderCreateManyInput = {
+    id?: string
+    originalOrderId: string
+    userId?: string | null
+    userName?: string | null
+    userEmail?: string | null
+    shippingAddress: JsonNullValueInput | InputJsonValue
+    paymentMethod: string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
+    itemsPrice?: Decimal | DecimalJsLike | number | string
+    totalPrice?: Decimal | DecimalJsLike | number | string
+    shippingPrice?: Decimal | DecimalJsLike | number | string
+    taxPrice?: Decimal | DecimalJsLike | number | string
+    isPaid?: boolean
+    paidAt?: Date | string | null
+    isDelivered?: boolean
+    deliveredAt?: Date | string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedAt?: Date | string
+    deletedByUserId: string
+    deletedByUserName?: string | null
+    deletedByUserEmail?: string | null
+  }
+
+  export type DeletedOrderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeletedOrderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderItemCreateInput = {
@@ -26467,6 +29804,103 @@ export namespace Prisma {
 
   export type OrderItemUncheckedUpdateManyInput = {
     orderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemCreateInput = {
+    id?: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedOrder: DeletedOrderCreateNestedOneWithoutOrderItemsInput
+  }
+
+  export type DeletedOrderItemUncheckedCreateInput = {
+    id?: string
+    deletedOrderId: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+  }
+
+  export type DeletedOrderItemUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedOrder?: DeletedOrderUpdateOneRequiredWithoutOrderItemsNestedInput
+  }
+
+  export type DeletedOrderItemUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deletedOrderId?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemCreateManyInput = {
+    id?: string
+    deletedOrderId: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+  }
+
+  export type DeletedOrderItemUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    deletedOrderId?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -27677,12 +31111,28 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type EnumOrderPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderPaymentStatus | EnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderPaymentStatusFilter<$PrismaModel> | $Enums.OrderPaymentStatus
+  }
+
+  export type EnumOrderFulfillmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderFulfillmentStatus | EnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel> | $Enums.OrderFulfillmentStatus
+  }
+
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     shippingAddress?: SortOrder
     paymentMethod?: SortOrder
     paymentResult?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     itemsPrice?: SortOrder
     totalPrice?: SortOrder
     shippingPrice?: SortOrder
@@ -27706,6 +31156,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     paymentMethod?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     itemsPrice?: SortOrder
     totalPrice?: SortOrder
     shippingPrice?: SortOrder
@@ -27722,6 +31174,8 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     paymentMethod?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
     itemsPrice?: SortOrder
     totalPrice?: SortOrder
     shippingPrice?: SortOrder
@@ -27765,6 +31219,127 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type EnumOrderPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderPaymentStatus | EnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderPaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type EnumOrderFulfillmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderFulfillmentStatus | EnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderFulfillmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderFulfillmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel>
+  }
+
+  export type DeletedOrderItemListRelationFilter = {
+    every?: DeletedOrderItemWhereInput
+    some?: DeletedOrderItemWhereInput
+    none?: DeletedOrderItemWhereInput
+  }
+
+  export type DeletedOrderItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DeletedOrderCountOrderByAggregateInput = {
+    id?: SortOrder
+    originalOrderId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userEmail?: SortOrder
+    shippingAddress?: SortOrder
+    paymentMethod?: SortOrder
+    paymentResult?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+    isPaid?: SortOrder
+    paidAt?: SortOrder
+    isDelivered?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+    deletedByUserId?: SortOrder
+    deletedByUserName?: SortOrder
+    deletedByUserEmail?: SortOrder
+  }
+
+  export type DeletedOrderAvgOrderByAggregateInput = {
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+  }
+
+  export type DeletedOrderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    originalOrderId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userEmail?: SortOrder
+    paymentMethod?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+    isPaid?: SortOrder
+    paidAt?: SortOrder
+    isDelivered?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+    deletedByUserId?: SortOrder
+    deletedByUserName?: SortOrder
+    deletedByUserEmail?: SortOrder
+  }
+
+  export type DeletedOrderMinOrderByAggregateInput = {
+    id?: SortOrder
+    originalOrderId?: SortOrder
+    userId?: SortOrder
+    userName?: SortOrder
+    userEmail?: SortOrder
+    paymentMethod?: SortOrder
+    paymentStatus?: SortOrder
+    fulfillmentStatus?: SortOrder
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
+    isPaid?: SortOrder
+    paidAt?: SortOrder
+    isDelivered?: SortOrder
+    deliveredAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
+    deletedByUserId?: SortOrder
+    deletedByUserName?: SortOrder
+    deletedByUserEmail?: SortOrder
+  }
+
+  export type DeletedOrderSumOrderByAggregateInput = {
+    itemsPrice?: SortOrder
+    totalPrice?: SortOrder
+    shippingPrice?: SortOrder
+    taxPrice?: SortOrder
   }
 
   export type OrderScalarRelationFilter = {
@@ -27819,6 +31394,63 @@ export namespace Prisma {
   }
 
   export type OrderItemSumOrderByAggregateInput = {
+    price?: SortOrder
+    quantity?: SortOrder
+  }
+
+  export type DeletedOrderScalarRelationFilter = {
+    is?: DeletedOrderWhereInput
+    isNot?: DeletedOrderWhereInput
+  }
+
+  export type DeletedOrderItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    deletedOrderId?: SortOrder
+    originalOrderId?: SortOrder
+    productId?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    image?: SortOrder
+    price?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DeletedOrderItemAvgOrderByAggregateInput = {
+    price?: SortOrder
+    quantity?: SortOrder
+  }
+
+  export type DeletedOrderItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    deletedOrderId?: SortOrder
+    originalOrderId?: SortOrder
+    productId?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    image?: SortOrder
+    price?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DeletedOrderItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    deletedOrderId?: SortOrder
+    originalOrderId?: SortOrder
+    productId?: SortOrder
+    name?: SortOrder
+    slug?: SortOrder
+    image?: SortOrder
+    price?: SortOrder
+    quantity?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DeletedOrderItemSumOrderByAggregateInput = {
     price?: SortOrder
     quantity?: SortOrder
   }
@@ -28947,6 +32579,14 @@ export namespace Prisma {
     connect?: OrderItemWhereUniqueInput | OrderItemWhereUniqueInput[]
   }
 
+  export type EnumOrderPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OrderPaymentStatus
+  }
+
+  export type EnumOrderFulfillmentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.OrderFulfillmentStatus
+  }
+
   export type UserUpdateOneRequiredWithoutOrderNestedInput = {
     create?: XOR<UserCreateWithoutOrderInput, UserUncheckedCreateWithoutOrderInput>
     connectOrCreate?: UserCreateOrConnectWithoutOrderInput
@@ -28983,6 +32623,48 @@ export namespace Prisma {
     deleteMany?: OrderItemScalarWhereInput | OrderItemScalarWhereInput[]
   }
 
+  export type DeletedOrderItemCreateNestedManyWithoutDeletedOrderInput = {
+    create?: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput> | DeletedOrderItemCreateWithoutDeletedOrderInput[] | DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput[]
+    connectOrCreate?: DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput | DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput[]
+    createMany?: DeletedOrderItemCreateManyDeletedOrderInputEnvelope
+    connect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+  }
+
+  export type DeletedOrderItemUncheckedCreateNestedManyWithoutDeletedOrderInput = {
+    create?: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput> | DeletedOrderItemCreateWithoutDeletedOrderInput[] | DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput[]
+    connectOrCreate?: DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput | DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput[]
+    createMany?: DeletedOrderItemCreateManyDeletedOrderInputEnvelope
+    connect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+  }
+
+  export type DeletedOrderItemUpdateManyWithoutDeletedOrderNestedInput = {
+    create?: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput> | DeletedOrderItemCreateWithoutDeletedOrderInput[] | DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput[]
+    connectOrCreate?: DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput | DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput[]
+    upsert?: DeletedOrderItemUpsertWithWhereUniqueWithoutDeletedOrderInput | DeletedOrderItemUpsertWithWhereUniqueWithoutDeletedOrderInput[]
+    createMany?: DeletedOrderItemCreateManyDeletedOrderInputEnvelope
+    set?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    disconnect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    delete?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    connect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    update?: DeletedOrderItemUpdateWithWhereUniqueWithoutDeletedOrderInput | DeletedOrderItemUpdateWithWhereUniqueWithoutDeletedOrderInput[]
+    updateMany?: DeletedOrderItemUpdateManyWithWhereWithoutDeletedOrderInput | DeletedOrderItemUpdateManyWithWhereWithoutDeletedOrderInput[]
+    deleteMany?: DeletedOrderItemScalarWhereInput | DeletedOrderItemScalarWhereInput[]
+  }
+
+  export type DeletedOrderItemUncheckedUpdateManyWithoutDeletedOrderNestedInput = {
+    create?: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput> | DeletedOrderItemCreateWithoutDeletedOrderInput[] | DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput[]
+    connectOrCreate?: DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput | DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput[]
+    upsert?: DeletedOrderItemUpsertWithWhereUniqueWithoutDeletedOrderInput | DeletedOrderItemUpsertWithWhereUniqueWithoutDeletedOrderInput[]
+    createMany?: DeletedOrderItemCreateManyDeletedOrderInputEnvelope
+    set?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    disconnect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    delete?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    connect?: DeletedOrderItemWhereUniqueInput | DeletedOrderItemWhereUniqueInput[]
+    update?: DeletedOrderItemUpdateWithWhereUniqueWithoutDeletedOrderInput | DeletedOrderItemUpdateWithWhereUniqueWithoutDeletedOrderInput[]
+    updateMany?: DeletedOrderItemUpdateManyWithWhereWithoutDeletedOrderInput | DeletedOrderItemUpdateManyWithWhereWithoutDeletedOrderInput[]
+    deleteMany?: DeletedOrderItemScalarWhereInput | DeletedOrderItemScalarWhereInput[]
+  }
+
   export type OrderCreateNestedOneWithoutOrderItemsInput = {
     create?: XOR<OrderCreateWithoutOrderItemsInput, OrderUncheckedCreateWithoutOrderItemsInput>
     connectOrCreate?: OrderCreateOrConnectWithoutOrderItemsInput
@@ -29009,6 +32691,20 @@ export namespace Prisma {
     upsert?: ProductUpsertWithoutOrderItemInput
     connect?: ProductWhereUniqueInput
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutOrderItemInput, ProductUpdateWithoutOrderItemInput>, ProductUncheckedUpdateWithoutOrderItemInput>
+  }
+
+  export type DeletedOrderCreateNestedOneWithoutOrderItemsInput = {
+    create?: XOR<DeletedOrderCreateWithoutOrderItemsInput, DeletedOrderUncheckedCreateWithoutOrderItemsInput>
+    connectOrCreate?: DeletedOrderCreateOrConnectWithoutOrderItemsInput
+    connect?: DeletedOrderWhereUniqueInput
+  }
+
+  export type DeletedOrderUpdateOneRequiredWithoutOrderItemsNestedInput = {
+    create?: XOR<DeletedOrderCreateWithoutOrderItemsInput, DeletedOrderUncheckedCreateWithoutOrderItemsInput>
+    connectOrCreate?: DeletedOrderCreateOrConnectWithoutOrderItemsInput
+    upsert?: DeletedOrderUpsertWithoutOrderItemsInput
+    connect?: DeletedOrderWhereUniqueInput
+    update?: XOR<XOR<DeletedOrderUpdateToOneWithWhereWithoutOrderItemsInput, DeletedOrderUpdateWithoutOrderItemsInput>, DeletedOrderUncheckedUpdateWithoutOrderItemsInput>
   }
 
   export type ProductCreateNestedOneWithoutReviewInput = {
@@ -29339,6 +33035,20 @@ export namespace Prisma {
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
+
+  export type NestedEnumOrderPaymentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderPaymentStatus | EnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderPaymentStatusFilter<$PrismaModel> | $Enums.OrderPaymentStatus
+  }
+
+  export type NestedEnumOrderFulfillmentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderFulfillmentStatus | EnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel> | $Enums.OrderFulfillmentStatus
+  }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
         Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
@@ -29361,6 +33071,26 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumOrderPaymentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderPaymentStatus | EnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderPaymentStatus[] | ListEnumOrderPaymentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderPaymentStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderPaymentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderPaymentStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderPaymentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOrderFulfillmentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrderFulfillmentStatus | EnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrderFulfillmentStatus[] | ListEnumOrderFulfillmentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrderFulfillmentStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrderFulfillmentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrderFulfillmentStatusFilter<$PrismaModel>
   }
 
   export type ProductCategoryTagCreateWithoutCategoryTagInput = {
@@ -30557,6 +34287,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -30575,6 +34307,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -30864,6 +34598,8 @@ export namespace Prisma {
     shippingAddress?: JsonFilter<"Order">
     paymentMethod?: StringFilter<"Order"> | string
     paymentResult?: JsonNullableFilter<"Order">
+    paymentStatus?: EnumOrderPaymentStatusFilter<"Order"> | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFilter<"Order"> | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFilter<"Order"> | Decimal | DecimalJsLike | number | string
@@ -31737,11 +35473,82 @@ export namespace Prisma {
     data: XOR<OrderItemUpdateManyMutationInput, OrderItemUncheckedUpdateManyWithoutOrderInput>
   }
 
+  export type DeletedOrderItemCreateWithoutDeletedOrderInput = {
+    id?: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+  }
+
+  export type DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput = {
+    id?: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+  }
+
+  export type DeletedOrderItemCreateOrConnectWithoutDeletedOrderInput = {
+    where: DeletedOrderItemWhereUniqueInput
+    create: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput>
+  }
+
+  export type DeletedOrderItemCreateManyDeletedOrderInputEnvelope = {
+    data: DeletedOrderItemCreateManyDeletedOrderInput | DeletedOrderItemCreateManyDeletedOrderInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DeletedOrderItemUpsertWithWhereUniqueWithoutDeletedOrderInput = {
+    where: DeletedOrderItemWhereUniqueInput
+    update: XOR<DeletedOrderItemUpdateWithoutDeletedOrderInput, DeletedOrderItemUncheckedUpdateWithoutDeletedOrderInput>
+    create: XOR<DeletedOrderItemCreateWithoutDeletedOrderInput, DeletedOrderItemUncheckedCreateWithoutDeletedOrderInput>
+  }
+
+  export type DeletedOrderItemUpdateWithWhereUniqueWithoutDeletedOrderInput = {
+    where: DeletedOrderItemWhereUniqueInput
+    data: XOR<DeletedOrderItemUpdateWithoutDeletedOrderInput, DeletedOrderItemUncheckedUpdateWithoutDeletedOrderInput>
+  }
+
+  export type DeletedOrderItemUpdateManyWithWhereWithoutDeletedOrderInput = {
+    where: DeletedOrderItemScalarWhereInput
+    data: XOR<DeletedOrderItemUpdateManyMutationInput, DeletedOrderItemUncheckedUpdateManyWithoutDeletedOrderInput>
+  }
+
+  export type DeletedOrderItemScalarWhereInput = {
+    AND?: DeletedOrderItemScalarWhereInput | DeletedOrderItemScalarWhereInput[]
+    OR?: DeletedOrderItemScalarWhereInput[]
+    NOT?: DeletedOrderItemScalarWhereInput | DeletedOrderItemScalarWhereInput[]
+    id?: UuidFilter<"DeletedOrderItem"> | string
+    deletedOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    originalOrderId?: UuidFilter<"DeletedOrderItem"> | string
+    productId?: UuidFilter<"DeletedOrderItem"> | string
+    name?: StringFilter<"DeletedOrderItem"> | string
+    slug?: StringFilter<"DeletedOrderItem"> | string
+    image?: StringFilter<"DeletedOrderItem"> | string
+    price?: DecimalFilter<"DeletedOrderItem"> | Decimal | DecimalJsLike | number | string
+    quantity?: IntFilter<"DeletedOrderItem"> | number
+    createdAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+    updatedAt?: DateTimeFilter<"DeletedOrderItem"> | Date | string
+  }
+
   export type OrderCreateWithoutOrderItemsInput = {
     id?: string
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -31761,6 +35568,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -31845,6 +35654,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -31864,6 +35675,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -31931,6 +35744,130 @@ export namespace Prisma {
     subSubCategoryId?: NullableStringFieldUpdateOperationsInput | string | null
     Review?: ReviewUncheckedUpdateManyWithoutProductNestedInput
     categoryTags?: ProductCategoryTagUncheckedUpdateManyWithoutProductNestedInput
+  }
+
+  export type DeletedOrderCreateWithoutOrderItemsInput = {
+    id?: string
+    originalOrderId: string
+    userId?: string | null
+    userName?: string | null
+    userEmail?: string | null
+    shippingAddress: JsonNullValueInput | InputJsonValue
+    paymentMethod: string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
+    itemsPrice?: Decimal | DecimalJsLike | number | string
+    totalPrice?: Decimal | DecimalJsLike | number | string
+    shippingPrice?: Decimal | DecimalJsLike | number | string
+    taxPrice?: Decimal | DecimalJsLike | number | string
+    isPaid?: boolean
+    paidAt?: Date | string | null
+    isDelivered?: boolean
+    deliveredAt?: Date | string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedAt?: Date | string
+    deletedByUserId: string
+    deletedByUserName?: string | null
+    deletedByUserEmail?: string | null
+  }
+
+  export type DeletedOrderUncheckedCreateWithoutOrderItemsInput = {
+    id?: string
+    originalOrderId: string
+    userId?: string | null
+    userName?: string | null
+    userEmail?: string | null
+    shippingAddress: JsonNullValueInput | InputJsonValue
+    paymentMethod: string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
+    itemsPrice?: Decimal | DecimalJsLike | number | string
+    totalPrice?: Decimal | DecimalJsLike | number | string
+    shippingPrice?: Decimal | DecimalJsLike | number | string
+    taxPrice?: Decimal | DecimalJsLike | number | string
+    isPaid?: boolean
+    paidAt?: Date | string | null
+    isDelivered?: boolean
+    deliveredAt?: Date | string | null
+    createdAt: Date | string
+    updatedAt: Date | string
+    deletedAt?: Date | string
+    deletedByUserId: string
+    deletedByUserName?: string | null
+    deletedByUserEmail?: string | null
+  }
+
+  export type DeletedOrderCreateOrConnectWithoutOrderItemsInput = {
+    where: DeletedOrderWhereUniqueInput
+    create: XOR<DeletedOrderCreateWithoutOrderItemsInput, DeletedOrderUncheckedCreateWithoutOrderItemsInput>
+  }
+
+  export type DeletedOrderUpsertWithoutOrderItemsInput = {
+    update: XOR<DeletedOrderUpdateWithoutOrderItemsInput, DeletedOrderUncheckedUpdateWithoutOrderItemsInput>
+    create: XOR<DeletedOrderCreateWithoutOrderItemsInput, DeletedOrderUncheckedCreateWithoutOrderItemsInput>
+    where?: DeletedOrderWhereInput
+  }
+
+  export type DeletedOrderUpdateToOneWithWhereWithoutOrderItemsInput = {
+    where?: DeletedOrderWhereInput
+    data: XOR<DeletedOrderUpdateWithoutOrderItemsInput, DeletedOrderUncheckedUpdateWithoutOrderItemsInput>
+  }
+
+  export type DeletedOrderUpdateWithoutOrderItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type DeletedOrderUncheckedUpdateWithoutOrderItemsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    userName?: NullableStringFieldUpdateOperationsInput | string | null
+    userEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    shippingAddress?: JsonNullValueInput | InputJsonValue
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
+    itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    taxPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    isPaid?: BoolFieldUpdateOperationsInput | boolean
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    isDelivered?: BoolFieldUpdateOperationsInput | boolean
+    deliveredAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedByUserId?: StringFieldUpdateOperationsInput | string
+    deletedByUserName?: NullableStringFieldUpdateOperationsInput | string | null
+    deletedByUserEmail?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProductCreateWithoutReviewInput = {
@@ -32708,6 +36645,8 @@ export namespace Prisma {
     shippingAddress: JsonNullValueInput | InputJsonValue
     paymentMethod: string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: $Enums.OrderPaymentStatus
+    fulfillmentStatus?: $Enums.OrderFulfillmentStatus
     itemsPrice?: Decimal | DecimalJsLike | number | string
     totalPrice?: Decimal | DecimalJsLike | number | string
     shippingPrice?: Decimal | DecimalJsLike | number | string
@@ -32884,6 +36823,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -32902,6 +36843,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -32920,6 +36863,8 @@ export namespace Prisma {
     shippingAddress?: JsonNullValueInput | InputJsonValue
     paymentMethod?: StringFieldUpdateOperationsInput | string
     paymentResult?: NullableJsonNullValueInput | InputJsonValue
+    paymentStatus?: EnumOrderPaymentStatusFieldUpdateOperationsInput | $Enums.OrderPaymentStatus
+    fulfillmentStatus?: EnumOrderFulfillmentStatusFieldUpdateOperationsInput | $Enums.OrderFulfillmentStatus
     itemsPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     totalPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     shippingPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -33123,6 +37068,58 @@ export namespace Prisma {
   }
 
   export type OrderItemUncheckedUpdateManyWithoutOrderInput = {
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemCreateManyDeletedOrderInput = {
+    id?: string
+    originalOrderId: string
+    productId: string
+    name: string
+    slug: string
+    image: string
+    price: Decimal | DecimalJsLike | number | string
+    quantity?: number
+    createdAt: Date | string
+    updatedAt: Date | string
+  }
+
+  export type DeletedOrderItemUpdateWithoutDeletedOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemUncheckedUpdateWithoutDeletedOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
+    productId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    image?: StringFieldUpdateOperationsInput | string
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    quantity?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DeletedOrderItemUncheckedUpdateManyWithoutDeletedOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    originalOrderId?: StringFieldUpdateOperationsInput | string
     productId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string

@@ -1,84 +1,63 @@
 "use client";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import React from "react";
+import { adminAllNavItems } from "@/app/admin/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Menu, MenuIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { MenuIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const links = [
-  {
-    title: "Overview",
-    href: "/admin/overview",
-  },
-  {
-    title: "Products",
-    href: "/admin/products",
-  },
-  {
-    title: "Categories",
-    href: "/admin/categories",
-  },
-  {
-    title: "Orders",
-    href: "/admin/orders",
-  },
-  {
-    title: "Users",
-    href: "/admin/users",
-  },
-  {
-    title: "Homepage",
-    href: "/admin/homepage",
-  },
-];
-
-const MainNav = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) => {
+const MainNav = () => {
   const pathname = usePathname();
+
+  const activeHref =
+    adminAllNavItems
+      .filter(
+        (item) =>
+          pathname === item.href || pathname.startsWith(`${item.href}/`),
+      )
+      .sort((left, right) => right.href.length - left.href.length)[0]?.href ??
+    "";
+
   return (
     <>
       <Drawer direction="left">
         <DrawerTrigger>
-          <Button variant="outline" className="">
+          <Button variant="outline">
             <MenuIcon />
           </Button>
         </DrawerTrigger>
         <DrawerContent className="h-full max-w-sm ">
           <DrawerHeader>
-            {links.map((item) => (
+            {adminAllNavItems.map((item) => (
               <DrawerTitle key={item.href} className="mb-4">
                 <Link
                   href={item.href}
                   className={cn(
                     "text-lg font-medium transition-colors hover:text-primary",
-                    pathname.includes(item.href)
+                    item.href === activeHref
                       ? "text-yellow-300"
-                      : "text-primary "
+                      : "text-primary ",
                   )}>
                   {item.title}
                 </Link>
               </DrawerTitle>
             ))}
           </DrawerHeader>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose>
-              <Button variant="outline">Cancel</Button>
+          <div className="px-4 pb-6">
+            <DrawerClose asChild>
+              <Button variant="outline" className="w-full">
+                Close
+              </Button>
             </DrawerClose>
-          </DrawerFooter>
+          </div>
         </DrawerContent>
       </Drawer>
       {/* <nav

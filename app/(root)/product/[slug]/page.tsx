@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import { getMyCart } from "@/lib/cart-data";
+import { sanitizeRichTextHtml } from "@/lib/html";
 import { Cart } from "@/types";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -58,7 +59,12 @@ const ProductDetailsPage = async (props: {
             </div>
             <div className="mt-10">
               <p className="font-semibold">Description</p>
-              <p>{product.description}</p>
+              <div
+                className="html-content mt-3"
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeRichTextHtml(product.description),
+                }}
+              />
             </div>
           </div>
           {/* Action Column */}
