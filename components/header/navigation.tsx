@@ -1,28 +1,30 @@
-// TODO: Template for Navigation-popup. Change Flyout Links according to the project requirements.
+import {
+  STATIC_NAV_CATEGORIES,
+  type StaticNavCategory,
+} from "@/lib/constants/navigation";
 
-import React from "react";
-import FlyoutLink from "./flyout-link";
-import { categories } from "@/lib/constants";
+import MegaMenu, { type Category } from "./MegaMenu";
+
+function mapCategoryTree(category: StaticNavCategory): Category {
+  return {
+    id: category.id,
+    name: category.name.trim(),
+    slug: category.slug,
+    children: category.subcategories?.map((subCategory) => ({
+      id: subCategory.id,
+      name: subCategory.name.trim(),
+      slug: subCategory.slug,
+      children: subCategory.subsubcategories?.map((child) => ({
+        id: child.id,
+        name: child.name.trim(),
+        slug: child.slug,
+      })),
+    })),
+  };
+}
 
 export default function Navigation() {
-  return (
-    <div className="relative flex w-screen justify-center bg-slate-200 px-4  text-slate-900 shadow-xl">
-      {/* <MaxWidth81> */}
-      <div className="hidden w-full max-w-[81.25rem] items-center text-xs justify-between px-10 py-4 font-semibold uppercase lg:flex">
-        {categories.map((category, index) => (
-          <div className="flex items-center justify-center" key={index}>
-            <FlyoutLink
-              key={index}
-              link={category.url}
-              flyoutContent={category.name}
-              // lastChild={index === categories.length - 1}
-            >
-              {category.name}
-            </FlyoutLink>
-          </div>
-        ))}
-      </div>
-      {/* </MaxWidth81> */}
-    </div>
-  );
+  const categories = STATIC_NAV_CATEGORIES.map(mapCategoryTree);
+
+  return <MegaMenu categories={categories} />;
 }

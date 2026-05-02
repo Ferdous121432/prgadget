@@ -232,8 +232,8 @@ function Category({
               </FormControl>
               <p className="text-xs text-muted-foreground">
                 {hasBrandOptions
-                  ? "Products now connect to standalone brand records."
-                  : "No brands available yet. Create one from the Brands admin page."}
+                  ? "Optional. Connect a standalone brand record when relevant."
+                  : "Optional. No brands available yet unless you create one from the Brands admin page."}
                 {!hasBrandOptions && (
                   <>
                     {" "}

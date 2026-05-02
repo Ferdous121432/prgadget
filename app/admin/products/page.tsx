@@ -1,7 +1,6 @@
 // app/admin/products/page.tsx
 import VectorSearchToggle from "@/components/admin/vector-search-toggle";
 import VectorSyncButton from "@/components/admin/vector-sync-button";
-import DeleteDialog from "@/components/shared/DeteleDialog";
 import Pagination from "@/components/shared/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -22,11 +20,10 @@ import {
 } from "@/lib/actions/product.actions";
 import { requireAdmin } from "@/lib/auth-guard";
 import { MainCategory } from "@/lib/generated/prisma";
-import { getHtmlTextExcerpt } from "@/lib/html";
-import { formatCurrency, formatId } from "@/lib/utils";
 import { ProductWithIds } from "@/types";
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import Link from "next/link";
+import ProductTableRow from "./ProductTableRow";
 
 const PRODUCT_SORT_OPTIONS = [
   { value: "newest", label: "Newest first" },
@@ -398,40 +395,13 @@ const AdminProductsPage = async (props: {
         </TableHeader>
         <TableBody>
           {products.data?.map((product, index) => (
-            <TableRow key={product.id}>
-              <TableCell>{formatId(product.id)}</TableCell>
-              <TableCell>
-                <div className="space-y-1">
-                  <div className="font-medium">{product.name}</div>
-                  {product.description && (
-                    <p className="max-w-md text-xs leading-5 text-muted-foreground">
-                      {getHtmlTextExcerpt(product.description, 120)}
-                    </p>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell className="text-center">
-                {formatCurrency(product.price)}
-              </TableCell>
-              <TableCell className="text-center">{product.stock}</TableCell>
-              <TableCell className="text-center">{product.rating}</TableCell>
-              {useVectorSearch && (
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm text-gray-600">
-                      {(0.9 - index * 0.1).toFixed(2)}
-                    </span>
-                  </div>
-                </TableCell>
-              )}
-              <TableCell className="flex gap-1">
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/admin/products/${product.id}`}>Edit</Link>
-                </Button>
-                <DeleteDialog id={product.id} action={deleteProduct} />
-              </TableCell>
-            </TableRow>
+            <ProductTableRow
+              key={product.id}
+              product={product}
+              index={index}
+              useVectorSearch={useVectorSearch}
+              deleteAction={deleteProduct}
+            />
           ))}
         </TableBody>
       </Table>

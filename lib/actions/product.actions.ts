@@ -14,7 +14,7 @@ import {
   invalidateProductCaches,
 } from "../cache/redis";
 import { Prisma } from "../generated/prisma";
-import { sanitizeRichTextHtml } from "../html";
+import { normalizeProductDescriptionBlocks } from "../product-description";
 import { convertPrismaObjectToJSObject, formatError } from "../utils";
 import {
   deleteProductVector,
@@ -68,6 +68,38 @@ function serializeProductCategoryContext(product: any) {
     subCategory: serializedProduct.SubCategory?.name ?? null,
     subSubCategory: serializedProduct.SubSubCategory?.name ?? null,
   };
+}
+
+function normalizeProductSpecifications(specifications: unknown) {
+  const normalizeNode = (
+    value: unknown,
+  ): Record<string, unknown> | string | null => {
+    if (typeof value === "string") {
+      const normalized = value.trim();
+      return normalized.length > 0 ? normalized : null;
+    }
+
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return null;
+    }
+
+    const normalizedEntries = Object.entries(value)
+      .map(([key, childValue]) => [key, normalizeNode(childValue)] as const)
+      .filter(([, childValue]) => childValue !== null);
+
+    if (normalizedEntries.length === 0) {
+      return null;
+    }
+
+    return Object.fromEntries(normalizedEntries);
+  };
+
+  const normalized = normalizeNode(specifications);
+  return normalized &&
+    typeof normalized === "object" &&
+    !Array.isArray(normalized)
+    ? normalized
+    : null;
 }
 
 function parsePriceRanges(price?: string) {
@@ -249,28 +281,36 @@ export async function createProduct(data: Product) {
       mainCategoryId,
       subCategoryId,
       subSubCategoryId,
+      specifications,
       ...restData
     } = data as any;
 
-    const brand = await prisma.brand.findUnique({
-      where: { id: brandId },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
+    const brand = brandId
+      ? await prisma.brand.findUnique({
+          where: { id: brandId },
+          select: {
+            id: true,
+            name: true,
+          },
+        })
+      : null;
 
-    if (!brand) {
+    if (brandId && !brand) {
       return { success: false, message: "Selected brand not found." };
     }
 
     const createData: any = {
       ...restData,
-      description: sanitizeRichTextHtml(restData.description),
-      brand: brand.name,
+      shortDescription:
+        normalizeProductDescriptionBlocks(restData.shortDescription) || null,
+      description: normalizeProductDescriptionBlocks(restData.description),
+      specifications: normalizeProductSpecifications(specifications),
+      brand: brand?.name ?? null,
     };
 
-    createData.Brand = { connect: { id: brand.id } };
+    if (brand) {
+      createData.Brand = { connect: { id: brand.id } };
+    }
 
     // Main category is required for every product.
     createData.MainCategory = { connect: { id: mainCategoryId } };
@@ -346,41 +386,49 @@ export async function updateProduct(data: ProductWithId) {
       mainCategoryId,
       subCategoryId,
       subSubCategoryId,
+      specifications,
       ...restData
     } = data as any;
 
-    const brand = await prisma.brand.findUnique({
-      where: { id: brandId },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
+    const brand = brandId
+      ? await prisma.brand.findUnique({
+          where: { id: brandId },
+          select: {
+            id: true,
+            name: true,
+          },
+        })
+      : null;
 
-    if (!brand) {
+    if (brandId && !brand) {
       return { success: false, message: "Selected brand not found." };
     }
 
     const updateData: any = {
       ...restData,
-      description: sanitizeRichTextHtml(restData.description),
-      brand: brand.name,
+      shortDescription:
+        normalizeProductDescriptionBlocks(restData.shortDescription) || null,
+      description: normalizeProductDescriptionBlocks(restData.description),
+      specifications: normalizeProductSpecifications(specifications),
+      brand: brand?.name ?? null,
     };
 
-    updateData.Brand = { connect: { id: brand.id } };
+    updateData.Brand = brand
+      ? { connect: { id: brand.id } }
+      : { disconnect: true };
 
     // Main category is required for every product.
     updateData.MainCategory = { connect: { id: mainCategoryId } };
 
     if (subCategoryId) {
       updateData.SubCategory = { connect: { id: subCategoryId } };
-    } else if (subCategoryId === null) {
+    } else {
       updateData.SubCategory = { disconnect: true };
     }
 
     if (subSubCategoryId) {
       updateData.SubSubCategory = { connect: { id: subSubCategoryId } };
-    } else if (subSubCategoryId === null) {
+    } else {
       updateData.SubSubCategory = { disconnect: true };
     }
 
@@ -859,13 +907,31 @@ export async function getAllProducts({
   );
 }
 
-export async function getProductBrands() {
-  const cacheKey = "product-search-brands";
+export async function getProductBrands(category?: string) {
+  const cacheKey = generateCacheKey("product-search-brands", {
+    category: category ?? "all",
+  });
 
   return getCachedData(
     cacheKey,
     async () => {
+      const whereClause: Prisma.BrandWhereInput =
+        category && category !== "all"
+          ? {
+              products: {
+                some: {
+                  MainCategory: {
+                    is: {
+                      name: category,
+                    },
+                  },
+                },
+              },
+            }
+          : {};
+
       const brands = await prisma.brand.findMany({
+        where: whereClause,
         select: {
           name: true,
         },

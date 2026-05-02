@@ -1,4 +1,14 @@
-import sanitizeHtml from "sanitize-html";
+import rehypeParse from "rehype-parse";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeStringify from "rehype-stringify";
+import "server-only";
+import { unified } from "unified";
+import { visit } from "unist-util-visit";
+import {
+  getHtmlTextExcerpt as getClientSafeHtmlTextExcerpt,
+  stripHtmlToText,
+} from "./html-text";
+import { normalizeMalformedRichText } from "./rich-text";
 
 // Tags allowed in stored rich product descriptions
 const RICH_TEXT_ALLOWED_TAGS = [
@@ -19,6 +29,57 @@ const RICH_TEXT_ALLOWED_TAGS = [
   "a",
 ] as const;
 
+const richTextSanitizeSchema = {
+  ...defaultSchema,
+  tagNames: [...RICH_TEXT_ALLOWED_TAGS],
+  attributes: {
+    ...defaultSchema.attributes,
+    a: ["href", "title", "target", "rel"],
+  },
+  protocols: {
+    ...defaultSchema.protocols,
+    href: ["http", "https", "mailto"],
+  },
+} as any;
+
+function normalizeEditorBlockTags(input: string) {
+  return input.replace(/<div\b[^>]*>/gi, "<p>").replace(/<\/div>/gi, "</p>");
+}
+
+function hardenLinks() {
+  return (tree: unknown) => {
+    visit(tree, "element", (node: any) => {
+      if (node.tagName !== "a") {
+        return;
+      }
+
+      const href = node.properties?.href;
+
+      if (typeof href !== "string" || href.length === 0) {
+        if (node.properties) {
+          delete node.properties.target;
+          delete node.properties.rel;
+        }
+        return;
+      }
+
+      node.properties = {
+        ...node.properties,
+        target: "_blank",
+        rel: "nofollow noopener noreferrer",
+      };
+    });
+  };
+}
+
+function createHtmlProcessor() {
+  return unified()
+    .use(rehypeParse, { fragment: true })
+    .use(rehypeSanitize, richTextSanitizeSchema)
+    .use(hardenLinks)
+    .use(rehypeStringify);
+}
+
 /**
  * Sanitize rich HTML for safe DB storage and rendering.
  * - Only a strict allowlist of tags and attributes is kept.
@@ -28,19 +89,17 @@ const RICH_TEXT_ALLOWED_TAGS = [
 export function sanitizeRichTextHtml(input?: string | null): string {
   if (!input?.trim()) return "";
 
-  const sanitized = sanitizeHtml(input, {
-    allowedTags: [...RICH_TEXT_ALLOWED_TAGS],
-    allowedAttributes: { a: ["href", "title"] },
-    allowedSchemes: ["http", "https", "mailto"],
-    transformTags: {
-      a: sanitizeHtml.simpleTransform("a", {
-        target: "_blank",
-        rel: "nofollow noopener noreferrer",
-      }),
-    },
-  }).trim();
+  const normalizedInput = normalizeMalformedRichText(
+    normalizeEditorBlockTags(input),
+  );
 
-  return sanitized === "<p></p>" ? "" : sanitized;
+  const sanitized = String(
+    createHtmlProcessor().processSync(normalizedInput),
+  ).trim();
+
+  return sanitized === "<p></p>" || sanitized === "<p><br /></p>"
+    ? ""
+    : sanitized;
 }
 
 /**
@@ -48,14 +107,7 @@ export function sanitizeRichTextHtml(input?: string | null): string {
  * Used for search indexing and excerpt generation.
  */
 export function stripHtml(input?: string | null): string {
-  if (!input?.trim()) return "";
-
-  return sanitizeHtml(input, {
-    allowedTags: [],
-    allowedAttributes: {},
-  })
-    .replace(/\s+/g, " ")
-    .trim();
+  return stripHtmlToText(input);
 }
 
 /**
@@ -66,16 +118,5 @@ export function getHtmlTextExcerpt(
   input?: string | null,
   maxLength = 140,
 ): string {
-  const plainText = stripHtml(input);
-
-  if (plainText.length <= maxLength) {
-    return plainText;
-  }
-
-  const clipped = plainText.slice(0, maxLength + 1);
-  const lastSpace = clipped.lastIndexOf(" ");
-  const excerptEnd =
-    lastSpace > Math.floor(maxLength * 0.6) ? lastSpace : maxLength;
-
-  return `${clipped.slice(0, excerptEnd).trimEnd()}...`;
+  return getClientSafeHtmlTextExcerpt(input, maxLength);
 }

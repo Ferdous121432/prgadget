@@ -16,7 +16,7 @@ import {
 export type AdminNavItem = {
   title: string;
   href: string;
-  icon?: Icon;
+  icon: Icon;
 };
 
 export const adminPrimaryNavItems: AdminNavItem[] = [

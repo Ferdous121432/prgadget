@@ -97,7 +97,9 @@ model Product {
   brand            String?
   Brand            Brand?               @relation(fields: [brandId], references: [id])
   brandId          String?
+  shortDescription String?
   description      String
+  specifications   Json?                @db.Json
   stock            Int
   price            Decimal              @default(0) @db.Decimal(10, 2)
   rating           Decimal              @default(0) @db.Decimal(10, 2)

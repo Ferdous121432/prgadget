@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { normalizeMalformedRichText } from "@/lib/rich-text";
 import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./button";
@@ -34,6 +35,10 @@ function normalizeHtml(html: string) {
   const trimmed = html.trim();
   if (!trimmed || trimmed === "<br>" || trimmed === "<p><br></p>") return "";
   return trimmed;
+}
+
+function normalizeEditorHtml(html: string) {
+  return normalizeHtml(normalizeMalformedRichText(html));
 }
 
 /** Walk up from `node` until we hit a known block element inside `editor`. */
@@ -92,7 +97,7 @@ export default function HtmlEditor({
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    const incoming = value || "";
+    const incoming = normalizeEditorHtml(value || "");
     if (editor.innerHTML !== incoming) editor.innerHTML = incoming;
   }, [value]);
 
@@ -125,9 +130,28 @@ export default function HtmlEditor({
   }, []);
 
   const emitChange = useCallback(() => {
-    const html = normalizeHtml(editorRef.current?.innerHTML ?? "");
+    const html = normalizeEditorHtml(editorRef.current?.innerHTML ?? "");
     onChange(html);
   }, [onChange]);
+
+  const handlePaste = useCallback(
+    (event: React.ClipboardEvent<HTMLDivElement>) => {
+      event.preventDefault();
+
+      const html = event.clipboardData.getData("text/html");
+      const text = event.clipboardData.getData("text/plain");
+
+      if (html.trim()) {
+        document.execCommand("insertHTML", false, normalizeEditorHtml(html));
+      } else if (text.trim()) {
+        document.execCommand("insertText", false, text);
+      }
+
+      emitChange();
+      readState();
+    },
+    [emitChange, readState],
+  );
 
   // ── Inline command (bold / italic / underline / lists) ─────────────────
   // All toolbar interactions use onMouseDown + e.preventDefault() so the
@@ -345,6 +369,7 @@ export default function HtmlEditor({
         onInput={emitChange}
         onKeyUp={readState}
         onMouseUp={readState}
+        onPaste={handlePaste}
         onFocus={readState}
         onBlur={() => setState(DEFAULT_STATE)}
       />

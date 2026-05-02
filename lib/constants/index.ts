@@ -78,7 +78,72 @@ export const productDefaultValues = {
   category: "shirt",
   images: [],
   brandId: "",
+  shortDescription: "",
   description: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  specifications: {
+    display: {
+      size: "",
+      type: "",
+      resolution: "",
+      refreshRate: "",
+      brightness: "",
+      protection: "",
+      features: "",
+    },
+    processor: {
+      chipset: "",
+      cpuType: "",
+      gpu: "",
+    },
+    memory: {
+      ram: "",
+      rom: "",
+    },
+    rearCamera: {
+      resolution: "",
+      features: "",
+      videoRecording: "",
+    },
+    frontCamera: {
+      resolution: "",
+      features: "",
+    },
+    audio: {
+      speaker: "",
+      audioFeatures: "",
+    },
+    networkConnectivity: {
+      sim: "",
+      network: "",
+      wifi: "",
+      bluetooth: "",
+      gps: "",
+      nfc: "",
+      usb: "",
+      otg: "",
+      audioJack: "",
+    },
+    os: {
+      operatingSystem: "",
+    },
+    features: {
+      sensors: "",
+      ipRating: "",
+      otherFeatures: "",
+    },
+    battery: {
+      type: "",
+      fastCharging: "",
+    },
+    physicalSpecification: {
+      dimension: "",
+      weight: "",
+      colors: "",
+    },
+    warrantyInformation: {
+      warranty: "",
+    },
+  },
   price: "66.99",
   stock: 10,
   rating: "4.5",
@@ -136,42 +201,57 @@ export const categories = [
   {
     id: 1,
     name: "Phones",
-    url: `phones`,
+    url: `category/phones`,
   },
   {
     id: 2,
+    name: "Apple",
+    url: `category/apple`,
+  },
+  {
+    id: 3,
     name: "Phone Accessories",
-    url: `phone-accessories`,
+    url: `category/phone-accessories`,
   },
   {
     id: 3,
     name: "Tablet",
-    url: `tablet`,
+    url: `category/tablet`,
   },
   {
     id: 4,
     name: "Watches",
-    url: `watches`,
+    url: `category/watches`,
+  },
+  {
+    id: 5,
+    name: "Headphone & Speaker",
+    url: `category/headphone-and-speaker`,
+  },
+  {
+    id: 4,
+    name: "Watches",
+    url: `category/watches`,
   },
   {
     id: 5,
     name: "Headphones & Earphones",
-    url: `headphones-earphones`,
+    url: `category/headphones-earphones`,
   },
   {
     id: 6,
-    name: "PC Accessories",
-    url: `pc-accessories`,
+    name: "Camera",
+    url: `category/camera`,
   },
   {
     id: 7,
     name: "Gadgets",
-    url: `gadgets`,
+    url: `category/gadgets`,
   },
   {
     id: 8,
     name: "sales",
-    url: `sales`,
+    url: `category/sales`,
   },
 ];
 

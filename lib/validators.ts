@@ -13,6 +13,86 @@ const currency = z
     "Price must have exactly two decimal places",
   );
 
+const productSpecificationField = z
+  .string()
+  .trim()
+  .max(5000, "Must be 5000 characters or fewer")
+  .optional()
+  .or(z.literal(""));
+
+const productShortDescriptionField = z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""));
+
+const productDescriptionField = z.string().trim().optional().or(z.literal(""));
+
+export const productSpecificationsSchema = z.object({
+  display: z.object({
+    size: productSpecificationField,
+    type: productSpecificationField,
+    resolution: productSpecificationField,
+    refreshRate: productSpecificationField,
+    brightness: productSpecificationField,
+    protection: productSpecificationField,
+    features: productSpecificationField,
+  }),
+  processor: z.object({
+    chipset: productSpecificationField,
+    cpuType: productSpecificationField,
+    gpu: productSpecificationField,
+  }),
+  memory: z.object({
+    ram: productSpecificationField,
+    rom: productSpecificationField,
+  }),
+  rearCamera: z.object({
+    resolution: productSpecificationField,
+    features: productSpecificationField,
+    videoRecording: productSpecificationField,
+  }),
+  frontCamera: z.object({
+    resolution: productSpecificationField,
+    features: productSpecificationField,
+  }),
+  audio: z.object({
+    speaker: productSpecificationField,
+    audioFeatures: productSpecificationField,
+  }),
+  networkConnectivity: z.object({
+    sim: productSpecificationField,
+    network: productSpecificationField,
+    wifi: productSpecificationField,
+    bluetooth: productSpecificationField,
+    gps: productSpecificationField,
+    nfc: productSpecificationField,
+    usb: productSpecificationField,
+    otg: productSpecificationField,
+    audioJack: productSpecificationField,
+  }),
+  os: z.object({
+    operatingSystem: productSpecificationField,
+  }),
+  features: z.object({
+    sensors: productSpecificationField,
+    ipRating: productSpecificationField,
+    otherFeatures: productSpecificationField,
+  }),
+  battery: z.object({
+    type: productSpecificationField,
+    fastCharging: productSpecificationField,
+  }),
+  physicalSpecification: z.object({
+    dimension: productSpecificationField,
+    weight: productSpecificationField,
+    colors: productSpecificationField,
+  }),
+  warrantyInformation: z.object({
+    warranty: productSpecificationField,
+  }),
+});
+
 // MainCategory
 export const createMainCategorySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
@@ -75,7 +155,9 @@ export const productSchema = z.object({
   subSubCategory: z.string().optional().nullable(),
   brand: z.string(),
   categoryTags: categoryTagSchema.array().optional(),
+  shortDescription: z.string().optional().nullable(),
   description: z.string(),
+  specifications: productSpecificationsSchema.optional().nullable(),
   price: currency,
   stock: z.number(),
   rating: z.string().optional().nullable(),
@@ -96,9 +178,11 @@ export const insertProductSchema = z.object({
     .min(3, "Main category must be at least 3 characters"),
   subCategoryId: z.string().optional(),
   subSubCategoryId: z.string().optional(),
-  brandId: z.string().min(1, "Brand is required"),
+  brandId: z.string().optional().or(z.literal("")),
   categoryTags: z.array(z.string()).optional(),
-  description: z.string().min(3, "Description must be at least 3 characters"),
+  shortDescription: productShortDescriptionField,
+  description: productDescriptionField,
+  specifications: productSpecificationsSchema.optional(),
   stock: z.coerce.number(),
   images: z.array(z.string()).min(1, "Product must have at least one image"),
   image_keys: z

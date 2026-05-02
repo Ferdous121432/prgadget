@@ -6,16 +6,19 @@ import { productDefaultValues } from "@/lib/constants";
 import { jsxToasts } from "@/lib/customToaster";
 import { deleteImagesFromUploadThing } from "@/lib/hooks/uploadthing";
 import { omitEmptyFields } from "@/lib/hooks/util-functions";
+import { productSpecificationSections } from "@/lib/product-specifications";
 import { insertProductSchema, updateProductSchema } from "@/lib/validators";
-import { ProductSchema, ProductWithId } from "@/types";
+import { ProductSchema, ProductSpecifications, ProductWithId } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
+import Description from "./product-form/Description";
 import Details from "./product-form/Details";
 import Images from "./product-form/Images";
+import Specifications from "./product-form/Specifications";
 
 const ProductForm = ({
   type,
@@ -49,6 +52,63 @@ const ProductForm = ({
         )
       : [];
 
+  const getSpecificationDefaults = (): ProductSpecifications => {
+    if (productDefaultValues.specifications) {
+      return productDefaultValues.specifications as ProductSpecifications;
+    }
+
+    return Object.fromEntries(
+      productSpecificationSections.map((section) => [
+        section.key,
+        Object.fromEntries(section.fields.map((field) => [field.key, ""])),
+      ]),
+    ) as ProductSpecifications;
+  };
+
+  const mergeSpecificationDefaults = (
+    specifications: unknown,
+  ): ProductSpecifications => {
+    const defaults = getSpecificationDefaults();
+
+    if (
+      !specifications ||
+      typeof specifications !== "object" ||
+      Array.isArray(specifications)
+    ) {
+      return defaults;
+    }
+
+    const source = specifications as Record<string, unknown>;
+
+    return Object.fromEntries(
+      Object.entries(defaults).map(([sectionKey, sectionDefaults]) => {
+        const sourceSection = source[sectionKey];
+
+        if (
+          !sourceSection ||
+          typeof sourceSection !== "object" ||
+          Array.isArray(sourceSection)
+        ) {
+          return [sectionKey, sectionDefaults];
+        }
+
+        const sourceFields = sourceSection as Record<string, unknown>;
+
+        return [
+          sectionKey,
+          Object.fromEntries(
+            Object.entries(sectionDefaults).map(([fieldKey, defaultValue]) => [
+              fieldKey,
+              typeof sourceFields[fieldKey] === "string"
+                ? sourceFields[fieldKey]
+                : defaultValue,
+            ]),
+          ),
+        ];
+      }),
+    ) as ProductSpecifications;
+  };
+
   // Transform product's categoryTags to array of IDs for form defaultValues
   const getDefaultValues = () => {
     if (product && type === "Update") {
@@ -59,7 +119,11 @@ const ProductForm = ({
         "";
 
       return {
+        ...productDefaultValues,
         ...product,
+        subCategoryId: product.subCategoryId ?? "",
+        subSubCategoryId: product.subSubCategoryId ?? "",
+        specifications: mergeSpecificationDefaults(product.specifications),
         brandId: matchedBrandId,
         categoryTags: categoryTagIds,
       };
@@ -140,6 +204,12 @@ const ProductForm = ({
             <TabsTrigger className="w-full px-6" value="details">
               Details
             </TabsTrigger>
+            <TabsTrigger className="w-full px-6" value="description">
+              Description
+            </TabsTrigger>
+            <TabsTrigger className="w-full px-6" value="specifications">
+              Specifications
+            </TabsTrigger>
             <TabsTrigger className="w-full px-6" value="images">
               Images
             </TabsTrigger>
@@ -149,6 +219,12 @@ const ProductForm = ({
           </TabsList>
           <TabsContent value="details">
             <Details />
+          </TabsContent>
+          <TabsContent value="description">
+            <Description />
+          </TabsContent>
+          <TabsContent value="specifications">
+            <Specifications />
           </TabsContent>
           <TabsContent value="images">
             <Images

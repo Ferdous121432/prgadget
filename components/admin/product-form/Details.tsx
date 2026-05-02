@@ -1,19 +1,18 @@
 "use client";
 
+import DescriptionBuilder from "@/components/admin/product-form/DescriptionBuilder";
 import { Button } from "@/components/ui/button";
 import {
-  FormControl,
+  FormControl as FieldControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import HtmlEditor from "@/components/ui/html-editor";
 import { insertProductSchema } from "@/lib/validators";
 import { ProductSchema, ProductWithId } from "@/types";
-import React from "react";
-import { useFormContext, ControllerRenderProps } from "react-hook-form";
+import { ControllerRenderProps, useFormContext } from "react-hook-form";
 import slugify from "slugify";
 import z from "zod";
 
@@ -37,9 +36,9 @@ function Details() {
           }) => (
             <FormItem className="w-full">
               <FormLabel>Name</FormLabel>
-              <FormControl>
+              <FieldControl>
                 <Input placeholder="Enter product name" {...field} />
-              </FormControl>
+              </FieldControl>
               <FormMessage />
             </FormItem>
           )}
@@ -58,7 +57,7 @@ function Details() {
           }) => (
             <FormItem className="w-full">
               <FormLabel>Slug</FormLabel>
-              <FormControl>
+              <FieldControl>
                 <div className="relative  flex flex-row space-x-3 items-end ">
                   <Input placeholder="Enter slug" {...field} />
                   <Button
@@ -73,7 +72,7 @@ function Details() {
                     Generate
                   </Button>
                 </div>
-              </FormControl>
+              </FieldControl>
               <FormMessage />
             </FormItem>
           )}
@@ -94,9 +93,9 @@ function Details() {
           }) => (
             <FormItem className="w-full">
               <FormLabel>Price</FormLabel>
-              <FormControl>
+              <FieldControl>
                 <Input placeholder="Enter product price" {...field} />
-              </FormControl>
+              </FieldControl>
               <FormMessage />
             </FormItem>
           )}
@@ -115,44 +114,34 @@ function Details() {
           }) => (
             <FormItem className="w-full">
               <FormLabel>Stock</FormLabel>
-              <FormControl>
+              <FieldControl>
                 <Input placeholder="Enter stock" {...field} />
-              </FormControl>
+              </FieldControl>
               <FormMessage />
             </FormItem>
           )}
         />
       </div>
-      {/* Description */}
-      <div>
-        <FormField
-          control={form.control}
-          name="description"
-          render={({
-            field,
-          }: {
-            field: ControllerRenderProps<
-              z.infer<typeof insertProductSchema>,
-              "description"
-            >;
-          }) => (
-            <FormItem className="w-full">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <HtmlEditor
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Write a polished HTML description with headings, lists, quotes, and links"
-                />
-              </FormControl>
-              <p className="text-xs text-muted-foreground">
-                Use headings, lists, and links for SEO-friendly structured copy.
+      <FormField
+        control={form.control}
+        name="shortDescription"
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormLabel>Short Description</FormLabel>
+            <DescriptionBuilder value={field.value} onChange={field.onChange} />
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <p>
+                Saved as structured JSON blocks, just like the main description.
               </p>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
+              <p>
+                Keep this section concise for the summary area above the full
+                product description.
+              </p>
+            </div>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
     </div>
   );
 }

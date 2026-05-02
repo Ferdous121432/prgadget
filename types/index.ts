@@ -13,6 +13,7 @@ import {
   paymentResultSchema,
   productSchema,
   productSchemaWithID,
+  productSpecificationsSchema,
   saveShippingAddressSchema,
   sessionUserSchema,
   shippingAddressSchema,
@@ -40,6 +41,7 @@ export type ProductSchemaPublic = z.infer<typeof productSchema>;
 export type ProductSchema = z.infer<typeof insertProductSchema>;
 export type ProductWithId = z.infer<typeof updateProductSchema>;
 export type ProductWithIds = z.infer<typeof productSchemaWithID>;
+export type ProductSpecifications = z.infer<typeof productSpecificationsSchema>;
 export type Review = z.infer<typeof updateReviewSchema>;
 
 // Cart
