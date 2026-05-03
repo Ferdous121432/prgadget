@@ -204,7 +204,7 @@ export default function MegaMenu({ categories }: MegaMenuProps) {
                 className={[
                   "inline-flex min-h-14 items-center rounded-md px-4 py-3 transition-colors duration-150",
                   isOpen
-                    ? "bg-red-600 text-slate-950 shadow-sm  dark:text-slate-50"
+                    ? "bg-red-500 text-slate-50 shadow-sm  dark:text-slate-50"
                     : "text-slate-700 hover:bg-slate-100 hover:text-red-700 dark:text-slate-200 dark:hover:bg-slate-900 dark:hover:text-red-400",
                 ].join(" ")}>
                 {getDisplayName(category.name)}
@@ -220,25 +220,22 @@ export default function MegaMenu({ categories }: MegaMenuProps) {
                       top: dropdownPosition.top,
                       width: dropdownPosition.width,
                     }}>
-                    <div className="relative rounded-3xl border border-slate-200 bg-white p-5 text-slate-900 shadow-[0_18px_60px_rgba(15,23,42,0.14)] dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:shadow-[0_18px_60px_rgba(2,6,23,0.5)]">
+                    <div className="relative rounded-xl border border-slate-200 bg-white p-5 text-slate-900 shadow-[0_18px_60px_rgba(15,23,42,0.14)] dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:shadow-[0_18px_60px_rgba(2,6,23,0.5)]">
                       <div className="mb-4 flex items-center justify-between border-b border-slate-200 px-2 pb-4 dark:border-slate-800">
                         <div>
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
-                            Browse category
-                          </p>
-                          <h2 className="mt-1 text-lg font-semibold normal-case tracking-normal text-slate-950 dark:text-white">
+                          <h2 className="mt-1 text-[14px]  font-semibold normal-case tracking-normal text-slate-950 dark:text-white">
                             {getDisplayName(category.name)}
                           </h2>
                         </div>
                         <Link
                           href={buildCategoryHref(category)}
-                          className="rounded-full border border-slate-200 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-700 transition-colors hover:border-red-600 hover:text-red-700 dark:border-slate-700 dark:text-slate-300 dark:hover:border-red-500 dark:hover:text-red-400">
+                          className="rounded-full border border-slate-200 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-700 transition-colors hover:border-red-600 hover:text-red-700 dark:border-slate-700 dark:text-slate-300 dark:hover:border-red-700 dark:hover:text-red-700">
                           Shop all
                         </Link>
                       </div>
 
                       <div className="grid min-h-[18rem] grid-cols-1 gap-3">
-                        <div className="rounded-2xl bg-slate-50 p-2 text-slate-950 dark:text-slate-50 font-semibold dark:bg-slate-950">
+                        <div className="rounded-xl bg-slate-50 p-2 text-slate-950 dark:text-slate-50 font-semibold dark:bg-slate-950">
                           {subCategories.map((subCategory) => {
                             const isActive =
                               activeSubCategoryId === subCategory.id;
@@ -263,10 +260,10 @@ export default function MegaMenu({ categories }: MegaMenuProps) {
                                     category,
                                   ])}
                                   className={[
-                                    "flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium normal-case tracking-normal transition-colors",
+                                    "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold normal-case tracking-normal transition-colors",
                                     isActive
-                                      ? "bg-slate-700 text-red-700 shadow-sm dark:bg-slate-800 dark:text-red-400"
-                                      : "text-slate-700 hover:bg-slate-100 hover:text-red-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-red-400",
+                                      ? "bg-slate-200 text-red-700 shadow-sm dark:bg-slate-400 dark:text-red-700"
+                                      : "text-slate-700 hover:bg-slate-100 hover:text-red-700 dark:text-slate-50 dark:hover:bg-slate-200 dark:hover:text-red-400",
                                   ].join(" ")}>
                                   <span>
                                     {getDisplayName(subCategory.name)}
@@ -303,7 +300,7 @@ export default function MegaMenu({ categories }: MegaMenuProps) {
                                                   category,
                                                   subCategory,
                                                 ])}
-                                                className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium normal-case tracking-normal text-slate-700 transition-colors hover:bg-slate-50 hover:text-red-700 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-red-400">
+                                                className="flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-semibold normal-case tracking-normal text-slate-700 transition-colors hover:bg-slate-50 hover:text-red-700 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-red-400">
                                                 <span>
                                                   {getDisplayName(child.name)}
                                                 </span>
