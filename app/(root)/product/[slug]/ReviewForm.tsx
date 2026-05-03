@@ -26,18 +26,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  createUpdateReview,
+  getReviewByProductId,
+} from "@/lib/actions/review.actions";
 import { reviewFormDefaultValues } from "@/lib/constants";
+import { jsxToasts } from "@/lib/customToaster";
 import { insertReviewSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StarIcon } from "lucide-react";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  createUpdateReview,
-  getReviewByProductId,
-} from "@/lib/actions/review.actions";
-import { jsxToasts } from "@/lib/customToaster";
 
 const ReviewForm = ({
   userId,
@@ -73,14 +73,15 @@ const ReviewForm = ({
 
   // Submit Form Handler
   const onSubmit: SubmitHandler<z.infer<typeof insertReviewSchema>> = async (
-    values
+    values,
   ) => {
     const res = await createUpdateReview({ ...values, productId });
     if (!res.success) {
       jsxToasts.errorWithIcon(
         "Failed to add review",
-        res.message || "Something went wrong"
+        res.message || "Something went wrong",
       );
+      return;
     }
 
     setOpen(false);
@@ -120,6 +121,7 @@ const ReviewForm = ({
                     <FormControl>
                       <Input placeholder="Enter title" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -133,6 +135,7 @@ const ReviewForm = ({
                       <FormControl>
                         <Textarea placeholder="Enter description" {...field} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   );
                 }}

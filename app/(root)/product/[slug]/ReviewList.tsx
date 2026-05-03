@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { Review } from "@/types";
-import Link from "next/link";
-import { useState } from "react";
-import ReviewForm from "./ReviewForm";
-import { getReviews } from "@/lib/actions/review.actions";
+import Rating from "@/components/shared/product/rating";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -13,9 +9,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, User } from "lucide-react";
+import { getReviews } from "@/lib/actions/review.actions";
 import { formatDateTime } from "@/lib/utils";
-import Rating from "@/components/shared/product/rating";
+import { Calendar, User } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import ReviewForm from "./ReviewForm";
+
+type ReviewWithUser = {
+  id: string;
+  title: string;
+  description: string;
+  rating: number;
+  isVerifiedPurchase?: boolean;
+  userId: string;
+  createdAt?: Date | null;
+  user?: {
+    name?: string | null;
+    image?: string | null;
+  } | null;
+};
 
 const ReviewList = ({
   userId,
@@ -26,7 +39,7 @@ const ReviewList = ({
   productId: string;
   productSlug: string;
 }) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<ReviewWithUser[]>([]);
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -68,7 +81,16 @@ const ReviewList = ({
           <Card key={review.id}>
             <CardHeader>
               <div className="flex-between">
-                <CardTitle>{review.title}</CardTitle>
+                <div className="flex flex-wrap items-center gap-2">
+                  <CardTitle>{review.title}</CardTitle>
+                  {review.isVerifiedPurchase ? (
+                    <Badge
+                      variant="outline"
+                      className="border-emerald-500/40 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                      Verified Purchase
+                    </Badge>
+                  ) : null}
+                </div>
               </div>
               <CardDescription>{review.description}</CardDescription>
             </CardHeader>
@@ -77,7 +99,7 @@ const ReviewList = ({
                 <Rating value={review.rating} />
                 <div className="flex items-center">
                   <User className="mr-1 h-3 w-3" />
-                  {review.userId ? review.user.name : "User"}
+                  {review.userId ? review.user?.name || "User" : "User"}
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />

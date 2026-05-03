@@ -16,7 +16,7 @@ import { insertReviewSchema } from "../validators";
 
 // Create & Update Reviews
 export async function createUpdateReview(
-  data: z.infer<typeof insertReviewSchema>
+  data: z.infer<typeof insertReviewSchema>,
 ) {
   try {
     const session = await auth();
@@ -35,6 +35,20 @@ export async function createUpdateReview(
 
     if (!product) throw new Error("Product not found");
 
+    const hasPurchasedProduct = Boolean(
+      await prisma.orderItem.findFirst({
+        where: {
+          productId: review.productId,
+          order: {
+            userId: review.userId,
+          },
+        },
+        select: {
+          orderId: true,
+        },
+      }),
+    );
+
     // Check if user already reviewed
     const reviewExists = await prisma.review.findFirst({
       where: {
@@ -52,11 +66,17 @@ export async function createUpdateReview(
             title: review.title,
             description: review.description,
             rating: review.rating,
+            isVerifiedPurchase: hasPurchasedProduct,
           },
         });
       } else {
         // Create review
-        await tx.review.create({ data: review });
+        await tx.review.create({
+          data: {
+            ...review,
+            isVerifiedPurchase: hasPurchasedProduct,
+          },
+        });
       }
 
       // Get avg rating
@@ -131,7 +151,7 @@ export async function getReviews({ productId }: { productId: string }) {
         return { success: false, data: [], message: "Failed to fetch reviews" };
       }
     },
-    CACHE_CONFIG.PRODUCT_REVIEWS.ttl
+    CACHE_CONFIG.PRODUCT_REVIEWS.ttl,
   );
 }
 
@@ -207,7 +227,7 @@ export async function getReviewStats({ productId }: { productId: string }) {
         };
       }
     },
-    CACHE_CONFIG.PRODUCT_REVIEWS.ttl
+    CACHE_CONFIG.PRODUCT_REVIEWS.ttl,
   );
 }
 
@@ -338,6 +358,6 @@ export async function getAllReviews({
         };
       }
     },
-    1800 // 30 minutes TTL for admin data
+    1800, // 30 minutes TTL for admin data
   );
 }

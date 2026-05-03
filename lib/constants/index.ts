@@ -169,8 +169,10 @@ export const USER_ROLES = process.env.USER_ROLES
   : ["admin", "user"];
 
 export const reviewFormDefaultValues = {
-  title: "Review test",
-  comment: "lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  title: "",
+  description: "",
+  productId: "",
+  userId: "",
   rating: 4,
 };
 
@@ -214,32 +216,32 @@ export const categories = [
     url: `category/phone-accessories`,
   },
   {
-    id: 3,
+    id: 4,
     name: "Tablet",
     url: `category/tablet`,
   },
   {
-    id: 4,
+    id: 5,
     name: "Watches",
     url: `category/watches`,
   },
   {
-    id: 5,
+    id: 6,
     name: "Headphone & Speaker",
     url: `category/headphone-and-speaker`,
   },
   {
-    id: 4,
+    id: 7,
     name: "Watches",
     url: `category/watches`,
   },
   {
-    id: 5,
+    id: 8,
     name: "Headphones & Earphones",
     url: `category/headphones-earphones`,
   },
   {
-    id: 6,
+    id: 9,
     name: "Camera",
     url: `category/camera`,
   },
