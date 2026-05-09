@@ -121,6 +121,7 @@ const ProductForm = ({
       return {
         ...productDefaultValues,
         ...product,
+        offerPrice: product.offerPrice ?? "",
         subCategoryId: product.subCategoryId ?? "",
         subSubCategoryId: product.subSubCategoryId ?? "",
         specifications: mergeSpecificationDefaults(product.specifications),

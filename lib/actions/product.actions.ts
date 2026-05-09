@@ -102,6 +102,79 @@ function normalizeProductSpecifications(specifications: unknown) {
     : null;
 }
 
+function buildProductSlug(value: string) {
+  const normalized = value
+    .toLowerCase()
+    .trim()
+    .replace(/['"]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+
+  return normalized || `product-${Date.now()}`;
+}
+
+function normalizeOptionalPrice(value: unknown) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (value === null) {
+    return null;
+  }
+
+  if (typeof value === "string") {
+    const normalized = value.trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  return value;
+}
+
+async function generateUniqueProductSlug(baseSlug: string) {
+  let candidate = baseSlug;
+  let suffix = 2;
+
+  while (
+    await prisma.product.findUnique({
+      where: { slug: candidate },
+      select: { id: true },
+    })
+  ) {
+    candidate = `${baseSlug}-${suffix}`;
+    suffix += 1;
+  }
+
+  return candidate;
+}
+
+async function getImageKeysSafeToDelete(
+  productId: string,
+  imageKeys: string[],
+) {
+  if (imageKeys.length === 0) {
+    return [] as string[];
+  }
+
+  const relatedProducts = await prisma.product.findMany({
+    where: {
+      NOT: { id: productId },
+      image_keys: {
+        hasSome: imageKeys,
+      },
+    },
+    select: {
+      image_keys: true,
+    },
+  });
+
+  const referencedKeys = new Set(
+    relatedProducts.flatMap((product) => product.image_keys ?? []),
+  );
+
+  return imageKeys.filter((imageKey) => !referencedKeys.has(imageKey));
+}
+
 function parsePriceRanges(price?: string) {
   if (!price || price === "all") {
     return [] as Array<{ min: number; max: number }>;
@@ -305,6 +378,7 @@ export async function createProduct(data: Product) {
         normalizeProductDescriptionBlocks(restData.shortDescription) || null,
       description: normalizeProductDescriptionBlocks(restData.description),
       specifications: normalizeProductSpecifications(specifications),
+      offerPrice: normalizeOptionalPrice(restData.offerPrice),
       brand: brand?.name ?? null,
     };
 
@@ -410,6 +484,7 @@ export async function updateProduct(data: ProductWithId) {
         normalizeProductDescriptionBlocks(restData.shortDescription) || null,
       description: normalizeProductDescriptionBlocks(restData.description),
       specifications: normalizeProductSpecifications(specifications),
+      offerPrice: normalizeOptionalPrice(restData.offerPrice),
       brand: brand?.name ?? null,
     };
 
@@ -484,6 +559,89 @@ export async function updateProduct(data: ProductWithId) {
   }
 }
 
+export async function duplicateProduct(id: string) {
+  try {
+    const productExists = await prisma.product.findUnique({
+      where: { id },
+      include: {
+        categoryTags: {
+          select: {
+            categoryTagId: true,
+          },
+        },
+      },
+    });
+
+    if (!productExists) {
+      return { success: false, message: "Product not found." };
+    }
+
+    const duplicatedName = `${productExists.name}-duplicate`;
+    const duplicatedSlug = await generateUniqueProductSlug(
+      buildProductSlug(duplicatedName),
+    );
+
+    const duplicatedProduct = await prisma.product.create({
+      data: {
+        name: duplicatedName,
+        slug: duplicatedSlug,
+        images: productExists.images,
+        image_keys: productExists.image_keys,
+        brand: productExists.brand,
+        Brand: productExists.brandId
+          ? { connect: { id: productExists.brandId } }
+          : undefined,
+        shortDescription: productExists.shortDescription,
+        description: productExists.description,
+        specifications: productExists.specifications,
+        stock: productExists.stock,
+        price: productExists.price,
+        offerPrice: productExists.offerPrice,
+        rating: 0,
+        numReviews: 0,
+        isFeatured: productExists.isFeatured,
+        banner: productExists.banner,
+        MainCategory: { connect: { id: productExists.mainCategoryId } },
+        SubCategory: productExists.subCategoryId
+          ? { connect: { id: productExists.subCategoryId } }
+          : undefined,
+        SubSubCategory: productExists.subSubCategoryId
+          ? { connect: { id: productExists.subSubCategoryId } }
+          : undefined,
+        categoryTags:
+          productExists.categoryTags.length > 0
+            ? {
+                create: productExists.categoryTags.map((categoryTag) => ({
+                  categoryTagId: categoryTag.categoryTagId,
+                })),
+              }
+            : undefined,
+      },
+    });
+
+    const productForVector = await prisma.product.findUnique({
+      where: { id: duplicatedProduct.id },
+      include: productCategoryInclude,
+    });
+
+    revalidatePath("/admin/products");
+
+    if (productForVector) {
+      await upsertProductVector(productForVector);
+    }
+
+    await invalidateProductCaches();
+
+    return {
+      success: true,
+      message: `${duplicatedName} created successfully.`,
+      duplicatedProductId: duplicatedProduct.id,
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
 // Delete product by ID
 export async function deleteProduct(id: string) {
   try {
@@ -496,7 +654,14 @@ export async function deleteProduct(id: string) {
 
     // Delete associated images from UploadThing
     if (productExists.image_keys && Array.isArray(productExists.image_keys)) {
-      await utapi.deleteFiles(productExists.image_keys);
+      const imageKeysToDelete = await getImageKeysSafeToDelete(
+        productExists.id,
+        productExists.image_keys,
+      );
+
+      if (imageKeysToDelete.length > 0) {
+        await utapi.deleteFiles(imageKeysToDelete);
+      }
     }
 
     await prisma.product.delete({

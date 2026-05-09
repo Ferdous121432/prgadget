@@ -145,6 +145,7 @@ export const productDefaultValues = {
     },
   },
   price: "66.99",
+  offerPrice: "",
   stock: 10,
   rating: "4.5",
   numReviews: "4",

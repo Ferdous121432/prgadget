@@ -333,11 +333,8 @@ const ShippingAddressForm = ({
     [addresses, selectedAddressId],
   );
 
-  const [editingAddress, setEditingAddress] = useState<SavedShippingAddress>(
-    selectedAddress ??
-      legacyAddress ??
-      createNewAddressTemplate(addresses.length === 0),
-  );
+  const [editingAddress, setEditingAddress] =
+    useState<SavedShippingAddress | null>(null);
 
   const handleSaveAddress = async (values: SavedShippingAddress) => {
     startTransition(async () => {
@@ -357,7 +354,7 @@ const ShippingAddressForm = ({
           : "Shipping address saved",
         message: result.message,
       });
-      setEditingAddress(createNewAddressTemplate(false));
+      setEditingAddress(null);
       router.refresh();
     });
   };
@@ -428,8 +425,8 @@ const ShippingAddressForm = ({
         message: result.message,
       });
 
-      if (editingAddress.id === addressId) {
-        setEditingAddress(createNewAddressTemplate(false));
+      if (editingAddress?.id === addressId) {
+        setEditingAddress(null);
       }
 
       router.refresh();
@@ -606,16 +603,14 @@ const ShippingAddressForm = ({
       </div>
 
       <div className="space-y-6 xl:sticky xl:top-24 xl:self-start">
-        <ShippingAddressEditor
-          initialValues={editingAddress}
-          isPending={isPending}
-          onCancel={
-            editingAddress.id
-              ? () => setEditingAddress(createNewAddressTemplate(false))
-              : undefined
-          }
-          onSubmit={handleSaveAddress}
-        />
+        {editingAddress ? (
+          <ShippingAddressEditor
+            initialValues={editingAddress}
+            isPending={isPending}
+            onCancel={() => setEditingAddress(null)}
+            onSubmit={handleSaveAddress}
+          />
+        ) : null}
 
         <Card>
           <CardHeader>

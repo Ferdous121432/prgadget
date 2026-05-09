@@ -94,7 +94,40 @@ function Details() {
             <FormItem className="w-full">
               <FormLabel>Price</FormLabel>
               <FieldControl>
-                <Input placeholder="Enter product price" {...field} />
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Enter product price"
+                  {...field}
+                />
+              </FieldControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="offerPrice"
+          render={({
+            field,
+          }: {
+            field: ControllerRenderProps<
+              z.infer<typeof insertProductSchema>,
+              "offerPrice"
+            >;
+          }) => (
+            <FormItem className="w-full">
+              <FormLabel>Offer Price</FormLabel>
+              <FieldControl>
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="Optional discounted price"
+                  {...field}
+                  value={field.value ?? ""}
+                />
               </FieldControl>
               <FormMessage />
             </FormItem>
@@ -115,7 +148,7 @@ function Details() {
             <FormItem className="w-full">
               <FormLabel>Stock</FormLabel>
               <FieldControl>
-                <Input placeholder="Enter stock" {...field} />
+                <Input type="number" placeholder="Enter stock" {...field} />
               </FieldControl>
               <FormMessage />
             </FormItem>

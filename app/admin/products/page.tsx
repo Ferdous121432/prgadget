@@ -15,6 +15,7 @@ import {
 import { getAllMainCategories } from "@/lib/actions/category.actions";
 import {
   deleteProduct,
+  duplicateProduct,
   getAllProducts,
   getProductBrands,
 } from "@/lib/actions/product.actions";
@@ -400,6 +401,7 @@ const AdminProductsPage = async (props: {
               product={product}
               index={index}
               useVectorSearch={useVectorSearch}
+              duplicateAction={duplicateProduct}
               deleteAction={deleteProduct}
             />
           ))}

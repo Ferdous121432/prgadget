@@ -8,9 +8,21 @@ import { formatNumberWithDecimal } from "./utils";
 
 const currency = z
   .string()
+  .trim()
   .refine(
     (value) => /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(Number(value))),
     "Price must have exactly two decimal places",
+  );
+
+const optionalCurrency = z
+  .string()
+  .trim()
+  .optional()
+  .or(z.literal(""))
+  .refine(
+    (value) =>
+      !value || /^\d+(\.\d{2})?$/.test(formatNumberWithDecimal(Number(value))),
+    "Offer price must have exactly two decimal places",
   );
 
 const productSpecificationField = z
@@ -159,6 +171,7 @@ export const productSchema = z.object({
   description: z.string(),
   specifications: productSpecificationsSchema.optional().nullable(),
   price: currency,
+  offerPrice: currency.optional().nullable(),
   stock: z.number(),
   rating: z.string().optional().nullable(),
   numReviews: z.number().optional().nullable(),
@@ -169,8 +182,24 @@ export const productSchema = z.object({
   updatedAt: z.date(),
 });
 
-// Schema for inserting products
-export const insertProductSchema = z.object({
+function validateOfferPrice(
+  data: { price: string; offerPrice?: string | null },
+  ctx: z.RefinementCtx,
+) {
+  if (!data.offerPrice) {
+    return;
+  }
+
+  if (Number(data.offerPrice) >= Number(data.price)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["offerPrice"],
+      message: "Offer price must be lower than regular price",
+    });
+  }
+}
+
+const productInputSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   slug: z.string().min(3, "Slug must be at least 3 characters"),
   mainCategoryId: z
@@ -191,15 +220,22 @@ export const insertProductSchema = z.object({
   isFeatured: z.boolean(),
   banner: z.string().nullable(),
   price: currency,
+  offerPrice: optionalCurrency,
 });
+
+// Schema for inserting products
+export const insertProductSchema =
+  productInputSchema.superRefine(validateOfferPrice);
 
 // Schema for updating products
-export const updateProductSchema = insertProductSchema.extend({
-  id: z.string().min(1, "Id is required"),
-});
+export const updateProductSchema = productInputSchema
+  .extend({
+    id: z.string().min(1, "Id is required"),
+  })
+  .superRefine(validateOfferPrice);
 
 // Schema for products
-export const productSchemaWithID = insertProductSchema.extend({
+export const productSchemaWithID = productInputSchema.extend({
   id: z.string().min(1, "Id is required"),
   rating: z.string().optional().nullable(),
   numReviews: z.number().optional().nullable(),

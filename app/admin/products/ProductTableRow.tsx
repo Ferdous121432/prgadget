@@ -3,15 +3,24 @@
 import DeleteDialog from "@/components/shared/DeteleDialog";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { jsxToasts } from "@/lib/customToaster";
 import { formatCurrency, formatId } from "@/lib/utils";
 import { ProductWithIds } from "@/types";
+import { Copy, Loader } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 type ProductTableRowProps = {
   product: ProductWithIds;
   index: number;
   useVectorSearch: boolean;
   deleteAction: (id: string) => Promise<{ success: boolean; message: string }>;
+  duplicateAction: (id: string) => Promise<{
+    success: boolean;
+    message: string;
+    duplicatedProductId?: string;
+  }>;
 };
 
 export default function ProductTableRow({
@@ -19,7 +28,14 @@ export default function ProductTableRow({
   index,
   useVectorSearch,
   deleteAction,
+  duplicateAction,
 }: ProductTableRowProps) {
+  const router = useRouter();
+  const [isDuplicating, startDuplicating] = useTransition();
+  const hasOfferPrice =
+    Boolean(product.offerPrice) &&
+    Number(product.offerPrice) < Number(product.price);
+
   const openStorefrontProduct = () => {
     window.open(`/product/${product.slug}`, "_blank", "noopener,noreferrer");
   };
@@ -29,6 +45,31 @@ export default function ProductTableRow({
       event.preventDefault();
       openStorefrontProduct();
     }
+  };
+
+  const handleDuplicate = () => {
+    startDuplicating(async () => {
+      const result = await duplicateAction(product.id);
+
+      if (!result.success) {
+        jsxToasts.errorWithIcon(
+          "Could not duplicate product",
+          result.message || "Something went wrong",
+        );
+        return;
+      }
+
+      jsxToasts.successWithIcon({
+        title: "Product duplicated",
+        message: result.message,
+        href: result.duplicatedProductId
+          ? `/admin/products/${result.duplicatedProductId}`
+          : undefined,
+        hrefTitle: result.duplicatedProductId ? "Edit copy" : undefined,
+      });
+
+      router.refresh();
+    });
   };
 
   return (
@@ -50,7 +91,23 @@ export default function ProductTableRow({
         </div>
       </TableCell>
       <TableCell className="text-center">
-        {formatCurrency(product.price)}
+        <div className="space-y-0.5">
+          <div
+            className={
+              hasOfferPrice ? "font-medium text-green-600" : undefined
+            }>
+            {formatCurrency(
+              hasOfferPrice
+                ? (product.offerPrice ?? product.price)
+                : product.price,
+            )}
+          </div>
+          {hasOfferPrice ? (
+            <div className="text-xs text-muted-foreground line-through">
+              {formatCurrency(product.price)}
+            </div>
+          ) : null}
+        </div>
       </TableCell>
       <TableCell className="text-center">{product.stock}</TableCell>
       <TableCell className="text-center">{product.rating}</TableCell>
@@ -68,6 +125,19 @@ export default function ProductTableRow({
         className="flex gap-1"
         onClick={(event) => event.stopPropagation()}
         onKeyDown={(event) => event.stopPropagation()}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={isDuplicating}
+          onClick={handleDuplicate}>
+          {isDuplicating ? (
+            <Loader className="size-4 animate-spin" />
+          ) : (
+            <Copy className="size-4" />
+          )}
+          Duplicate
+        </Button>
         <Button asChild variant="outline" size="sm">
           <Link href={`/admin/products/${product.id}`}>Edit</Link>
         </Button>

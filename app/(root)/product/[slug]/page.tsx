@@ -58,6 +58,19 @@ const ProductDetailsPage = async (props: {
 
   //TODO: solve any issues with cart
   const cart = (await getMyCart()) as Cart;
+  const regularPrice = Number(product.price);
+  const parsedOfferPrice = product.offerPrice
+    ? Number(product.offerPrice)
+    : null;
+  const hasActiveOffer =
+    parsedOfferPrice !== null &&
+    Number.isFinite(parsedOfferPrice) &&
+    parsedOfferPrice > 0 &&
+    parsedOfferPrice < regularPrice;
+  const effectivePrice = hasActiveOffer ? parsedOfferPrice : regularPrice;
+  const discountPercent = hasActiveOffer
+    ? Math.round(((regularPrice - effectivePrice) / regularPrice) * 100)
+    : 0;
   const brandHref = product.brand
     ? `/search?${new URLSearchParams({ brand: product.brand }).toString()}`
     : null;
@@ -107,9 +120,18 @@ const ProductDetailsPage = async (props: {
               <p>{product.numReviews} reviews</p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                 <ProductPrice
-                  value={Number(product.price)}
+                  value={effectivePrice}
                   className=" rounded-full bg-green-100 text-green-700 px-5 py-2"
                 />
+                {hasActiveOffer ? (
+                  <>
+                    <ProductPrice
+                      value={regularPrice}
+                      className="text-lg text-muted-foreground line-through"
+                    />
+                    <Badge variant="secondary">{discountPercent}% OFF</Badge>
+                  </>
+                ) : null}
               </div>
               {product.shortDescription ? (
                 <div className="rounded-2xl border border-border/60 bg-muted/30 px-4 py-4 text-sm">
@@ -126,10 +148,25 @@ const ProductDetailsPage = async (props: {
               <CardContent className="p-4">
                 <div className="mb-2 flex justify-between">
                   <div>Price</div>
-                  <div>
-                    <ProductPrice value={Number(product.price)} />
+                  <div className="text-right">
+                    <ProductPrice
+                      value={effectivePrice}
+                      className={hasActiveOffer ? "text-green-700" : undefined}
+                    />
+                    {hasActiveOffer ? (
+                      <ProductPrice
+                        value={regularPrice}
+                        className="text-sm text-muted-foreground line-through"
+                      />
+                    ) : null}
                   </div>
                 </div>
+                {hasActiveOffer ? (
+                  <div className="mb-2 flex justify-between text-sm text-muted-foreground">
+                    <div>You save</div>
+                    <div>{discountPercent}%</div>
+                  </div>
+                ) : null}
                 <div className="mb-2 flex justify-between">
                   <div>Status</div>
                   {product.stock > 0 ? (
@@ -146,7 +183,7 @@ const ProductDetailsPage = async (props: {
                         productId: product.id,
                         name: product.name,
                         slug: product.slug,
-                        price: String(product.price),
+                        price: effectivePrice.toFixed(2),
                         quantity: 1,
                         image: product.images![0],
                       }}
