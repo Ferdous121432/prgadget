@@ -1,21 +1,21 @@
 "use server";
-import { revalidatePath } from "next/cache";
 import { prisma } from "@/db/prisma";
 import {
   CreateMainCategory,
-  UpdateMainCategory,
   CreateSubCategory,
-  UpdateSubCategory,
   CreateSubSubCategory,
+  UpdateMainCategory,
+  UpdateSubCategory,
   UpdateSubSubCategory,
 } from "@/types";
-import { convertPrismaObjectToJSObject } from "../utils";
+import { revalidatePath } from "next/cache";
 import {
+  CACHE_CONFIG,
+  generateCacheKey,
   getCachedData,
   invalidateCategoryCaches,
-  generateCacheKey,
-  CACHE_CONFIG,
 } from "../cache/redis";
+import { convertPrismaObjectToJSObject } from "../utils";
 
 //MAIN CATEGORY ACTIONS
 
@@ -92,11 +92,13 @@ export async function getAllMainCategories() {
         console.error(error);
         return {
           success: false,
+          data: [],
+          totalPages: 0,
           message: "Failed to retrieve main categories",
         };
       }
     },
-    CACHE_CONFIG.MAIN_CATEGORIES.ttl
+    CACHE_CONFIG.MAIN_CATEGORIES.ttl,
   );
 }
 
@@ -309,7 +311,7 @@ export async function getCategoriesForProductForm() {
         prisma.mainCategory.findMany(),
         prisma.subCategory.findMany(),
         prisma.subSubCategory.findMany(),
-      ]
+      ],
     );
     return { mainCategories, subCategories, subSubCategories };
   } catch (error) {
@@ -341,7 +343,7 @@ export async function getFeaturedCategories() {
         };
       }
     },
-    CACHE_CONFIG.FEATURED_CATEGORIES.ttl
+    CACHE_CONFIG.FEATURED_CATEGORIES.ttl,
   );
 }
 
@@ -369,7 +371,7 @@ export async function getNavCategories() {
         };
       }
     },
-    CACHE_CONFIG.NAV_CATEGORIES.ttl
+    CACHE_CONFIG.NAV_CATEGORIES.ttl,
   );
 }
 
@@ -399,7 +401,7 @@ export async function getCategoryBySlug(slug: string) {
         return { success: false, message: "Failed to retrieve category" };
       }
     },
-    CACHE_CONFIG.CATEGORY_BY_SLUG.ttl
+    CACHE_CONFIG.CATEGORY_BY_SLUG.ttl,
   );
 }
 
@@ -432,7 +434,7 @@ export async function getSubCategoryBySlug(slug: string) {
         return { success: false, message: "Failed to retrieve sub category" };
       }
     },
-    CACHE_CONFIG.SUB_CATEGORY_BY_SLUG.ttl
+    CACHE_CONFIG.SUB_CATEGORY_BY_SLUG.ttl,
   );
 }
 
@@ -466,6 +468,6 @@ export async function getSubSubCategoryBySlug(slug: string) {
         };
       }
     },
-    CACHE_CONFIG.SUB_SUB_CATEGORY_BY_SLUG.ttl
+    CACHE_CONFIG.SUB_SUB_CATEGORY_BY_SLUG.ttl,
   );
 }

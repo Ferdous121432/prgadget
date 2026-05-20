@@ -18,6 +18,7 @@ import {
   getLatestProducts,
 } from "@/lib/actions/product.actions";
 
+import FeaturedProduct from "@/components/shared/homepage/FeaturedProducts";
 import {
   featuredBrands as brands,
   featuredCategoryLogos as featuredCategories,
@@ -272,7 +273,7 @@ async function LatestProductList() {
 
 const Page = async () => {
   return (
-    <div className="space-y-12 bg-[#f8f3ea] pb-16 text-stone-900 sm:space-y-16">
+    <div className="space-y-12  pb-16 text-stone-900 dark:text-slate-100 sm:space-y-16">
       {/* Section: Hero carousel + campaign intro rail */}
       <section className="grid gap-4 ">
         <Suspense fallback={<CarouselSkeleton />}>
@@ -280,34 +281,29 @@ const Page = async () => {
         </Suspense>
 
         <div className="grid gap-6 p-6 sm:p-8 md:grid-cols-2  ">
-          <Card className="overflow-hidden rounded-4xl border border-stone-200 bg-white shadow-none">
-            <CardContent className="flex min-h-55 flex-col justify-between p-6 sm:p-8">
+          <Card className="overflow-hidden p-0 rounded-4xl border border-stone-200 bg-redshadow-none">
+            <CardContent className="flex bg-[url('/homepage/images/boy_with_laptop_image.png')] bg-cover   bg-center  h-full min-h-55 flex-col justify-between p-6 sm:p-8 ">
               <div className="space-y-4">
-                <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-stone-500">
+                <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-stone-50">
                   Campaign spotlight
                 </p>
                 <div className="space-y-3">
-                  <h2 className="text-2xl font-semibold uppercase tracking-[0.06em] text-stone-950">
+                  <h2 className="text-2xl font-semibold uppercase tracking-[0.06em] text-white">
                     Trend-led discovery for phones, tablets, and audio.
                   </h2>
-                  <p className="text-sm leading-6 text-stone-600">
-                    This section mirrors the reference structure: a high-impact
-                    hero on the left and smaller campaign pushes stacked beside
-                    it for faster browsing.
-                  </p>
                 </div>
               </div>
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col gap-3 justify-between sm:flex-row">
                 <Button
                   asChild
-                  className="w-full rounded-full bg-stone-900 text-white hover:bg-stone-800 sm:w-auto">
+                  className="w-full rounded-sm bg-destructive text-white hover:bg-destructive/70 sm:w-auto">
                   <Link href="/search?sort=rating">Shop best sellers</Link>
                 </Button>
                 <Button
                   asChild
                   variant="ghost"
-                  className="w-full justify-start rounded-full px-0 text-stone-900 hover:bg-transparent sm:w-auto">
+                  className="w-full justify-start rounded-full font-semibold px-0 text-white hover:text-red-700 hover:bg-transparent sm:w-auto">
                   <Link href="/search">
                     View catalog
                     <ChevronRight className="ml-2 size-4" />
@@ -323,16 +319,14 @@ const Page = async () => {
                 key={item.title}
                 href={item.href}
                 className={`rounded-[28px] p-6 transition hover:-translate-y-0.5 ${item.tone}`}>
-                <div className="space-y-3">
+                <div className="space-y-3 flex h-full flex-col justify-between">
                   <p className="text-[11px] font-medium uppercase tracking-[0.28em] opacity-70">
                     Curated lane
                   </p>
                   <h2 className="text-xl font-semibold uppercase tracking-[0.05em]">
                     {item.title}
                   </h2>
-                  <p className="text-sm leading-6 opacity-80">
-                    {item.description}
-                  </p>
+
                   <div className="flex items-center pt-2 text-sm font-medium uppercase tracking-[0.16em]">
                     Explore
                     <ArrowRight className="ml-2 size-4" />
@@ -346,28 +340,6 @@ const Page = async () => {
 
       {/* Section: Trending categories with quick department tabs */}
       <section className="space-y-6">
-        <div className="flex flex-col p-6 sm:p-8 gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-2">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500">
-              Trending categories
-            </p>
-            <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950">
-              Shop the departments moving fastest right now.
-            </h2>
-          </div>
-
-          <div className="flex  flex-wrap gap-2">
-            {departmentTabs.map((tab) => (
-              <Link
-                key={tab.label}
-                href={tab.href}
-                className="rounded-full border border-stone-300 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.24em] text-stone-700 transition hover:border-stone-900 hover:text-stone-950">
-                {tab.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-
         <Suspense fallback={<CategorySkeleton />}>
           <FeaturedCategory
             categories={featuredCategories}
@@ -450,17 +422,21 @@ const Page = async () => {
         </Card>
       </section>
 
+      <section className="space-y-6 p-6 sm:p-8 [content-visibility:auto] [contain-intrinsic-size:1px_780px]">
+        <FeaturedProduct />
+      </section>
+
       {/* Section: Editorial magazine stories */}
       <section className="space-y-6 p-6 sm:p-8 [content-visibility:auto] [contain-intrinsic-size:1px_780px]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500">
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500 dark:text-slate-100">
               Magazine
             </p>
-            <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950">
+            <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950 dark:text-slate-100">
               Brand stories and shopping notes keep the homepage alive.
             </h2>
-            <p className="max-w-2xl text-sm leading-7 text-stone-600">
+            <p className="max-w-2xl text-sm leading-7 text-stone-600 dark:text-slate-100">
               Inspired by the editorial block on the reference site, this area
               gives your homepage a richer lower fold without requiring a full
               blog system to start.
@@ -470,7 +446,7 @@ const Page = async () => {
           <Button
             asChild
             variant="outline"
-            className="w-full rounded-full border-stone-300 bg-transparent sm:w-auto">
+            className="w-full rounded-full border-stone-300 bg-transparent dark:text-slate-100 sm:w-auto">
             <Link href="/search?sort=newest">View more</Link>
           </Button>
         </div>
@@ -505,10 +481,10 @@ const Page = async () => {
       <section className="space-y-6 p-6 sm:p-8 [content-visibility:auto] [contain-intrinsic-size:1px_420px]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500">
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-stone-500 dark:text-slate-100">
               Brand rooms
             </p>
-            <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950">
+            <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950 dark:text-slate-100">
               Browse by brand after the product story lands.
             </h2>
           </div>
@@ -516,7 +492,7 @@ const Page = async () => {
           <Button
             asChild
             variant="outline"
-            className="w-full rounded-full border-stone-300 bg-transparent sm:w-auto">
+            className="w-full rounded-full border-stone-300 bg-transparent dark:text-slate-100 sm:w-auto">
             <Link href="/search">Shop all products</Link>
           </Button>
         </div>

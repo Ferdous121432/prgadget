@@ -20,7 +20,8 @@ const ProductList = ({
   viewAllHref?: string;
   viewAllLabel?: string;
 }) => {
-  const limitedData = limit ? data.slice(0, limit) : data;
+  const productData = Array.isArray(data) ? data : [];
+  const limitedData = limit ? productData.slice(0, limit) : productData;
 
   return (
     <section className="my-8 p-6 sm:p-8 sm:my-10 [content-visibility:auto] [contain-intrinsic-size:1px_860px]">
@@ -33,7 +34,7 @@ const ProductList = ({
               </p>
             ) : null}
             {title ? (
-              <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950">
+              <h2 className="text-3xl font-semibold uppercase tracking-[0.06em] text-stone-950 dark:text-white">
                 {title}
               </h2>
             ) : null}
@@ -51,7 +52,7 @@ const ProductList = ({
         </div>
       )}
       <div>
-        {data.length > 0 ? (
+        {productData.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
             {limitedData.map((product: any) => (
               <ProductCard key={product.slug} product={product} />

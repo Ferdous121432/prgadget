@@ -34,7 +34,7 @@ function FeaturedCategory({
         ) : null}
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4  2xl:grid-cols-8">
         {categories.map((category) => (
           <Link
             key={category.id}
@@ -45,8 +45,8 @@ function FeaturedCategory({
                 <Image
                   src={category.image}
                   alt={category.name}
-                  width={50}
-                  height={50}
+                  width={80}
+                  height={80}
                   loading="lazy"
                   sizes="50px"
                 />

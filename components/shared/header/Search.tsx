@@ -16,6 +16,7 @@ const Search = async () => {
     data: UpdateMainCategory[];
     totalPages: number;
   };
+  const categoryOptions = Array.isArray(categories) ? categories : [];
 
   return (
     <form action="/search" method="GET">
@@ -28,7 +29,7 @@ const Search = async () => {
             <SelectItem key="All" value="all">
               All
             </SelectItem>
-            {categories.map((x: { id: string; name: string }) => (
+            {categoryOptions.map((x: { id: string; name: string }) => (
               <SelectItem key={x.id} value={x.id}>
                 {x.name}
               </SelectItem>

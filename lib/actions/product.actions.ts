@@ -1185,10 +1185,7 @@ export async function getFeaturedProducts() {
         return convertPrismaObjectToJSObject(products);
       } catch (error) {
         console.error("Error fetching featured products:", error);
-        return {
-          success: false,
-          message: "Failed to fetch featured products.",
-        };
+        return [];
       }
     },
     CACHE_CONFIG.FEATURED_PRODUCTS.ttl,
@@ -1216,7 +1213,7 @@ export async function getLatestProducts() {
         return convertPrismaObjectToJSObject(products);
       } catch (error) {
         console.error("Error fetching latest products:", error);
-        return { success: false, message: "Failed to fetch latest products." };
+        return [];
       }
     },
     CACHE_CONFIG.LATEST_PRODUCTS.ttl,
